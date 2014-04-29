@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5063" systemVersion="13C64" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Attendance" representedClassName="Attendance" syncable="YES">
+        <attribute name="attendanceDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="attendanceType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AttendanceType" inverseName="attendances" inverseEntity="AttendanceType" syncable="YES"/>
+        <relationship name="student" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="attendances" inverseEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="AttendanceType" representedClassName="AttendanceType" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="attendanceType" inverseEntity="Attendance" syncable="YES"/>
+    </entity>
+    <entity name="Classroom" representedClassName="Classroom" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="students" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="Student" representedClassName="Student" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="student" inverseEntity="Attendance" syncable="YES"/>
+        <relationship name="classes" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Classroom" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Student" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="Classroom" positionX="-54" positionY="-9" width="128" height="150"/>
+        <element name="AttendanceType" positionX="-36" positionY="72" width="128" height="148"/>
+        <element name="Attendance" positionX="-27" positionY="99" width="128" height="163"/>
+    </elements>
+</model>

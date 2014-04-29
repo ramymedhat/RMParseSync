@@ -7,15 +7,58 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F54650F190E182700952AB2 /* TKDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FC190E182700952AB2 /* TKDB.m */; };
+		7F546510190E182700952AB2 /* TKDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FC190E182700952AB2 /* TKDB.m */; };
+		7F546511190E182700952AB2 /* TKServerObjectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FE190E182700952AB2 /* TKServerObjectHelper.m */; };
+		7F546512190E182700952AB2 /* TKServerObjectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FE190E182700952AB2 /* TKServerObjectHelper.m */; };
+		7F546513190E182700952AB2 /* TKServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546500190E182700952AB2 /* TKServerObject.m */; };
+		7F546514190E182700952AB2 /* TKServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546500190E182700952AB2 /* TKServerObject.m */; };
+		7F546515190E182700952AB2 /* TKParseServerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546502190E182700952AB2 /* TKParseServerSyncManager.m */; };
+		7F546516190E182700952AB2 /* TKParseServerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546502190E182700952AB2 /* TKParseServerSyncManager.m */; };
+		7F546517190E182700952AB2 /* TKServerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546504190E182700952AB2 /* TKServerSyncManager.m */; };
+		7F546518190E182700952AB2 /* TKServerSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546504190E182700952AB2 /* TKServerSyncManager.m */; };
+		7F546519190E182700952AB2 /* TKDBCacheEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546506190E182700952AB2 /* TKDBCacheEntry.m */; };
+		7F54651A190E182700952AB2 /* TKDBCacheEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546506190E182700952AB2 /* TKDBCacheEntry.m */; };
+		7F54651B190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546508190E182700952AB2 /* NSEntityDescription+ObjectID.m */; };
+		7F54651C190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F546508190E182700952AB2 /* NSEntityDescription+ObjectID.m */; };
+		7F54651D190E182700952AB2 /* NSManagedObject+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F54650A190E182700952AB2 /* NSManagedObject+Sync.m */; };
+		7F54651E190E182700952AB2 /* NSManagedObject+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F54650A190E182700952AB2 /* NSManagedObject+Sync.m */; };
+		7F54651F190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F54650C190E182700952AB2 /* NSManagedObjectContext+Sync.m */; };
+		7F546520190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F54650C190E182700952AB2 /* NSManagedObjectContext+Sync.m */; };
+		7F546521190E182700952AB2 /* TKDBCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F54650E190E182700952AB2 /* TKDBCacheManager.m */; };
+		7F546522190E182700952AB2 /* TKDBCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F54650E190E182700952AB2 /* TKDBCacheManager.m */; };
+		7F546523190E184800952AB2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE8918F22F1B00F2D17A /* XCTest.framework */; };
+		7F54652D190E184800952AB2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546524190E184800952AB2 /* MobileCoreServices.framework */; };
+		7F54652E190E184800952AB2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546525190E184800952AB2 /* Security.framework */; };
+		7F54652F190E184800952AB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546526190E184800952AB2 /* SystemConfiguration.framework */; };
+		7F546530190E184800952AB2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546527190E184800952AB2 /* CFNetwork.framework */; };
+		7F546531190E184800952AB2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546528190E184800952AB2 /* Parse.framework */; };
+		7F546533190E184800952AB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F54652A190E184800952AB2 /* CoreGraphics.framework */; };
+		7F546534190E184800952AB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F54652B190E184800952AB2 /* UIKit.framework */; };
+		7F546535190E184800952AB2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F54652C190E184800952AB2 /* CoreData.framework */; };
+		7F546536190E186300952AB2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546524190E184800952AB2 /* MobileCoreServices.framework */; };
+		7F546537190E186300952AB2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546525190E184800952AB2 /* Security.framework */; };
+		7F546538190E186300952AB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546526190E184800952AB2 /* SystemConfiguration.framework */; };
+		7F546539190E186300952AB2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546527190E184800952AB2 /* CFNetwork.framework */; };
+		7F54653A190E186300952AB2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546528190E184800952AB2 /* Parse.framework */; };
+		7F54653B190E186300952AB2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F54652C190E184800952AB2 /* CoreData.framework */; };
+		7F822182190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F822181190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m */; };
 		7FD4FE7C18F22F1B00F2D17A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */; };
-		7FD4FE8118F22F1B00F2D17A /* ParseSync.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7FD4FE8018F22F1B00F2D17A /* ParseSync.h */; };
-		7FD4FE8318F22F1B00F2D17A /* ParseSync.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FD4FE8218F22F1B00F2D17A /* ParseSync.m */; };
 		7FD4FE8A18F22F1B00F2D17A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE8918F22F1B00F2D17A /* XCTest.framework */; };
 		7FD4FE8B18F22F1B00F2D17A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */; };
 		7FD4FE8D18F22F1B00F2D17A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE8C18F22F1B00F2D17A /* UIKit.framework */; };
 		7FD4FE9018F22F1B00F2D17A /* libParseSync.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE7818F22F1B00F2D17A /* libParseSync.a */; };
 		7FD4FE9618F22F1B00F2D17A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FD4FE9418F22F1B00F2D17A /* InfoPlist.strings */; };
-		7FD4FE9818F22F1B00F2D17A /* ParseSyncTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FD4FE9718F22F1B00F2D17A /* ParseSyncTests.m */; };
+		7FD4FEA218F2301200F2D17A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FEA118F2301200F2D17A /* Parse.framework */; };
+		7FE649CE190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */; };
+		7FE649D3190E1E0900AF74B8 /* ParseTestInsertThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649D2190E1E0900AF74B8 /* ParseTestInsertThenUpload.m */; };
+		7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649D7190E1E8100AF74B8 /* ParseBaseTestCase.m */; };
+		7FE649DB190E212D00AF74B8 /* AttendanceType.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649DA190E212D00AF74B8 /* AttendanceType.m */; };
+		7FE649DE190E212E00AF74B8 /* Classroom.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649DD190E212E00AF74B8 /* Classroom.m */; };
+		7FE649E1190E212E00AF74B8 /* Attendance.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E0190E212E00AF74B8 /* Attendance.m */; };
+		7FE649E4190E212E00AF74B8 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E3190E212E00AF74B8 /* Student.m */; };
+		7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E6190E339100AF74B8 /* ParseTestDownload.m */; };
+		7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,24 +78,65 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				7FD4FE8118F22F1B00F2D17A /* ParseSync.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7F5464FB190E182700952AB2 /* TKDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKDB.h; sourceTree = "<group>"; };
+		7F5464FC190E182700952AB2 /* TKDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKDB.m; sourceTree = "<group>"; };
+		7F5464FD190E182700952AB2 /* TKServerObjectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKServerObjectHelper.h; sourceTree = "<group>"; };
+		7F5464FE190E182700952AB2 /* TKServerObjectHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKServerObjectHelper.m; sourceTree = "<group>"; };
+		7F5464FF190E182700952AB2 /* TKServerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKServerObject.h; sourceTree = "<group>"; };
+		7F546500190E182700952AB2 /* TKServerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKServerObject.m; sourceTree = "<group>"; };
+		7F546501190E182700952AB2 /* TKParseServerSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKParseServerSyncManager.h; sourceTree = "<group>"; };
+		7F546502190E182700952AB2 /* TKParseServerSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKParseServerSyncManager.m; sourceTree = "<group>"; };
+		7F546503190E182700952AB2 /* TKServerSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKServerSyncManager.h; sourceTree = "<group>"; };
+		7F546504190E182700952AB2 /* TKServerSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKServerSyncManager.m; sourceTree = "<group>"; };
+		7F546505190E182700952AB2 /* TKDBCacheEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKDBCacheEntry.h; sourceTree = "<group>"; };
+		7F546506190E182700952AB2 /* TKDBCacheEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKDBCacheEntry.m; sourceTree = "<group>"; };
+		7F546507190E182700952AB2 /* NSEntityDescription+ObjectID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSEntityDescription+ObjectID.h"; sourceTree = "<group>"; };
+		7F546508190E182700952AB2 /* NSEntityDescription+ObjectID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSEntityDescription+ObjectID.m"; sourceTree = "<group>"; };
+		7F546509190E182700952AB2 /* NSManagedObject+Sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+Sync.h"; sourceTree = "<group>"; };
+		7F54650A190E182700952AB2 /* NSManagedObject+Sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+Sync.m"; sourceTree = "<group>"; };
+		7F54650B190E182700952AB2 /* NSManagedObjectContext+Sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObjectContext+Sync.h"; sourceTree = "<group>"; };
+		7F54650C190E182700952AB2 /* NSManagedObjectContext+Sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObjectContext+Sync.m"; sourceTree = "<group>"; };
+		7F54650D190E182700952AB2 /* TKDBCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKDBCacheManager.h; sourceTree = "<group>"; };
+		7F54650E190E182700952AB2 /* TKDBCacheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKDBCacheManager.m; sourceTree = "<group>"; };
+		7F546524190E184800952AB2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		7F546525190E184800952AB2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		7F546526190E184800952AB2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		7F546527190E184800952AB2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		7F546528190E184800952AB2 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ParseSyncExample/Parse.framework; sourceTree = "<group>"; };
+		7F546529190E184800952AB2 /* libParseSync.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libParseSync.a; path = "build/Debug-iphoneos/libParseSync.a"; sourceTree = "<group>"; };
+		7F54652A190E184800952AB2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		7F54652B190E184800952AB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		7F54652C190E184800952AB2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		7F822181190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUpdateThenDownload.m; sourceTree = "<group>"; };
 		7FD4FE7818F22F1B00F2D17A /* libParseSync.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libParseSync.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7FD4FE7F18F22F1B00F2D17A /* ParseSync-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParseSync-Prefix.pch"; sourceTree = "<group>"; };
-		7FD4FE8018F22F1B00F2D17A /* ParseSync.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseSync.h; sourceTree = "<group>"; };
-		7FD4FE8218F22F1B00F2D17A /* ParseSync.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParseSync.m; sourceTree = "<group>"; };
 		7FD4FE8818F22F1B00F2D17A /* ParseSyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ParseSyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FD4FE8918F22F1B00F2D17A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		7FD4FE8C18F22F1B00F2D17A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		7FD4FE9318F22F1B00F2D17A /* ParseSyncTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ParseSyncTests-Info.plist"; sourceTree = "<group>"; };
 		7FD4FE9518F22F1B00F2D17A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		7FD4FE9718F22F1B00F2D17A /* ParseSyncTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParseSyncTests.m; sourceTree = "<group>"; };
+		7FD4FEA118F2301200F2D17A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		7FE649CD190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ParseSyncTest.xcdatamodel; sourceTree = "<group>"; };
+		7FE649D2190E1E0900AF74B8 /* ParseTestInsertThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestInsertThenUpload.m; sourceTree = "<group>"; };
+		7FE649D6190E1E8100AF74B8 /* ParseBaseTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseBaseTestCase.h; sourceTree = "<group>"; };
+		7FE649D7190E1E8100AF74B8 /* ParseBaseTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseBaseTestCase.m; sourceTree = "<group>"; };
+		7FE649D9190E212D00AF74B8 /* AttendanceType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttendanceType.h; sourceTree = "<group>"; };
+		7FE649DA190E212D00AF74B8 /* AttendanceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttendanceType.m; sourceTree = "<group>"; };
+		7FE649DC190E212E00AF74B8 /* Classroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classroom.h; sourceTree = "<group>"; };
+		7FE649DD190E212E00AF74B8 /* Classroom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Classroom.m; sourceTree = "<group>"; };
+		7FE649DF190E212E00AF74B8 /* Attendance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Attendance.h; sourceTree = "<group>"; };
+		7FE649E0190E212E00AF74B8 /* Attendance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Attendance.m; sourceTree = "<group>"; };
+		7FE649E2190E212E00AF74B8 /* Student.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Student.h; sourceTree = "<group>"; };
+		7FE649E3190E212E00AF74B8 /* Student.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Student.m; sourceTree = "<group>"; };
+		7FE649E6190E339100AF74B8 /* ParseTestDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestDownload.m; sourceTree = "<group>"; };
+		7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUpdateThenUpload.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +144,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FD4FEA218F2301200F2D17A /* Parse.framework in Frameworks */,
+				7F54652D190E184800952AB2 /* MobileCoreServices.framework in Frameworks */,
+				7F54652E190E184800952AB2 /* Security.framework in Frameworks */,
+				7F54652F190E184800952AB2 /* SystemConfiguration.framework in Frameworks */,
+				7F546530190E184800952AB2 /* CFNetwork.framework in Frameworks */,
+				7F546531190E184800952AB2 /* Parse.framework in Frameworks */,
+				7F546533190E184800952AB2 /* CoreGraphics.framework in Frameworks */,
+				7F546534190E184800952AB2 /* UIKit.framework in Frameworks */,
+				7F546535190E184800952AB2 /* CoreData.framework in Frameworks */,
 				7FD4FE7C18F22F1B00F2D17A /* Foundation.framework in Frameworks */,
+				7F546523190E184800952AB2 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +165,12 @@
 				7FD4FE9018F22F1B00F2D17A /* libParseSync.a in Frameworks */,
 				7FD4FE8A18F22F1B00F2D17A /* XCTest.framework in Frameworks */,
 				7FD4FE8D18F22F1B00F2D17A /* UIKit.framework in Frameworks */,
+				7F546536190E186300952AB2 /* MobileCoreServices.framework in Frameworks */,
+				7F546537190E186300952AB2 /* Security.framework in Frameworks */,
+				7F546538190E186300952AB2 /* SystemConfiguration.framework in Frameworks */,
+				7F546539190E186300952AB2 /* CFNetwork.framework in Frameworks */,
+				7F54653A190E186300952AB2 /* Parse.framework in Frameworks */,
+				7F54653B190E186300952AB2 /* CoreData.framework in Frameworks */,
 				7FD4FE8B18F22F1B00F2D17A /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,6 +200,16 @@
 		7FD4FE7A18F22F1B00F2D17A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7F546524190E184800952AB2 /* MobileCoreServices.framework */,
+				7F546525190E184800952AB2 /* Security.framework */,
+				7F546526190E184800952AB2 /* SystemConfiguration.framework */,
+				7F546527190E184800952AB2 /* CFNetwork.framework */,
+				7F546528190E184800952AB2 /* Parse.framework */,
+				7F546529190E184800952AB2 /* libParseSync.a */,
+				7F54652A190E184800952AB2 /* CoreGraphics.framework */,
+				7F54652B190E184800952AB2 /* UIKit.framework */,
+				7F54652C190E184800952AB2 /* CoreData.framework */,
+				7FD4FEA118F2301200F2D17A /* Parse.framework */,
 				7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */,
 				7FD4FE8918F22F1B00F2D17A /* XCTest.framework */,
 				7FD4FE8C18F22F1B00F2D17A /* UIKit.framework */,
@@ -110,8 +220,26 @@
 		7FD4FE7D18F22F1B00F2D17A /* ParseSync */ = {
 			isa = PBXGroup;
 			children = (
-				7FD4FE8018F22F1B00F2D17A /* ParseSync.h */,
-				7FD4FE8218F22F1B00F2D17A /* ParseSync.m */,
+				7F5464FB190E182700952AB2 /* TKDB.h */,
+				7F5464FC190E182700952AB2 /* TKDB.m */,
+				7F5464FD190E182700952AB2 /* TKServerObjectHelper.h */,
+				7F5464FE190E182700952AB2 /* TKServerObjectHelper.m */,
+				7F5464FF190E182700952AB2 /* TKServerObject.h */,
+				7F546500190E182700952AB2 /* TKServerObject.m */,
+				7F546501190E182700952AB2 /* TKParseServerSyncManager.h */,
+				7F546502190E182700952AB2 /* TKParseServerSyncManager.m */,
+				7F546503190E182700952AB2 /* TKServerSyncManager.h */,
+				7F546504190E182700952AB2 /* TKServerSyncManager.m */,
+				7F546505190E182700952AB2 /* TKDBCacheEntry.h */,
+				7F546506190E182700952AB2 /* TKDBCacheEntry.m */,
+				7F546507190E182700952AB2 /* NSEntityDescription+ObjectID.h */,
+				7F546508190E182700952AB2 /* NSEntityDescription+ObjectID.m */,
+				7F546509190E182700952AB2 /* NSManagedObject+Sync.h */,
+				7F54650A190E182700952AB2 /* NSManagedObject+Sync.m */,
+				7F54650B190E182700952AB2 /* NSManagedObjectContext+Sync.h */,
+				7F54650C190E182700952AB2 /* NSManagedObjectContext+Sync.m */,
+				7F54650D190E182700952AB2 /* TKDBCacheManager.h */,
+				7F54650E190E182700952AB2 /* TKDBCacheManager.m */,
 				7FD4FE7E18F22F1B00F2D17A /* Supporting Files */,
 			);
 			path = ParseSync;
@@ -128,7 +256,12 @@
 		7FD4FE9118F22F1B00F2D17A /* ParseSyncTests */ = {
 			isa = PBXGroup;
 			children = (
-				7FD4FE9718F22F1B00F2D17A /* ParseSyncTests.m */,
+				7FE649D6190E1E8100AF74B8 /* ParseBaseTestCase.h */,
+				7FE649D7190E1E8100AF74B8 /* ParseBaseTestCase.m */,
+				7FE649D2190E1E0900AF74B8 /* ParseTestInsertThenUpload.m */,
+				7FE649E6190E339100AF74B8 /* ParseTestDownload.m */,
+				7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */,
+				7F822181190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m */,
 				7FD4FE9218F22F1B00F2D17A /* Supporting Files */,
 			);
 			path = ParseSyncTests;
@@ -139,6 +272,15 @@
 			children = (
 				7FD4FE9318F22F1B00F2D17A /* ParseSyncTests-Info.plist */,
 				7FD4FE9418F22F1B00F2D17A /* InfoPlist.strings */,
+				7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */,
+				7FE649E2190E212E00AF74B8 /* Student.h */,
+				7FE649E3190E212E00AF74B8 /* Student.m */,
+				7FE649DF190E212E00AF74B8 /* Attendance.h */,
+				7FE649E0190E212E00AF74B8 /* Attendance.m */,
+				7FE649DC190E212E00AF74B8 /* Classroom.h */,
+				7FE649DD190E212E00AF74B8 /* Classroom.m */,
+				7FE649D9190E212D00AF74B8 /* AttendanceType.h */,
+				7FE649DA190E212D00AF74B8 /* AttendanceType.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -170,6 +312,7 @@
 				7FD4FE8418F22F1B00F2D17A /* Sources */,
 				7FD4FE8518F22F1B00F2D17A /* Frameworks */,
 				7FD4FE8618F22F1B00F2D17A /* Resources */,
+				7FE649EA190EE10000AF74B8 /* Run Script */,
 			);
 			buildRules = (
 			);
@@ -219,12 +362,38 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7FE649EA190EE10000AF74B8 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = XcodeCoverage/exportenv.sh;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		7FD4FE7418F22F1B00F2D17A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FD4FE8318F22F1B00F2D17A /* ParseSync.m in Sources */,
+				7F546517190E182700952AB2 /* TKServerSyncManager.m in Sources */,
+				7F546513190E182700952AB2 /* TKServerObject.m in Sources */,
+				7F54651D190E182700952AB2 /* NSManagedObject+Sync.m in Sources */,
+				7F546521190E182700952AB2 /* TKDBCacheManager.m in Sources */,
+				7F54651B190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */,
+				7F546511190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
+				7F546519190E182700952AB2 /* TKDBCacheEntry.m in Sources */,
+				7F546515190E182700952AB2 /* TKParseServerSyncManager.m in Sources */,
+				7F54650F190E182700952AB2 /* TKDB.m in Sources */,
+				7F54651F190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +401,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FD4FE9818F22F1B00F2D17A /* ParseSyncTests.m in Sources */,
+				7F546518190E182700952AB2 /* TKServerSyncManager.m in Sources */,
+				7F546514190E182700952AB2 /* TKServerObject.m in Sources */,
+				7FE649E4190E212E00AF74B8 /* Student.m in Sources */,
+				7F54651E190E182700952AB2 /* NSManagedObject+Sync.m in Sources */,
+				7FE649DE190E212E00AF74B8 /* Classroom.m in Sources */,
+				7F822182190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m in Sources */,
+				7F546522190E182700952AB2 /* TKDBCacheManager.m in Sources */,
+				7FE649DB190E212D00AF74B8 /* AttendanceType.m in Sources */,
+				7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */,
+				7F54651C190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */,
+				7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */,
+				7F546512190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
+				7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */,
+				7FE649CE190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld in Sources */,
+				7F54651A190E182700952AB2 /* TKDBCacheEntry.m in Sources */,
+				7FE649D3190E1E0900AF74B8 /* ParseTestInsertThenUpload.m in Sources */,
+				7F546516190E182700952AB2 /* TKParseServerSyncManager.m in Sources */,
+				7F546510190E182700952AB2 /* TKDB.m in Sources */,
+				7FE649E1190E212E00AF74B8 /* Attendance.m in Sources */,
+				7F546520190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +465,8 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -314,6 +504,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -330,8 +521,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/ParseSync.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/ParseSyncExample",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParseSync/ParseSync-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -342,8 +543,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DSTROOT = /tmp/ParseSync.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/ParseSyncExample",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParseSync/ParseSync-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -357,6 +568,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/ParseSyncExample",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParseSync/ParseSync-Prefix.pch";
@@ -377,6 +589,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/ParseSyncExample",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParseSync/ParseSync-Prefix.pch";
@@ -405,6 +618,7 @@
 				7FD4FE9D18F22F1B00F2D17A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7FD4FE9E18F22F1B00F2D17A /* Build configuration list for PBXNativeTarget "ParseSyncTests" */ = {
 			isa = XCConfigurationList;
@@ -413,8 +627,22 @@
 				7FD4FEA018F22F1B00F2D17A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				7FE649CD190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodel */,
+			);
+			currentVersion = 7FE649CD190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodel */;
+			path = ParseSyncTest.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 7FD4FE7018F22F1B00F2D17A /* Project object */;
 }
