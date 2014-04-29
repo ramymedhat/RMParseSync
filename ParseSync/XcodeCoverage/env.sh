@@ -1,0 +1,5 @@
+export BUILT_PRODUCTS_DIR="/Users/ramymedhat/Library/Developer/Xcode/DerivedData/ParseSync-ctznksscoxtwgiccxxhltsebmlrx/Build/Products/Debug-iphonesimulator"
+export CURRENT_ARCH="x86_64"
+export OBJECT_FILE_DIR_normal="/Users/ramymedhat/Library/Developer/Xcode/DerivedData/ParseSync-ctznksscoxtwgiccxxhltsebmlrx/Build/Intermediates/ParseSync.build/Debug-iphonesimulator/ParseSyncTests.build/Objects-normal"
+export OBJROOT="/Users/ramymedhat/Library/Developer/Xcode/DerivedData/ParseSync-ctznksscoxtwgiccxxhltsebmlrx/Build/Intermediates"
+export SRCROOT="/Users/ramymedhat/RMParseSync/ParseSync"
