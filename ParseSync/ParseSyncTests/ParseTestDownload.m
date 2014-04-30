@@ -31,7 +31,7 @@
 {
     PFObject *object = [PFObject objectWithClassName:@"AttendanceType"];
     [object setValue:@"Present" forKeyPath:@"title"];
-    [object setValue:[ParseBaseTestCase getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [object setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [object save];
     
     StartBlock();
@@ -54,13 +54,13 @@
 - (void)testManyToManyObjectsDownload {
     PFObject *object1 = [PFObject objectWithClassName:@"Classroom"];
     [object1 setValue:@"Mathematics" forKeyPath:@"title"];
-    [object1 setValue:[ParseBaseTestCase getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [object1 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [object1 save];
     
     PFObject *object2 = [PFObject objectWithClassName:@"Student"];
     [object2 setValue:@"Ramy" forKeyPath:@"firstName"];
     [object2 setValue:@"Medhat" forKeyPath:@"lastName"];
-    [object2 setValue:[ParseBaseTestCase getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [object2 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [object2 save];
     
     PFRelation *relation1 = [object1 relationForKey:@"students"];

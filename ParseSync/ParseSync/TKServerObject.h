@@ -53,6 +53,10 @@
 
 /**
  *  Boolean indicating whether this is a deleted object.
+ *  Used by the server to prevent loss of object in case
+ *  a conflict happens later. If we delete an object from
+ *  server on sync, it will be lost forever and cannot be
+ *  retrieved again using the same server ID.
  */
 @property (nonatomic) BOOL isDeleted;
 

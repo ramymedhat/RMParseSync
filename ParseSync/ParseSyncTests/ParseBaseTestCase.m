@@ -60,6 +60,19 @@
     }
 }
 
+/**
+ *     AttendanceType                                      Attendance
+ *     ----------------------------                        ----------------
+ *     self.attendanceType[Present]__________              self.attendance1
+ *                                           \_____________self.attendance2
+ *
+ *
+ *     Classroom                                           Student
+ *     ---------------------------                         --------------------
+ *     self.classroom[Mathematics]_________________________self.student1[Ramy Medhat]
+ *                                                         self.student2[Yara Medhat]
+ *
+ */
 - (void) createTemplateObjects {
     // Insert objects in local and server separately without using sync
     self.attendanceType = [NSEntityDescription insertNewObjectForEntityForName:@"AttendanceType" inManagedObjectContext:[TKDB defaultDB].rootContext];
@@ -90,62 +103,63 @@
     
     [[TKDB defaultDB].rootContext save:nil];
     
-    PFObject *object = [PFObject objectWithClassName:@"AttendanceType"];
-    [object setValue:self.attendanceType.title forKeyPath:@"title"];
-    [object setValue:self.attendanceType.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
-    [object setValue:@NO forKeyPath:kTKDBIsDeletedField];
-    [object save];
+    self.parse_attendanceType = [PFObject objectWithClassName:@"AttendanceType"];
+    [self.parse_attendanceType setValue:self.attendanceType.title forKeyPath:@"title"];
+    [self.parse_attendanceType setValue:self.attendanceType.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_attendanceType setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_attendanceType save];
     
-    PFObject *object1 = [PFObject objectWithClassName:@"Classroom"];
-    [object1 setValue:@"Mathematics" forKeyPath:@"title"];
-    [object1 setValue:self.classroom.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
-    [object1 setValue:@NO forKeyPath:kTKDBIsDeletedField];
-    [object1 save];
+    self.parse_classroom = [PFObject objectWithClassName:@"Classroom"];
+    [self.parse_classroom setValue:@"Mathematics" forKeyPath:@"title"];
+    [self.parse_classroom setValue:self.classroom.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_classroom setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_classroom save];
     
-    PFObject *object2 = [PFObject objectWithClassName:@"Student"];
-    [object2 setValue:@"Ramy" forKeyPath:@"firstName"];
-    [object2 setValue:@"Medhat" forKeyPath:@"lastName"];
-    [object2 setValue:self.student.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
-    [object2 setValue:@NO forKeyPath:kTKDBIsDeletedField];
-    [object2 save];
+    self.parse_student = [PFObject objectWithClassName:@"Student"];
+    [self.parse_student setValue:@"Ramy" forKeyPath:@"firstName"];
+    [self.parse_student setValue:@"Medhat" forKeyPath:@"lastName"];
+    [self.parse_student setValue:self.student.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_student save];
     
-    PFObject *object3 = [PFObject objectWithClassName:@"Student"];
-    [object3 setValue:@"Yara" forKeyPath:@"firstName"];
-    [object3 setValue:@"Medhat" forKeyPath:@"lastName"];
-    [object3 setValue:self.student2.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
-    [object3 setValue:@NO forKeyPath:kTKDBIsDeletedField];
-    [object3 save];
+    self.parse_student2 = [PFObject objectWithClassName:@"Student"];
+    [self.parse_student2 setValue:@"Yara" forKeyPath:@"firstName"];
+    [self.parse_student2 setValue:@"Medhat" forKeyPath:@"lastName"];
+    [self.parse_student2 setValue:self.student2.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_student2 setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_student2 save];
     
-    PFObject *object4 = [PFObject objectWithClassName:@"Attendance"];
-    [object4 setValue:self.attendance1.attendanceDate forKeyPath:@"attendanceDate"];
-    [object4 setValue:self.attendance1.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
-    [object4 setValue:@NO forKeyPath:kTKDBIsDeletedField];
-    [object4 save];
+    self.parse_attendance1 = [PFObject objectWithClassName:@"Attendance"];
+    [self.parse_attendance1 setValue:self.attendance1.attendanceDate forKeyPath:@"attendanceDate"];
+    [self.parse_attendance1 setValue:self.attendance1.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_attendance1 setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_attendance1 save];
     
-    PFObject *object5 = [PFObject objectWithClassName:@"Attendance"];
-    [object5 setValue:self.attendance2.attendanceDate forKeyPath:@"attendanceDate"];
-    [object5 setValue:self.attendance2.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
-    [object5 setValue:@NO forKeyPath:kTKDBIsDeletedField];
-    [object5 setValue:object forKeyPath:@"attendanceType"];
-    [object5 save];
+    self.parse_attendance2 = [PFObject objectWithClassName:@"Attendance"];
+    [self.parse_attendance2 setValue:self.attendance2.attendanceDate forKeyPath:@"attendanceDate"];
+    [self.parse_attendance2 setValue:self.attendance2.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_attendance2 setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_attendance2 setValue:self.parse_attendanceType forKeyPath:@"attendanceType"];
+    [self.parse_attendance2 save];
     
-    PFRelation *relation1 = [object1 relationForKey:@"students"];
-    [relation1 addObject:object2];
+    PFRelation *relation1 = [self.parse_classroom relationForKey:@"students"];
+    [relation1 addObject:self.parse_student];
     
-    PFRelation *relation2 = [object2 relationForKey:@"classes"];
-    [relation2 addObject:object1];
+    PFRelation *relation2 = [self.parse_student relationForKey:@"classes"];
+    [relation2 addObject:self.parse_classroom];
     
-    PFRelation *relation3 = [object relationForKey:@"attendances"];
-    [relation3 addObject:object5];
+    PFRelation *relation3 = [self.parse_attendanceType relationForKey:@"attendances"];
+    [relation3 addObject:self.parse_attendance2];
     
-    [PFObject saveAll:@[object1, object2, object3, object4, object5]];
+    [PFObject saveAll:@[self.parse_classroom, self.parse_student, self.parse_student2, self.parse_attendanceType,
+                        self.parse_attendance1, self.parse_attendance2]];
     
-    self.attendanceType.serverObjectID = object.objectId;
-    self.classroom.serverObjectID = object1.objectId;
-    self.student.serverObjectID = object2.objectId;
-    self.student2.serverObjectID = object3.objectId;
-    self.attendance1.serverObjectID = object4.objectId;
-    self.attendance2.serverObjectID = object5.objectId;
+    self.attendanceType.serverObjectID = self.parse_attendanceType.objectId;
+    self.classroom.serverObjectID = self.parse_classroom.objectId;
+    self.student.serverObjectID = self.parse_student.objectId;
+    self.student2.serverObjectID = self.parse_student2.objectId;
+    self.attendance1.serverObjectID = self.parse_attendance1.objectId;
+    self.attendance2.serverObjectID = self.parse_attendance2.objectId;
     [[TKDB defaultDB].rootContext save:nil];
     
     // Clear cache to begin with a new slate
@@ -153,6 +167,7 @@
     //    [[TKDBCacheManager sharedManager] clearMappings];
     
     [[TKDB defaultDB] setLastSyncDate:[NSDate date]];
+    sleep(1);
 }
 
 - (void) tearDown {
@@ -186,7 +201,34 @@
     }
 }
 
-+ (NSString*) getAUniqueID {
+- (NSManagedObject*) searchLocalDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity {
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entity];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", kTKDBUniqueIDField, uniqueID];
+    NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+    
+    if ([results count] == 1) {
+        return results[0];
+    }
+    else {
+        return nil;
+    }
+}
+
+
+- (PFObject*) searchCloudDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity {
+    PFQuery *query = [PFQuery queryWithClassName:entity];
+    [query whereKey:kTKDBUniqueIDField equalTo:uniqueID];
+    NSArray *results = [query findObjects];
+    
+    if ([results count] == 1) {
+        return results[0];
+    }
+    else {
+        return nil;
+    }
+}
+
+- (NSString*) getAUniqueID {
     CFUUIDRef uuid = CFUUIDCreate(CFAllocatorGetDefault());
     NSString *uuidString = (__bridge_transfer NSString *)CFUUIDCreateString(CFAllocatorGetDefault(), uuid);
     CFRelease(uuid);

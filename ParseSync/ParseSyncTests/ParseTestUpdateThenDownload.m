@@ -31,14 +31,12 @@
 
 - (void)testAttributeUpdate
 {
-    PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
-    [object setValue:@"Absent" forKeyPath:@"title"];
-    [object save];
+    [self.parse_attendanceType setValue:@"Absent" forKeyPath:@"title"];
+    [self.parse_attendanceType save];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [[TKDB defaultDB].rootContext refreshObject:self.attendanceType mergeChanges:YES];
         XCTAssertEqualObjects(self.attendanceType.title, @"Absent", @"Title field of object is not correct on cloud.");
         EndBlock();
         
@@ -51,17 +49,14 @@
 }
 
 - (void) testToManyRelationshipUpdateAddChild {
-    [self.classroom addStudentsObject:self.student2];
-    [[TKDB defaultDB].rootContext save:nil];
+    [[self.parse_classroom relationForKey:@"students"] addObject:self.parse_student2];
+    [[self.parse_student2 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [PFObject saveAll:@[self.parse_classroom,self.parse_student2]];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
+        NSArray *arr = [self.classroom.students allObjects];
         XCTAssert([arr count] == 2, @"Classroom not linked to student");
         EndBlock();
         
@@ -77,14 +72,14 @@
     [self.classroom removeStudentsObject:self.student];
     [[TKDB defaultDB].rootContext save:nil];
     
+    [[self.parse_classroom relationForKey:@"students"] removeObject:self.parse_student];
+    [[self.parse_student relationForKey:@"classes"] removeObject:self.parse_classroom];
+    [PFObject saveAll:@[self.parse_classroom,self.parse_student]];
+    
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
+        NSArray *arr = [self.classroom.students allObjects];
         XCTAssert([arr count] == 0, @"Classroom still linked to student");
         EndBlock();
         
@@ -97,15 +92,14 @@
 }
 
 - (void) testToOneRelationshipSet {
-    self.attendance1.attendanceType = self.attendanceType;
-    [[TKDB defaultDB].rootContext save:nil];
+    [self.parse_attendance1 setValue:self.parse_attendanceType forKey:@"attendanceType"];
+    [[self.parse_attendanceType relationForKey:@"attendances"] addObject:self.parse_attendance1];
+    [PFObject saveAll:@[self.parse_attendance1,self.parse_attendanceType]];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance1.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNotNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
+        XCTAssertNotNil(self.attendance1.attendanceType, @"Linking to One object failed on cloud.");
         EndBlock();
         
     } andFailureBlock:^(NSArray *objects, NSError *error) {
@@ -117,15 +111,14 @@
 }
 
 - (void) testToOneRelationshipClear {
-    self.attendance2.attendanceType = nil;
-    [[TKDB defaultDB].rootContext save:nil];
+    [self.parse_attendance2 removeObjectForKey:@"attendanceType"];
+    [[self.parse_attendanceType relationForKey:@"attendances"] removeObject:self.parse_attendance2];
+    [PFObject saveAll:@[self.parse_attendance2,self.parse_attendanceType]];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
+        XCTAssertNil(self.attendance2.attendanceType, @"Removing link to One object failed on cloud.");
         EndBlock();
         
     } andFailureBlock:^(NSArray *objects, NSError *error) {
@@ -137,16 +130,14 @@
 }
 
 - (void) testSimpleDeleteObject {
-    NSString __weak *serverID = self.attendance1.serverObjectID;
-    [[TKDB defaultDB].rootContext deleteObject:self.attendance1];
-    [[TKDB defaultDB].rootContext save:nil];
+    [self.parse_attendance1 setValue:@YES forKey:kTKDBIsDeletedField];
+    [self.parse_attendance1 save];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
+        [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
+        XCTAssertNil(self.attendance1.managedObjectContext, @"Object not deleted locally");
         EndBlock();
         
     } andFailureBlock:^(NSArray *objects, NSError *error) {
@@ -158,21 +149,15 @@
 }
 
 - (void) testDeleteObjectWithRelationships {
-    NSString __weak *serverID = self.attendance2.serverObjectID;
-    [[TKDB defaultDB].rootContext deleteObject:self.attendance2];
-    [[TKDB defaultDB].rootContext save:nil];
+    [self.parse_attendance2 setValue:@YES forKey:kTKDBIsDeletedField];
+    [self.parse_attendance2 save];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
-        
-        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        NSArray *attendances = [[[object relationForKey:@"attendances"] query] findObjects];
-        XCTAssert([attendances count] == 0, @"Relationship not deleted.");
+        [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
+        XCTAssertNil(self.attendance2.managedObjectContext, @"Object not deleted locally");
+        XCTAssert([self.attendanceType.attendances count] == 0, @"Relationship not deleted.");
         
         EndBlock();
         

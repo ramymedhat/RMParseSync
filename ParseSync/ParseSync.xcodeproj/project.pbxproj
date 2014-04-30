@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F085FD4190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */; };
+		7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */; };
+		7F085FD8190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD7190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m */; };
+		7F085FDA190FDE4A00E651D6 /* ParseTestConflictDirect.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD9190FDE4A00E651D6 /* ParseTestConflictDirect.m */; };
 		7F54650F190E182700952AB2 /* TKDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FC190E182700952AB2 /* TKDB.m */; };
 		7F546510190E182700952AB2 /* TKDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FC190E182700952AB2 /* TKDB.m */; };
 		7F546511190E182700952AB2 /* TKServerObjectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F5464FE190E182700952AB2 /* TKServerObjectHelper.m */; };
@@ -59,6 +63,7 @@
 		7FE649E4190E212E00AF74B8 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E3190E212E00AF74B8 /* Student.m */; };
 		7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E6190E339100AF74B8 /* ParseTestDownload.m */; };
 		7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */; };
+		7FE7BECE19112D04005FE165 /* ParseTestConflictIndirect.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BECD19112D04005FE165 /* ParseTestConflictIndirect.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +89,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenUpload.m; sourceTree = "<group>"; };
+		7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenDownload.m; sourceTree = "<group>"; };
+		7F085FD7190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUploadDownloadNoConflict.m; sourceTree = "<group>"; };
+		7F085FD9190FDE4A00E651D6 /* ParseTestConflictDirect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestConflictDirect.m; sourceTree = "<group>"; };
 		7F5464FB190E182700952AB2 /* TKDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKDB.h; sourceTree = "<group>"; };
 		7F5464FC190E182700952AB2 /* TKDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKDB.m; sourceTree = "<group>"; };
 		7F5464FD190E182700952AB2 /* TKServerObjectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKServerObjectHelper.h; sourceTree = "<group>"; };
@@ -137,6 +146,7 @@
 		7FE649E3190E212E00AF74B8 /* Student.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Student.m; sourceTree = "<group>"; };
 		7FE649E6190E339100AF74B8 /* ParseTestDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestDownload.m; sourceTree = "<group>"; };
 		7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUpdateThenUpload.m; sourceTree = "<group>"; };
+		7FE7BECD19112D04005FE165 /* ParseTestConflictIndirect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestConflictIndirect.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +272,11 @@
 				7FE649E6190E339100AF74B8 /* ParseTestDownload.m */,
 				7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */,
 				7F822181190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m */,
+				7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */,
+				7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */,
+				7F085FD7190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m */,
+				7F085FD9190FDE4A00E651D6 /* ParseTestConflictDirect.m */,
+				7FE7BECD19112D04005FE165 /* ParseTestConflictIndirect.m */,
 				7FD4FE9218F22F1B00F2D17A /* Supporting Files */,
 			);
 			path = ParseSyncTests;
@@ -407,11 +422,16 @@
 				7F54651E190E182700952AB2 /* NSManagedObject+Sync.m in Sources */,
 				7FE649DE190E212E00AF74B8 /* Classroom.m in Sources */,
 				7F822182190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m in Sources */,
+				7F085FD4190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m in Sources */,
 				7F546522190E182700952AB2 /* TKDBCacheManager.m in Sources */,
 				7FE649DB190E212D00AF74B8 /* AttendanceType.m in Sources */,
 				7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */,
+				7F085FDA190FDE4A00E651D6 /* ParseTestConflictDirect.m in Sources */,
 				7F54651C190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */,
+				7FE7BECE19112D04005FE165 /* ParseTestConflictIndirect.m in Sources */,
+				7F085FD8190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m in Sources */,
 				7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */,
+				7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */,
 				7F546512190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
 				7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */,
 				7FE649CE190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld in Sources */,

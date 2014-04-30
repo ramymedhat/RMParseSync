@@ -21,7 +21,7 @@
         managedObject =[NSEntityDescription insertNewObjectForEntityForName:object.entityName inManagedObjectContext:weakSyncContext];
     }];
     
-    [managedObject assignUniqueObjectID];
+    [managedObject setValue:object.uniqueObjectID forKeyPath:kTKDBUniqueIDField];
     [managedObject setValue:object.serverObjectID forKey:kTKDBServerIDField];
     [managedObject setValue:object.creationDate forKey:kTKDBCreatedDateField];
     [managedObject setValue:object.lastModificationDate forKey:kTKDBUpdatedDateField];
@@ -38,16 +38,27 @@
     for (NSString *key in [serverObject.relatedObjects allKeys]) {
         if ([serverObject.relatedObjects[key] isKindOfClass:[TKServerObject class]]) {
             TKServerObject *relatedServerObject = serverObject.relatedObjects[key];
-            NSManagedObject *relatedManagedObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:relatedServerObject.uniqueObjectID]]];
-            [managedObject setValue:relatedManagedObject forKey:key];
+            if (relatedServerObject.isDeleted) {
+                [managedObject setValue:nil forKey:key];
+            }
+            else {
+                NSManagedObject *relatedManagedObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:relatedServerObject.uniqueObjectID]]];
+                [managedObject setValue:relatedManagedObject forKey:key];
+            }
         }
         else if ([serverObject.relatedObjects[key] isKindOfClass:[NSArray class]]) {
             NSMutableSet *relatedObjects = [NSMutableSet set];
             for (TKServerObject *relatedServerObject in serverObject.relatedObjects[key]) {
+                if (relatedServerObject.isDeleted) {
+                    continue;
+                }
                 NSManagedObject *relatedManagedObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:relatedServerObject.uniqueObjectID]]];
                 [relatedObjects addObject:relatedManagedObject];
             }
             [managedObject setValue:relatedObjects forKey:key];
+        }
+        else if ([serverObject.relatedObjects[key] isEqual:[NSNull null]]) {
+            [managedObject setValue:nil forKey:key];
         }
     }
 }
@@ -131,11 +142,16 @@
     for (TKServerObject *serverObject in serverObjects) {
         NSManagedObject *object = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:serverObject.uniqueObjectID]]];
         
-        for (NSString *key in serverObject.attributeValues) {
-            [object setValue:serverObject.attributeValues[key] forKey:key];
+        if (serverObject.isDeleted) {
+            [[TKDB defaultDB].syncContext deleteObject:object];
         }
-        
-        [TKServerObjectHelper wireRelationshipsForManagedObject:object withServerObject:serverObject];
+        else {
+            for (NSString *key in serverObject.attributeValues) {
+                [object setValue:serverObject.attributeValues[key] forKey:key];
+            }
+            
+            [TKServerObjectHelper wireRelationshipsForManagedObject:object withServerObject:serverObject];
+        }
     }
 }
 
@@ -189,6 +205,7 @@
         BOOL serverChanged = [serverValue isEqual:shadowValue];
         
         if (localChanged && serverChanged) {
+#warning should merge related objects
             dictRelationships[key] = newerObject.relatedObjects[key];
         }
         else if (localChanged) {

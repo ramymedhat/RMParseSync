@@ -11,6 +11,7 @@
 #import "Student.h"
 #import "Attendance.h"
 #import "AttendanceType.h"
+#import "TKDBCacheManager.h"
 
 @interface ParseBaseTestCase : XCTestCase
 
@@ -21,8 +22,16 @@
 @property (nonatomic, strong) Student *student;
 @property (nonatomic, strong) Student *student2;
 
-+ (NSString*) getAUniqueID;
+@property (nonatomic, strong) PFObject *parse_attendance1;
+@property (nonatomic, strong) PFObject *parse_attendance2;
+@property (nonatomic, strong) PFObject *parse_attendanceType;
+@property (nonatomic, strong) PFObject *parse_classroom;
+@property (nonatomic, strong) PFObject *parse_student;
+@property (nonatomic, strong) PFObject *parse_student2;
 
+- (NSString*) getAUniqueID;
 - (void) createTemplateObjects;
+- (NSManagedObject*) searchLocalDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;
+- (PFObject*) searchCloudDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;
 
 @end

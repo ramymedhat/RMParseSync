@@ -60,7 +60,12 @@
             PFObject *relatedObject = [parseObject valueForKey:key];
             [relatedObject refresh];
             TKServerObject *toOneServerObject = [self serverObjectBasicInfoForParseObject:relatedObject];
-            [relatedObjects setObject:toOneServerObject forKey:key];
+            if (toOneServerObject.isDeleted) {
+                [relatedObjects setObject:[NSNull null] forKey:key];
+            }
+            else {
+                [relatedObjects setObject:toOneServerObject forKey:key];
+            }
         }
         else if ([[parseObject valueForKey:key] isKindOfClass:[PFRelation class]]) {
             PFRelation *relation = [parseObject relationForKey:key];
@@ -70,7 +75,10 @@
             NSMutableArray *arrServerObjects = [NSMutableArray array];
             
             for (PFObject *relatedObject in parseObjects) {
-                [arrServerObjects addObject:[self serverObjectBasicInfoForParseObject:relatedObject]];
+                TKServerObject *serverRelatedObject = [self serverObjectBasicInfoForParseObject:relatedObject];
+                if (!serverRelatedObject.isDeleted) {
+                    [arrServerObjects addObject:serverRelatedObject];
+                }
             }
             
             [relatedObjects setObject:arrServerObjects forKey:key];

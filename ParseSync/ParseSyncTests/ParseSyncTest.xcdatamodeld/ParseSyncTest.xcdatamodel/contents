@@ -26,7 +26,7 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="students" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Student" syncable="YES"/>
+        <relationship name="students" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Student" inverseName="classes" inverseEntity="Student" syncable="YES"/>
     </entity>
     <entity name="Student" representedClassName="Student" syncable="YES">
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -37,12 +37,12 @@
         <attribute name="tkID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="student" inverseEntity="Attendance" syncable="YES"/>
-        <relationship name="classes" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Classroom" syncable="YES"/>
+        <relationship name="classes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Classroom" inverseName="students" inverseEntity="Classroom" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Student" positionX="-63" positionY="-18" width="128" height="178"/>
-        <element name="Classroom" positionX="-54" positionY="-9" width="128" height="150"/>
-        <element name="AttendanceType" positionX="-36" positionY="72" width="128" height="148"/>
         <element name="Attendance" positionX="-27" positionY="99" width="128" height="163"/>
+        <element name="AttendanceType" positionX="-36" positionY="72" width="128" height="148"/>
+        <element name="Classroom" positionX="-54" positionY="-9" width="128" height="148"/>
+        <element name="Student" positionX="-63" positionY="-18" width="128" height="178"/>
     </elements>
 </model>
