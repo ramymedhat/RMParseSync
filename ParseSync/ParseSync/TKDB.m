@@ -161,19 +161,10 @@
         // Merge the new changed values with the ones in the entry.
         [entry.tempChangedFields addObjectsFromArray:[object.changedValues allKeys]];
         
-        if (!entry.shadowObjectIDURL) {
-            NSManagedObject *shadow = [object duplicateObjectInContext:[TKDB defaultDB].referenceContext];
-            [shadow setValue:@YES forKey:kTKDBIsShadowField];
-            NSError *error;
-            [[TKDB defaultDB].referenceContext obtainPermanentIDsForObjects:@[shadow] error:&error];
-            
-            if (error) {
-#warning Handle this error.
-                abort();
-            }
-            else {
-                entry.shadowObjectIDURL = [shadow tk_localURL];
-            }
+        if (!entry.originalObject) {
+            TKServerObject *original = [object toServerObjectInContext:[TKDB defaultDB].referenceContext];
+            original.isOriginal = YES;
+            entry.originalObject = original;
         }
     }
     
@@ -247,7 +238,6 @@
         NSMutableSet *conflictPairs = [NSMutableSet set];
         TKParseServerSyncManager *manager = [[TKParseServerSyncManager alloc] init];
         NSMutableArray __block *arrServerObjects = [NSMutableArray array];
-        NSMutableArray __block *arrShadowObjects = [NSMutableArray array];
         NSError __block *syncError;
         [[TKDBCacheManager sharedManager] startCheckpoint];
         dispatch_semaphore_t sem = dispatch_semaphore_create(0);
@@ -321,9 +311,7 @@
             for (TKServerObject *localObject in updatedLocalObjectsSet) {
                 if ([serverObject isEqual:localObject]) {
                     TKDBCacheEntry *entry = [[TKDBCacheManager sharedManager] entryForObjectID:localObject.uniqueObjectID withType:TKDBCacheUpdate];
-                    NSManagedObject *shadowObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:entry.shadowObjectIDURL]];
-                    [arrShadowObjects addObject:shadowObject];
-                    TKServerObject *shadowServerObject = [shadowObject toServerObject];
+                    TKServerObject *shadowServerObject = entry.originalObject;
                     [conflictPairs addObject:[[TKServerObjectConflictPair alloc] initWithServerObject:serverObject localObject:localObject shadowObject:shadowServerObject]];
                 }
             }
@@ -331,12 +319,16 @@
         
 #pragma mark Step 6: Resolve conflicts
         for (TKServerObjectConflictPair *conflictPair in conflictPairs) {
-            [TKServerObjectHelper resolveConflict:conflictPair];
+            [TKServerObjectHelper resolveConflict:conflictPair localUpdates:localUpdatedObjects serverUpdates:updatedServerObjects];
             if (conflictPair.resolutionType == TKDBMergeLocalWins) {
                 [serverUpdatesNoConflict addObject:conflictPair.outputObject];
             }
             else if (conflictPair.resolutionType == TKDBMergeServerWins) {
                 [localUpdatesNoConflict addObject:conflictPair.outputObject];
+            }
+            else if (conflictPair.resolutionType == TKDBMergeBothUpdated) {
+                [serverUpdatesNoConflict addObject:conflictPair.outputObject];
+                [localUpdatesNoConflict addObject:conflictPair.outputObject];                
             }
         }
         
@@ -359,19 +351,13 @@
         }
         
         NSManagedObjectContext __weak *weakSyncContext = self.syncContext;
-#pragma mark Step 9: Delete all shadow objects
-        for (NSManagedObject *shadowObject in arrShadowObjects) {
-            NSManagedObject __weak *weakShadowObject = shadowObject;
-            [self.syncContext performBlockAndWait:^{
-                [weakSyncContext deleteObject:weakShadowObject];
-            }];
-        }
-        
+
 #warning Replace with MagicalRecord save to persistent store.
         [self.syncContext performBlockAndWait:^{
-            [weakSyncContext save:nil];
+            NSError *error;
+            [weakSyncContext save:&error];
             disableNotifications = YES;
-            [weakSyncContext.parentContext save:nil];
+            [weakSyncContext.parentContext save:&error];
             disableNotifications = NO;
         }];
         

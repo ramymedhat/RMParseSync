@@ -2,7 +2,7 @@
 //  Attendance.m
 //  ParseSync
 //
-//  Created by Ramy Medhat on 2014-04-28.
+//  Created by Ramy Medhat on 2014-05-02.
 //  Copyright (c) 2014 Inovaton. All rights reserved.
 //
 
@@ -13,13 +13,12 @@
 
 @implementation Attendance
 
-@dynamic createdDate;
-@dynamic isShadow;
-@dynamic serverObjectID;
 @dynamic attendanceDate;
+@dynamic createdDate;
+@dynamic serverObjectID;
 @dynamic tkID;
 @dynamic updatedDate;
-@dynamic student;
 @dynamic attendanceType;
+@dynamic student;
 
 @end

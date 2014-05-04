@@ -47,6 +47,10 @@
 		7F54653A190E186300952AB2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F546528190E184800952AB2 /* Parse.framework */; };
 		7F54653B190E186300952AB2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F54652C190E184800952AB2 /* CoreData.framework */; };
 		7F822182190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F822181190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m */; };
+		7F9CD6DD19149E62003EC988 /* Attendance.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F9CD6DC19149E62003EC988 /* Attendance.m */; };
+		7F9CD6E019149E63003EC988 /* AttendanceType.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F9CD6DF19149E63003EC988 /* AttendanceType.m */; };
+		7F9CD6E319149E63003EC988 /* Classroom.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F9CD6E219149E63003EC988 /* Classroom.m */; };
+		7F9CD6E619149E63003EC988 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F9CD6E519149E63003EC988 /* Student.m */; };
 		7FD4FE7C18F22F1B00F2D17A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */; };
 		7FD4FE8A18F22F1B00F2D17A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE8918F22F1B00F2D17A /* XCTest.framework */; };
 		7FD4FE8B18F22F1B00F2D17A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */; };
@@ -57,10 +61,6 @@
 		7FE649CE190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */; };
 		7FE649D3190E1E0900AF74B8 /* ParseTestInsertThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649D2190E1E0900AF74B8 /* ParseTestInsertThenUpload.m */; };
 		7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649D7190E1E8100AF74B8 /* ParseBaseTestCase.m */; };
-		7FE649DB190E212D00AF74B8 /* AttendanceType.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649DA190E212D00AF74B8 /* AttendanceType.m */; };
-		7FE649DE190E212E00AF74B8 /* Classroom.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649DD190E212E00AF74B8 /* Classroom.m */; };
-		7FE649E1190E212E00AF74B8 /* Attendance.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E0190E212E00AF74B8 /* Attendance.m */; };
-		7FE649E4190E212E00AF74B8 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E3190E212E00AF74B8 /* Student.m */; };
 		7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E6190E339100AF74B8 /* ParseTestDownload.m */; };
 		7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */; };
 		7FE7BECE19112D04005FE165 /* ParseTestConflictIndirect.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE7BECD19112D04005FE165 /* ParseTestConflictIndirect.m */; };
@@ -123,6 +123,14 @@
 		7F54652B190E184800952AB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7F54652C190E184800952AB2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		7F822181190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUpdateThenDownload.m; sourceTree = "<group>"; };
+		7F9CD6DB19149E62003EC988 /* Attendance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Attendance.h; sourceTree = "<group>"; };
+		7F9CD6DC19149E62003EC988 /* Attendance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Attendance.m; sourceTree = "<group>"; };
+		7F9CD6DE19149E63003EC988 /* AttendanceType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttendanceType.h; sourceTree = "<group>"; };
+		7F9CD6DF19149E63003EC988 /* AttendanceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttendanceType.m; sourceTree = "<group>"; };
+		7F9CD6E119149E63003EC988 /* Classroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classroom.h; sourceTree = "<group>"; };
+		7F9CD6E219149E63003EC988 /* Classroom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Classroom.m; sourceTree = "<group>"; };
+		7F9CD6E419149E63003EC988 /* Student.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Student.h; sourceTree = "<group>"; };
+		7F9CD6E519149E63003EC988 /* Student.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Student.m; sourceTree = "<group>"; };
 		7FD4FE7818F22F1B00F2D17A /* libParseSync.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libParseSync.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FD4FE7B18F22F1B00F2D17A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7FD4FE7F18F22F1B00F2D17A /* ParseSync-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ParseSync-Prefix.pch"; sourceTree = "<group>"; };
@@ -136,14 +144,6 @@
 		7FE649D2190E1E0900AF74B8 /* ParseTestInsertThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestInsertThenUpload.m; sourceTree = "<group>"; };
 		7FE649D6190E1E8100AF74B8 /* ParseBaseTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseBaseTestCase.h; sourceTree = "<group>"; };
 		7FE649D7190E1E8100AF74B8 /* ParseBaseTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseBaseTestCase.m; sourceTree = "<group>"; };
-		7FE649D9190E212D00AF74B8 /* AttendanceType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttendanceType.h; sourceTree = "<group>"; };
-		7FE649DA190E212D00AF74B8 /* AttendanceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttendanceType.m; sourceTree = "<group>"; };
-		7FE649DC190E212E00AF74B8 /* Classroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Classroom.h; sourceTree = "<group>"; };
-		7FE649DD190E212E00AF74B8 /* Classroom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Classroom.m; sourceTree = "<group>"; };
-		7FE649DF190E212E00AF74B8 /* Attendance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Attendance.h; sourceTree = "<group>"; };
-		7FE649E0190E212E00AF74B8 /* Attendance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Attendance.m; sourceTree = "<group>"; };
-		7FE649E2190E212E00AF74B8 /* Student.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Student.h; sourceTree = "<group>"; };
-		7FE649E3190E212E00AF74B8 /* Student.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Student.m; sourceTree = "<group>"; };
 		7FE649E6190E339100AF74B8 /* ParseTestDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestDownload.m; sourceTree = "<group>"; };
 		7FE649E8190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUpdateThenUpload.m; sourceTree = "<group>"; };
 		7FE7BECD19112D04005FE165 /* ParseTestConflictIndirect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestConflictIndirect.m; sourceTree = "<group>"; };
@@ -288,14 +288,14 @@
 				7FD4FE9318F22F1B00F2D17A /* ParseSyncTests-Info.plist */,
 				7FD4FE9418F22F1B00F2D17A /* InfoPlist.strings */,
 				7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */,
-				7FE649E2190E212E00AF74B8 /* Student.h */,
-				7FE649E3190E212E00AF74B8 /* Student.m */,
-				7FE649DF190E212E00AF74B8 /* Attendance.h */,
-				7FE649E0190E212E00AF74B8 /* Attendance.m */,
-				7FE649DC190E212E00AF74B8 /* Classroom.h */,
-				7FE649DD190E212E00AF74B8 /* Classroom.m */,
-				7FE649D9190E212D00AF74B8 /* AttendanceType.h */,
-				7FE649DA190E212D00AF74B8 /* AttendanceType.m */,
+				7F9CD6E419149E63003EC988 /* Student.h */,
+				7F9CD6E519149E63003EC988 /* Student.m */,
+				7F9CD6E119149E63003EC988 /* Classroom.h */,
+				7F9CD6E219149E63003EC988 /* Classroom.m */,
+				7F9CD6DE19149E63003EC988 /* AttendanceType.h */,
+				7F9CD6DF19149E63003EC988 /* AttendanceType.m */,
+				7F9CD6DB19149E62003EC988 /* Attendance.h */,
+				7F9CD6DC19149E62003EC988 /* Attendance.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -418,28 +418,28 @@
 			files = (
 				7F546518190E182700952AB2 /* TKServerSyncManager.m in Sources */,
 				7F546514190E182700952AB2 /* TKServerObject.m in Sources */,
-				7FE649E4190E212E00AF74B8 /* Student.m in Sources */,
 				7F54651E190E182700952AB2 /* NSManagedObject+Sync.m in Sources */,
-				7FE649DE190E212E00AF74B8 /* Classroom.m in Sources */,
 				7F822182190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m in Sources */,
+				7F9CD6DD19149E62003EC988 /* Attendance.m in Sources */,
 				7F085FD4190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m in Sources */,
 				7F546522190E182700952AB2 /* TKDBCacheManager.m in Sources */,
-				7FE649DB190E212D00AF74B8 /* AttendanceType.m in Sources */,
+				7F9CD6E319149E63003EC988 /* Classroom.m in Sources */,
 				7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */,
 				7F085FDA190FDE4A00E651D6 /* ParseTestConflictDirect.m in Sources */,
 				7F54651C190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */,
+				7F9CD6E019149E63003EC988 /* AttendanceType.m in Sources */,
 				7FE7BECE19112D04005FE165 /* ParseTestConflictIndirect.m in Sources */,
 				7F085FD8190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m in Sources */,
 				7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */,
 				7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */,
 				7F546512190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
+				7F9CD6E619149E63003EC988 /* Student.m in Sources */,
 				7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */,
 				7FE649CE190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld in Sources */,
 				7F54651A190E182700952AB2 /* TKDBCacheEntry.m in Sources */,
 				7FE649D3190E1E0900AF74B8 /* ParseTestInsertThenUpload.m in Sources */,
 				7F546516190E182700952AB2 /* TKParseServerSyncManager.m in Sources */,
 				7F546510190E182700952AB2 /* TKDB.m in Sources */,
-				7FE649E1190E212E00AF74B8 /* Attendance.m in Sources */,
 				7F546520190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,6 +11,7 @@
 #define kInsertsDict @"inserts"
 #define kUpdatesDict @"updates"
 #define kDeletesDict @"deletes"
+#define kShadowsDict @"shadows"
 
 @implementation TKDBCacheManager {
     NSMutableDictionary *dictCacheInserts;

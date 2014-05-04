@@ -29,8 +29,8 @@
 
 - (void)testToManyRelationshipUpdateAddNewChild {
     PFObject *parse_student3 = [PFObject objectWithClassName:@"Student"];
-    [parse_student3 setValue:@"Menna" forKey:@"firstName"];
-    [parse_student3 setValue:@"Mostafa" forKey:@"lastName"];
+    [parse_student3 setValue:@"Jesse" forKey:@"firstName"];
+    [parse_student3 setValue:@"Pinkman" forKey:@"lastName"];
     [parse_student3 setValue:[super getAUniqueID] forKey:kTKDBUniqueIDField];
     [parse_student3 setValue:@NO forKey:@"isDeleted"];
     [parse_student3 save];
@@ -49,7 +49,7 @@
         Student *newStudent = nil;
         
         for (NSManagedObject *student in results) {
-            if ([[student valueForKey:@"firstName"] isEqualToString:@"Menna"]) {
+            if ([[student valueForKey:@"firstName"] isEqualToString:@"Jesse"]) {
                 newStudent = (Student*)student;
                 break;
             }
@@ -89,8 +89,8 @@
 
 - (void)testToManyRelationshipUpdateReplaceChild {
     PFObject *parse_student3 = [PFObject objectWithClassName:@"Student"];
-    [parse_student3 setValue:@"Menna" forKey:@"firstName"];
-    [parse_student3 setValue:@"Mostafa" forKey:@"lastName"];
+    [parse_student3 setValue:@"Jesse" forKey:@"firstName"];
+    [parse_student3 setValue:@"Pinkman" forKey:@"lastName"];
     [parse_student3 setValue:[super getAUniqueID] forKey:kTKDBUniqueIDField];
     [parse_student3 setValue:@NO forKey:@"isDeleted"];
     [parse_student3 save];
@@ -111,7 +111,7 @@
         Student *newStudent = nil;
         
         for (NSManagedObject *student in results) {
-            if ([[student valueForKey:@"firstName"] isEqualToString:@"Menna"]) {
+            if ([[student valueForKey:@"firstName"] isEqualToString:@"Jesse"]) {
                 newStudent = (Student*)student;
                 break;
             }

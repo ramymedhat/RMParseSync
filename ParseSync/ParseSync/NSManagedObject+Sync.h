@@ -40,24 +40,6 @@
 - (NSDate *) tk_lastModificationDate;
 
 /**
- *  Returns whether this is a shadow object used to retrieve the
- *  old values of an object.
- *
- *  @return boolean indicating whether the object is a shadow object.
- */
-- (BOOL) tk_isShadowObject;
-
-
-/**
- *  Duplicates the object in the passed context.
- *
- *  @param context managed object context.
- *
- *  @return the duplicate object.
- */
-- (NSManagedObject*) duplicateObjectInContext:(NSManagedObjectContext*)context;
-
-/**
  *  Assign a unique ID for the object.
  */
 - (NSString*) assignUniqueObjectID;
@@ -65,6 +47,8 @@
 - (NSDictionary*) toDictionary;
 
 - (TKServerObject*) toServerObject;
+
+- (TKServerObject*) toServerObjectInContext:(NSManagedObjectContext*)context;
 
 - (NSDictionary*) attributeDictionary;
 - (NSDictionary*) toOneRelationshipDictionary;

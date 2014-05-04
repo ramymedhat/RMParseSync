@@ -28,8 +28,9 @@
     PFObject *object = [PFObject objectWithClassName:serverObject.entityName];
     
     NSMutableDictionary *dictAttributes = [serverObject.attributeValues mutableCopy];
-    [dictAttributes removeObjectsForKeys:@[kTKDBCreatedDateField, kTKDBServerIDField, kTKDBIsShadowField]];
+    [dictAttributes removeObjectsForKeys:@[kTKDBCreatedDateField, kTKDBServerIDField]];
     [dictAttributes setObject:@(serverObject.isDeleted) forKey:kTKDBIsDeletedField];
+    [dictAttributes setObject:serverObject.uniqueObjectID forKey:kTKDBUniqueIDField];
     [object setValuesForKeysWithDictionary:dictAttributes];
     return object;
 }
@@ -38,8 +39,9 @@
     PFObject *object = [PFObject objectWithoutDataWithClassName:serverObject.entityName objectId:serverObject.serverObjectID];
     
     NSMutableDictionary *dictAttributes = [serverObject.attributeValues mutableCopy];
-    [dictAttributes removeObjectsForKeys:@[kTKDBCreatedDateField, kTKDBServerIDField, kTKDBIsShadowField]];
+    [dictAttributes removeObjectsForKeys:@[kTKDBCreatedDateField, kTKDBServerIDField]];
     [dictAttributes setObject:@(serverObject.isDeleted) forKey:kTKDBIsDeletedField];
+    [dictAttributes setObject:serverObject.uniqueObjectID forKey:kTKDBUniqueIDField];
     [object setValuesForKeysWithDictionary:dictAttributes];
     return object;
 }

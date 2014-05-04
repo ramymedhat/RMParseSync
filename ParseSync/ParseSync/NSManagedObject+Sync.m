@@ -52,10 +52,6 @@
     return nil;
 }
 
-- (BOOL) tk_isShadowObject {
-    return [self valueForKey:kTKDBIsShadowField];
-}
-
 #pragma mark Dictionary conversion methods
 
 - (NSDictionary*) attributeDictionary {
@@ -64,6 +60,11 @@
                                  [attributes count] + 1];
     
     for (NSString* attr in attributes) {
+        if ([attr isEqualToString:kTKDBServerIDField] || [attr isEqualToString:kTKDBUniqueIDField] ||
+            [attr isEqualToString:kTKDBUpdatedDateField] || [attr isEqualToString:kTKDBCreatedDateField] ||
+            [attr isEqualToString:kTKDBIsDeletedField]) {
+            continue;
+        }
         
         NSObject* value = [self valueForKey:attr];
         
@@ -187,35 +188,9 @@
 
 #pragma mark Other Helpers
 
-- (NSManagedObject*) duplicateObjectInContext:(NSManagedObjectContext*)context {
+- (TKServerObject*) toServerObjectInContext:(NSManagedObjectContext*)context {
     NSManagedObject *original = [context objectWithID:[self objectID]];
-    NSManagedObject *duplicate = [NSEntityDescription insertNewObjectForEntityForName:self.entity.name inManagedObjectContext:context];
-    
-    NSArray* attributes = [[[self entity] attributesByName] allKeys];
-    for (NSString* attr in attributes) {
-        [duplicate setValue:[original valueForKey:attr] forKey:attr];
-    }
-    
-    NSArray* relationships = [[[self entity] relationshipsByName] allKeys];
-    
-    for (NSString* relationship in relationships) {
-        if ([original valueForKey:relationship] == nil) {
-            continue;
-        }
-        else if ([[original valueForKey:relationship] isKindOfClass:[NSManagedObject class]]) {
-            [duplicate setValue:[context objectWithID:[[original valueForKey:relationship] objectID]] forKeyPath:relationship];
-        }
-        else {
-            NSMutableSet *set = [NSMutableSet set];
-            NSSet *oldSet = [original valueForKey:relationship];
-            for (NSManagedObject *childObject in oldSet) {
-                [set addObject:[context objectWithID:[childObject objectID]]];
-            }
-            [duplicate setValue:set forKeyPath:relationship];
-        }
-    }
-    
-    return duplicate;
+    return [original toServerObject];
 }
 
 #pragma mark Old methods

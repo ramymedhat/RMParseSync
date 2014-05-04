@@ -30,12 +30,12 @@
 
 - (void) testInsertInsert {
     Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student3.firstName = @"Menna"; student3.lastName = @"Mostafa";
+    student3.firstName = @"Jesse"; student3.lastName = @"Pinkman";
     [[TKDB defaultDB].rootContext save:nil];
     
     PFObject *parse_student4 = [PFObject objectWithClassName:@"Student"];
-    [parse_student4 setValue:@"Amr" forKey:@"firstName"];
-    [parse_student4 setValue:@"ElSehemy" forKey:@"lastName"];
+    [parse_student4 setValue:@"Hank" forKey:@"firstName"];
+    [parse_student4 setValue:@"Shrader" forKey:@"lastName"];
     [parse_student4 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [parse_student4 save];
     
@@ -61,11 +61,11 @@
 
 - (void) testInsertUpdate {
     Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student3.firstName = @"Menna"; student3.lastName = @"Mostafa";
+    student3.firstName = @"Jesse"; student3.lastName = @"Pinkman";
     [[TKDB defaultDB].rootContext save:nil];
     
-    [self.parse_student2 setValue:@"Amr" forKey:@"firstName"];
-    [self.parse_student2 setValue:@"ElSehemy" forKey:@"lastName"];
+    [self.parse_student2 setValue:@"Hank" forKey:@"firstName"];
+    [self.parse_student2 setValue:@"Shrader" forKey:@"lastName"];
     [self.parse_student2 save];
     
     StartBlock();
@@ -75,7 +75,7 @@
         
         XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
         
-        XCTAssertEqualObjects(self.student2.firstName, @"Amr", @"Server update not downloaded correctly");
+        XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
         
         EndBlock();
     } andFailureBlock:^(NSArray *objects, NSError *error) {
@@ -88,7 +88,7 @@
 
 - (void) testInsertDelete {
     Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student3.firstName = @"Menna"; student3.lastName = @"Mostafa";
+    student3.firstName = @"Jesse"; student3.lastName = @"Pinkman";
     [[TKDB defaultDB].rootContext save:nil];
     
     [self.parse_student2 setValue:@YES forKey:@"isDeleted"];
@@ -117,8 +117,8 @@
     [[TKDB defaultDB].rootContext save:nil];
     
     PFObject *parse_student4 = [PFObject objectWithClassName:@"Student"];
-    [parse_student4 setValue:@"Amr" forKey:@"firstName"];
-    [parse_student4 setValue:@"ElSehemy" forKey:@"lastName"];
+    [parse_student4 setValue:@"Hank" forKey:@"firstName"];
+    [parse_student4 setValue:@"Shrader" forKey:@"lastName"];
     [parse_student4 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [parse_student4 save];
     
@@ -145,8 +145,8 @@
     self.student.lastName = @"Abdelaal";
     [[TKDB defaultDB].rootContext save:nil];
     
-    [self.parse_student2 setValue:@"Amr" forKey:@"firstName"];
-    [self.parse_student2 setValue:@"ElSehemy" forKey:@"lastName"];
+    [self.parse_student2 setValue:@"Hank" forKey:@"firstName"];
+    [self.parse_student2 setValue:@"Shrader" forKey:@"lastName"];
     [self.parse_student2 save];
     
     StartBlock();
@@ -155,7 +155,7 @@
         [self.parse_student refresh];
         XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
         
-        XCTAssertEqualObjects(self.student2.firstName, @"Amr", @"Server update not downloaded correctly");
+        XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
         
         EndBlock();
     } andFailureBlock:^(NSArray *objects, NSError *error) {
@@ -195,8 +195,8 @@
     [[TKDB defaultDB].rootContext save:nil];
     
     PFObject *parse_student4 = [PFObject objectWithClassName:@"Student"];
-    [parse_student4 setValue:@"Amr" forKey:@"firstName"];
-    [parse_student4 setValue:@"ElSehemy" forKey:@"lastName"];
+    [parse_student4 setValue:@"Hank" forKey:@"firstName"];
+    [parse_student4 setValue:@"Shrader" forKey:@"lastName"];
     [parse_student4 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [parse_student4 save];
     
@@ -223,8 +223,8 @@
     [[TKDB defaultDB].rootContext deleteObject:self.student];
     [[TKDB defaultDB].rootContext save:nil];
     
-    [self.parse_student2 setValue:@"Amr" forKey:@"firstName"];
-    [self.parse_student2 setValue:@"ElSehemy" forKey:@"lastName"];
+    [self.parse_student2 setValue:@"Hank" forKey:@"firstName"];
+    [self.parse_student2 setValue:@"Shrader" forKey:@"lastName"];
     [self.parse_student2 save];
     
     StartBlock();
@@ -233,7 +233,7 @@
         [self.parse_student refresh];
         XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
         
-        XCTAssertEqualObjects(self.student2.firstName, @"Amr", @"Server update not downloaded correctly");
+        XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
         
         EndBlock();
     } andFailureBlock:^(NSArray *objects, NSError *error) {

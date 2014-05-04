@@ -3,7 +3,6 @@
     <entity name="Attendance" representedClassName="Attendance" syncable="YES">
         <attribute name="attendanceDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -12,7 +11,6 @@
     </entity>
     <entity name="AttendanceType" representedClassName="AttendanceType" syncable="YES">
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -21,7 +19,6 @@
     </entity>
     <entity name="Classroom" representedClassName="Classroom" syncable="YES">
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tkID" attributeType="String" indexed="YES" syncable="YES"/>
@@ -31,7 +28,6 @@
     <entity name="Student" representedClassName="Student" syncable="YES">
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isShadow" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tkID" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -40,9 +36,9 @@
         <relationship name="classes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Classroom" inverseName="students" inverseEntity="Classroom" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Attendance" positionX="-27" positionY="99" width="128" height="163"/>
-        <element name="AttendanceType" positionX="-36" positionY="72" width="128" height="148"/>
-        <element name="Classroom" positionX="-54" positionY="-9" width="128" height="148"/>
-        <element name="Student" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="Attendance" positionX="-27" positionY="99" width="128" height="150"/>
+        <element name="AttendanceType" positionX="-36" positionY="72" width="128" height="135"/>
+        <element name="Classroom" positionX="-54" positionY="-9" width="128" height="135"/>
+        <element name="Student" positionX="-63" positionY="-18" width="128" height="165"/>
     </elements>
 </model>

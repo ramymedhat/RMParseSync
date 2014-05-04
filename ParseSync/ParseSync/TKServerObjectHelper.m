@@ -155,7 +155,7 @@
     }
 }
 
-+ (void) resolveConflict:(TKServerObjectConflictPair*)conflictPair {
++ (void) resolveConflict:(TKServerObjectConflictPair*)conflictPair localUpdates:(NSArray*)localUpdates serverUpdates:(NSArray*)serverUpdates {
     TKServerObject *newerObject;
     
     if ([conflictPair.localObject.lastModificationDate compare:conflictPair.serverObject.lastModificationDate] == NSOrderedAscending) {
@@ -170,25 +170,30 @@
     outputObject.creationDate = conflictPair.localObject.creationDate;
     outputObject.serverObjectID = conflictPair.serverObject.serverObjectID;
     outputObject.localObjectIDURL = conflictPair.localObject.localObjectIDURL;
+    outputObject.lastModificationDate = [NSDate date];
     
     NSMutableDictionary *dictAttributes = [NSMutableDictionary dictionary];
     
     for (NSString *key in [conflictPair.localObject.attributeValues allKeys]) {
-        id localValue = [conflictPair.localObject valueForKey:key];
-        id serverValue = [conflictPair.serverObject valueForKey:key];
-        id shadowValue = [conflictPair.shadowObject valueForKey:key];
         
-        BOOL localChanged = [localValue isEqual:shadowValue];
-        BOOL serverChanged = [serverValue isEqual:shadowValue];
+        id localValue = [conflictPair.localObject.attributeValues valueForKey:key];
+        id serverValue = [conflictPair.serverObject.attributeValues valueForKey:key];
+        id shadowValue = [conflictPair.shadowObject.attributeValues valueForKey:key];
+        
+        BOOL localChanged = ![localValue isEqual:shadowValue];
+        BOOL serverChanged = ![serverValue isEqual:shadowValue];
         
         if (localChanged && serverChanged) {
             dictAttributes[key] = newerObject.attributeValues[key];
         }
         else if (localChanged) {
-            dictAttributes[key] = conflictPair.localObject.attributeValues[key];
+            dictAttributes[key] = localValue;
+        }
+        else if (serverChanged) {
+            dictAttributes[key] = serverValue;
         }
         else {
-            dictAttributes[key] = conflictPair.serverObject.attributeValues[key];
+            dictAttributes[key] = shadowValue;
         }
     }
     
@@ -197,22 +202,69 @@
     NSMutableDictionary *dictRelationships = [NSMutableDictionary dictionary];
     
     for (NSString *key in [conflictPair.localObject.relatedObjects allKeys]) {
-        id localValue = [conflictPair.localObject valueForKey:key];
-        id serverValue = [conflictPair.serverObject valueForKey:key];
-        id shadowValue = [conflictPair.shadowObject valueForKey:key];
+        id localValue = [conflictPair.localObject.relatedObjects valueForKey:key];
+        id serverValue = [conflictPair.serverObject.relatedObjects valueForKey:key];
+        id shadowValue = [conflictPair.shadowObject.relatedObjects valueForKey:key];
         
-        BOOL localChanged = [localValue isEqual:shadowValue];
-        BOOL serverChanged = [serverValue isEqual:shadowValue];
         
-        if (localChanged && serverChanged) {
-#warning should merge related objects
-            dictRelationships[key] = newerObject.relatedObjects[key];
-        }
-        else if (localChanged) {
-            dictRelationships[key] = conflictPair.localObject.relatedObjects[key];
+        if ([localValue isKindOfClass:[NSArray class]]) {
+            NSSet *localSet = [NSSet setWithArray:localValue];
+            NSSet *serverSet = [NSSet setWithArray:serverValue];
+            NSSet *shadowSet = [NSSet setWithArray:shadowValue];
+            
+            BOOL localChanged = ![localSet isEqualToSet:shadowSet];
+            BOOL serverChanged = ![serverSet isEqualToSet:shadowSet];
+            
+            if (localChanged && serverChanged) {
+                NSMutableSet *commonSet = [NSMutableSet setWithSet:localSet];
+                [commonSet intersectSet:serverSet];
+                
+                NSMutableSet *localOnlySet = [NSMutableSet setWithSet:localSet];
+                [localOnlySet minusSet:commonSet];
+                
+                NSMutableSet *serverOnlySet = [NSMutableSet setWithSet:serverSet];
+                [serverOnlySet minusSet:commonSet];
+                
+                NSMutableSet *localAdditionsSet = [NSMutableSet setWithSet:localOnlySet];
+                [localAdditionsSet minusSet:shadowSet];
+                
+                NSMutableSet *serverDeletionsSet = [NSMutableSet setWithSet:localOnlySet];
+                [serverDeletionsSet minusSet:localAdditionsSet];
+                
+                NSMutableSet *serverAdditionsSet = [NSMutableSet setWithSet:serverOnlySet];
+                [serverAdditionsSet minusSet:shadowSet];
+                
+                NSMutableSet *localDeletionsSet = [NSMutableSet setWithSet:serverOnlySet];
+                [localDeletionsSet minusSet:serverAdditionsSet];
+                
+                [commonSet unionSet:localAdditionsSet];
+                [commonSet unionSet:serverAdditionsSet];
+                
+                if (newerObject == conflictPair.localObject) {
+                    // Rollback all server deletions except objects that weren't modified locally.
+                    [serverDeletionsSet intersectSet:[NSSet setWithArray:localUpdates]];
+                    [commonSet unionSet:serverDeletionsSet];
+                }
+                else {
+                    // Rollback all local deletions except objects that weren't modified on server.
+                    [localDeletionsSet intersectSet:[NSSet setWithArray:serverUpdates]];
+                    [commonSet unionSet:localDeletionsSet];
+                }
+                
+                dictRelationships[key] = [commonSet allObjects];
+            }
+            else if (localChanged) {
+                dictRelationships[key] = localValue;
+            }
+            else if (serverChanged) {
+                dictRelationships[key] = serverValue;
+            }
+            else {
+                dictRelationships[key] = shadowValue;
+            }
         }
         else {
-            dictRelationships[key] = conflictPair.serverObject.relatedObjects[key];
+            dictRelationships[key] = newerObject.relatedObjects[key];            
         }
     }
     

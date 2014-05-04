@@ -58,8 +58,8 @@
     classroom.serverObjectID = nil;
     
     Student *student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student.firstName = @"Ramy";
-    student.lastName = @"Medhat";
+    student.firstName = @"Walter";
+    student.lastName = @"White";
     student.serverObjectID = nil;
     [student addClassesObject:classroom];
     
@@ -77,7 +77,7 @@
         
         object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:student.serverObjectID];
         XCTAssertNotNil(object, @"Student Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Ramy", @"Student field of classroom object is not correct on cloud.");
+        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Walter", @"Student field of classroom object is not correct on cloud.");
         
         EndBlock();
         

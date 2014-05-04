@@ -54,6 +54,6 @@
  *
  *  @param conflictPair The conflict pair.
  */
-+ (void) resolveConflict:(TKServerObjectConflictPair*)conflictPair;
++ (void) resolveConflict:(TKServerObjectConflictPair*)conflictPair localUpdates:(NSArray*)localUpdates serverUpdates:(NSArray*)serverUpdates;
 
 @end

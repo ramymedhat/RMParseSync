@@ -29,8 +29,8 @@
 
 - (void)testToManyRelationshipUpdateAddNewChild {
     Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student3.firstName = @"Menna";
-    student3.lastName = @"Mostafa";
+    student3.firstName = @"Jesse";
+    student3.lastName = @"Pinkman";
     [self.classroom addStudentsObject:student3];
     [[TKDB defaultDB].rootContext save:nil];
     
@@ -49,7 +49,7 @@
         
         query = [[object relationForKey:@"classes"] query];
         arr = [query findObjects];
-        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Menna", @"Attributes of new object not set");
+        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Jesse", @"Attributes of new object not set");
         XCTAssert([arr count] == 1, @"Student not linked to classroom");
         EndBlock();
         
@@ -89,8 +89,8 @@
 
 - (void)testToManyRelationshipUpdateReplaceChild {
     Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student3.firstName = @"Menna";
-    student3.lastName = @"Mostafa";
+    student3.firstName = @"Jesse";
+    student3.lastName = @"Pinkman";
     [self.classroom addStudentsObject:student3];
     NSString *serverID = self.student.serverObjectID;
     [[TKDB defaultDB].rootContext deleteObject:self.student];
@@ -111,7 +111,7 @@
         
         query = [[object relationForKey:@"classes"] query];
         arr = [query findObjects];
-        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Menna", @"Attributes of new object not set");
+        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Jesse", @"Attributes of new object not set");
         XCTAssert([arr count] == 1, @"Student not linked to classroom");
         
         object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:serverID];

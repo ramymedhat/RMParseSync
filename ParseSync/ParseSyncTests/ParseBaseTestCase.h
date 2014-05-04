@@ -29,8 +29,12 @@
 @property (nonatomic, strong) PFObject *parse_student;
 @property (nonatomic, strong) PFObject *parse_student2;
 
+@property (nonatomic, strong) NSMutableArray *students;
+@property (nonatomic, strong) NSMutableArray *parse_students;
+
 - (NSString*) getAUniqueID;
 - (void) createTemplateObjects;
+- (void) createTemplateObjects2;
 - (NSManagedObject*) searchLocalDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;
 - (PFObject*) searchCloudDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;
 

@@ -21,7 +21,6 @@
 - (NSDictionary*) dictInserts;
 - (NSDictionary*) dictUpdates;
 - (NSDictionary*) dictDeletes;
-
 - (void) loadFromFileSystem;
 - (void) saveToFileSystem;
 

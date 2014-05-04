@@ -90,15 +90,15 @@
     self.classroom.serverObjectID = nil;
     
     self.student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    self.student.firstName = @"Ramy";
-    self.student.lastName = @"Medhat";
+    self.student.firstName = @"Walter";
+    self.student.lastName = @"White";
     self.student.serverObjectID = nil;
     [self.student addClassesObject:self.classroom];
     [self.classroom addStudentsObject:self.student];
     
     self.student2 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    self.student2.firstName = @"Yara";
-    self.student2.lastName = @"Medhat";
+    self.student2.firstName = @"Skylar";
+    self.student2.lastName = @"White";
     self.student2.serverObjectID = nil;
     
     [[TKDB defaultDB].rootContext save:nil];
@@ -116,15 +116,15 @@
     [self.parse_classroom save];
     
     self.parse_student = [PFObject objectWithClassName:@"Student"];
-    [self.parse_student setValue:@"Ramy" forKeyPath:@"firstName"];
-    [self.parse_student setValue:@"Medhat" forKeyPath:@"lastName"];
+    [self.parse_student setValue:@"Walter" forKeyPath:@"firstName"];
+    [self.parse_student setValue:@"White" forKeyPath:@"lastName"];
     [self.parse_student setValue:self.student.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
     [self.parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
     [self.parse_student save];
     
     self.parse_student2 = [PFObject objectWithClassName:@"Student"];
-    [self.parse_student2 setValue:@"Yara" forKeyPath:@"firstName"];
-    [self.parse_student2 setValue:@"Medhat" forKeyPath:@"lastName"];
+    [self.parse_student2 setValue:@"Skylar" forKeyPath:@"firstName"];
+    [self.parse_student2 setValue:@"White" forKeyPath:@"lastName"];
     [self.parse_student2 setValue:self.student2.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
     [self.parse_student2 setValue:@NO forKeyPath:kTKDBIsDeletedField];
     [self.parse_student2 save];
@@ -160,6 +160,135 @@
     self.student2.serverObjectID = self.parse_student2.objectId;
     self.attendance1.serverObjectID = self.parse_attendance1.objectId;
     self.attendance2.serverObjectID = self.parse_attendance2.objectId;
+    [[TKDB defaultDB].rootContext save:nil];
+    
+    // Clear cache to begin with a new slate
+    [[TKDBCacheManager sharedManager] clearCache];
+    //    [[TKDBCacheManager sharedManager] clearMappings];
+    
+    [[TKDB defaultDB] setLastSyncDate:[NSDate date]];
+    sleep(1);
+}
+
+
+/**
+ *     Classroom                                           Student
+ *     ---------------------------                         ----------------------------------
+ *     self.classroom[Mathematics]_________________________self.students[0] = [Walter White]
+ *                                          \______________self.students[1] = [Skylar White]
+ *                                                         self.students[2] = [Jesse Pinkman]
+ *                                                         self.students[3] = [Hank Shrader]
+ *                                                         self.students[4] = [Marie Shrader]
+ */
+- (void) createTemplateObjects2 {
+    // Insert objects in local and server separately without using sync
+    
+    self.classroom = [NSEntityDescription insertNewObjectForEntityForName:@"Classroom" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    self.classroom.title = @"Mathematics";
+    self.classroom.serverObjectID = nil;
+    self.students = [NSMutableArray array];
+    self.parse_students = [NSMutableArray array];
+    
+    Student *student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student.firstName = @"Walter";
+    student.lastName = @"White";
+    student.serverObjectID = nil;
+    [student addClassesObject:self.classroom];
+    [self.classroom addStudentsObject:student];
+    [self.students addObject:student];
+    
+    student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student.firstName = @"Skylar";
+    student.lastName = @"White";
+    student.serverObjectID = nil;
+    [student addClassesObject:self.classroom];
+    [self.classroom addStudentsObject:student];
+    [self.students addObject:student];
+    
+    student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student.firstName = @"Jesse";
+    student.lastName = @"Pinkman";
+    student.serverObjectID = nil;
+    [self.students addObject:student];
+    
+    student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student.firstName = @"Hank";
+    student.lastName = @"Shrader";
+    student.serverObjectID = nil;
+    [self.students addObject:student];
+    
+    student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student.firstName = @"Marie";
+    student.lastName = @"Shrader";
+    student.serverObjectID = nil;
+    [self.students addObject:student];
+    
+    [[TKDB defaultDB].rootContext save:nil];
+    
+    self.parse_classroom = [PFObject objectWithClassName:@"Classroom"];
+    [self.parse_classroom setValue:@"Mathematics" forKeyPath:@"title"];
+    [self.parse_classroom setValue:self.classroom.tk_uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [self.parse_classroom setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [self.parse_classroom save];
+    
+    PFObject *parse_student = [PFObject objectWithClassName:@"Student"];
+    [parse_student setValue:@"Walter" forKeyPath:@"firstName"];
+    [parse_student setValue:@"White" forKeyPath:@"lastName"];
+    [parse_student setValue:[self.students[0] tk_uniqueObjectID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [parse_student save];
+    [self.parse_students addObject:parse_student];
+    
+    parse_student = [PFObject objectWithClassName:@"Student"];
+    [parse_student setValue:@"Skylar" forKeyPath:@"firstName"];
+    [parse_student setValue:@"White" forKeyPath:@"lastName"];
+    [parse_student setValue:[self.students[1] tk_uniqueObjectID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [parse_student save];
+    [self.parse_students addObject:parse_student];
+    
+    parse_student = [PFObject objectWithClassName:@"Student"];
+    [parse_student setValue:@"Jesse" forKeyPath:@"firstName"];
+    [parse_student setValue:@"Pinkman" forKeyPath:@"lastName"];
+    [parse_student setValue:[self.students[2] tk_uniqueObjectID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [parse_student save];
+    [self.parse_students addObject:parse_student];
+    
+    parse_student = [PFObject objectWithClassName:@"Student"];
+    [parse_student setValue:@"Hank" forKeyPath:@"firstName"];
+    [parse_student setValue:@"Shrader" forKeyPath:@"lastName"];
+    [parse_student setValue:[self.students[3] tk_uniqueObjectID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [parse_student save];
+    [self.parse_students addObject:parse_student];
+    
+    parse_student = [PFObject objectWithClassName:@"Student"];
+    [parse_student setValue:@"Marie" forKeyPath:@"firstName"];
+    [parse_student setValue:@"Shrader" forKeyPath:@"lastName"];
+    [parse_student setValue:[self.students[4] tk_uniqueObjectID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student setValue:@NO forKeyPath:kTKDBIsDeletedField];
+    [parse_student save];
+    [self.parse_students addObject:parse_student];
+    
+    PFRelation *relation1 = [self.parse_classroom relationForKey:@"students"];
+    [relation1 addObject:self.parse_students[0]];
+    [relation1 addObject:self.parse_students[1]];
+    
+    PFRelation *relation2 = [self.parse_students[0] relationForKey:@"classes"];
+    [relation2 addObject:self.parse_classroom];
+    
+    PFRelation *relation3 = [self.parse_students[1] relationForKey:@"classes"];
+    [relation3 addObject:self.parse_classroom];
+    
+    [PFObject saveAll:@[self.parse_classroom, self.parse_students[0], self.parse_students[1]]];
+    
+    [self.classroom setServerObjectID:[self.parse_classroom objectId]];
+    [self.students[0] setServerObjectID:[self.parse_students[0] objectId]];
+    [self.students[1] setServerObjectID:[self.parse_students[1] objectId]];
+    [self.students[2] setServerObjectID:[self.parse_students[2] objectId]];
+    [self.students[3] setServerObjectID:[self.parse_students[3] objectId]];
+    [self.students[4] setServerObjectID:[self.parse_students[4] objectId]];
     [[TKDB defaultDB].rootContext save:nil];
     
     // Clear cache to begin with a new slate

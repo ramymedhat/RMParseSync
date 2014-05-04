@@ -30,9 +30,9 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSString *localObjectIDURL;
 
 /**
- *  The managed object ID of the shadow object in URI form.
+ *  The original object before update.
  */
-@property (nonatomic, strong) NSString *shadowObjectIDURL;
+@property (nonatomic) TKServerObject *originalObject;
 
 /**
  *  The object's unique identifier.

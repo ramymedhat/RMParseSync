@@ -15,6 +15,7 @@
 #define kEntryType              @"Type"
 #define kChangedFields          @"ChangedFields"
 #define kEntryState             @"State"
+#define kOriginal               @"Original"
 
 
 @implementation TKDBCacheEntry
@@ -46,6 +47,7 @@
         self.changedFields = [decoder decodeObjectForKey:kChangedFields];
         self.entity = [decoder decodeObjectForKey:kEntityName];
         self.entryState = [decoder decodeIntForKey:kEntryState];
+        self.originalObject = [decoder decodeObjectForKey:kOriginal];
     }
     return self;
 }
@@ -58,6 +60,7 @@
     [encoder encodeObject:self.changedFields forKey:kChangedFields];
     [encoder encodeObject:self.entity forKey:kEntityName];
     [encoder encodeInt:self.entryState forKey:kEntryState];
+    [encoder encodeObject:self.originalObject forKey:kOriginal];
 }
 
 @end

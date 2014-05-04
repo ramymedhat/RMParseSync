@@ -58,8 +58,8 @@
     [object1 save];
     
     PFObject *object2 = [PFObject objectWithClassName:@"Student"];
-    [object2 setValue:@"Ramy" forKeyPath:@"firstName"];
-    [object2 setValue:@"Medhat" forKeyPath:@"lastName"];
+    [object2 setValue:@"Walter" forKeyPath:@"firstName"];
+    [object2 setValue:@"White" forKeyPath:@"lastName"];
     [object2 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [object2 save];
     
@@ -86,7 +86,7 @@
         XCTAssert([array count] == 1, @"No object downloaded");
         Student *student = array[0];
         XCTAssertNotNil([student valueForKey:kTKDBServerIDField], @"No server ID for Object");
-        XCTAssertEqualObjects([student valueForKey:@"firstName"], @"Ramy", @"First name not downloaded correctly");
+        XCTAssertEqualObjects([student valueForKey:@"firstName"], @"Walter", @"First name not downloaded correctly");
         
         XCTAssert([classroom.students count] == 1, @"No students linked to classroom.");
         XCTAssert([student.classes count] == 1, @"No classes linked to student.");

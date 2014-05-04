@@ -60,8 +60,8 @@
     NSArray *classrooms = [[TKDB defaultDB].rootContext executeFetchRequest:request error:nil];
     
     Student *student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student.firstName = @"Yara";
-    student.lastName = @"Medhat";
+    student.firstName = @"Skylar";
+    student.lastName = @"White";
     student.serverObjectID = nil;
     [student addClassesObject:classrooms[0]];
     
@@ -82,8 +82,8 @@
     classroom.serverObjectID = nil;
     
     Student *student = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student.firstName = @"Ramy";
-    student.lastName = @"Medhat";
+    student.firstName = @"Walter";
+    student.lastName = @"White";
     student.serverObjectID = nil;
     [student addClassesObject:classroom];
     

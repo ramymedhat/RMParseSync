@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TKServerObject : NSObject
+@interface TKServerObject : NSObject <NSCoding>
 
 /**
  *  The name of the object's entity.
@@ -59,6 +59,12 @@
  *  retrieved again using the same server ID.
  */
 @property (nonatomic) BOOL isDeleted;
+
+/**
+ *  Indicates this object is a shadow object -> backup
+ *  of original version of updated object.
+ */
+@property (nonatomic) BOOL isOriginal;
 
 /**
  *  The related objects. The key is the destination entity

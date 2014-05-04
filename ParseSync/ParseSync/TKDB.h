@@ -10,7 +10,6 @@
 
 #define kTKDBUniqueIDField          @"tkID"
 #define kTKDBServerIDField          @"serverObjectID"
-#define kTKDBIsShadowField          @"isShadow"
 #define kTKDBIsDeletedField         @"isDeleted"
 #define kTKDBCreatedDateField       @"createdDate"
 #define kTKDBUpdatedDateField       @"updatedDate"

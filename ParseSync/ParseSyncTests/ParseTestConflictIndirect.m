@@ -33,26 +33,35 @@
  */
 - (void) testInsertInsertSameRelatedObject {
     Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    student3.firstName = @"Menna"; student3.lastName = @"Mostafa";
+    student3.firstName = @"Jesse"; student3.lastName = @"Pinkman";
     [student3 addClassesObject:self.classroom];
     [[TKDB defaultDB].rootContext save:nil];
     
     PFObject *parse_student4 = [PFObject objectWithClassName:@"Student"];
-    [parse_student4 setValue:@"Amr" forKey:@"firstName"];
-    [parse_student4 setValue:@"ElSehemy" forKey:@"lastName"];
+    [parse_student4 setValue:@"Hank" forKey:@"firstName"];
+    [parse_student4 setValue:@"Shrader" forKey:@"lastName"];
     [parse_student4 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
     [parse_student4 save];
+    
+    [[parse_student4 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [[self.parse_classroom relationForKey:@"students"] addObject:parse_student4];
+    [PFObject saveAll:@[parse_student4,self.parse_classroom]];
     
     StartBlock();
     
     [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
         PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
-        
         XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
         
-        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
+        XCTAssert([[[[parse_student3 relationForKey:@"classes"] query] findObjects] count] == 1, @"New student not wired to class on server");
         
+        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
         XCTAssertNotNil(student4, @"Server insert not saved to local");
+        
+        XCTAssert([student4.classes count] == 1, @"New student not wired to class on local");
+        
+        XCTAssert([self.classroom.students count] == 3, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 3, @"Relation merge failed on cloud.");
         
         EndBlock();
     } andFailureBlock:^(NSArray *objects, NSError *error) {
@@ -69,7 +78,35 @@
  *  object.
  */
 - (void) testInsertUpdateSameRelatedObject {
+    Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student3.firstName = @"Jesse"; student3.lastName = @"Pinkman";
+    [student3 addClassesObject:self.classroom];
+    [[TKDB defaultDB].rootContext save:nil];
     
+    [[self.parse_student2 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [[self.parse_classroom relationForKey:@"students"] addObject:self.parse_student2];
+    [PFObject saveAll:@[self.parse_student2,self.parse_classroom]];
+    
+    StartBlock();
+    
+    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+        PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
+        XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
+        
+        XCTAssert([[[[parse_student3 relationForKey:@"classes"] query] findObjects] count] == 1, @"New student not wired to class on server");
+        
+        XCTAssert([self.student2.classes count] == 1, @"existing student not wired to class on local");
+        
+        XCTAssert([self.classroom.students count] == 3, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 3, @"Relation merge failed on cloud.");
+        
+        EndBlock();
+    } andFailureBlock:^(NSArray *objects, NSError *error) {
+        XCTFail(@"Sync Failed");
+        EndBlock();
+    }];
+    
+    WaitUntilBlockCompletes();
 }
 
 /**
@@ -77,7 +114,35 @@
  *  b that was linked to object c.
  */
 - (void) testInsertDeleteSameRelatedObject {
+    Student *student3 = [NSEntityDescription insertNewObjectForEntityForName:@"Student" inManagedObjectContext:[TKDB defaultDB].rootContext];
+    student3.firstName = @"Jesse"; student3.lastName = @"Pinkman";
+    [student3 addClassesObject:self.classroom];
+    [[TKDB defaultDB].rootContext save:nil];
     
+    [self.parse_student setValue:@YES forKeyPath:kTKDBIsDeletedField];
+    [[self.parse_classroom relationForKey:@"students"] removeObject:self.parse_student];
+    [PFObject saveAll:@[self.parse_student,self.parse_classroom]];
+    
+    StartBlock();
+    
+    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+        PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
+        XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
+        
+        XCTAssert([[[[parse_student3 relationForKey:@"classes"] query] findObjects] count] == 1, @"New student not wired to class on server");
+        
+        XCTAssertNil(self.student.managedObjectContext, @"existing student not deleted");
+        
+        XCTAssert([self.classroom.students count] == 1, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 1, @"Relation merge failed on cloud.");
+        
+        EndBlock();
+    } andFailureBlock:^(NSArray *objects, NSError *error) {
+        XCTFail(@"Sync Failed");
+        EndBlock();
+    }];
+    
+    WaitUntilBlockCompletes();
 }
 
 /**
@@ -85,16 +150,40 @@
  *  Update another object locally to point to the same existing
  *  object.
  */
-- (void) testUpdateInserSameRelatedObject {
+- (void) testUpdateInsertSameRelatedObject {
+    [self.student2 addClassesObject:self.classroom];
+    [[TKDB defaultDB].rootContext save:nil];
     
-}
-
-/**
- *  Update two objects on local and server to point to the
- *  same object.
- */
-- (void) testUpdateUpdateSameRelatedObject {
+    PFObject *parse_student4 = [PFObject objectWithClassName:@"Student"];
+    [parse_student4 setValue:@"Hank" forKey:@"firstName"];
+    [parse_student4 setValue:@"Shrader" forKey:@"lastName"];
+    [parse_student4 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student4 save];
     
+    [[parse_student4 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [[self.parse_classroom relationForKey:@"students"] addObject:parse_student4];
+    [PFObject saveAll:@[parse_student4,self.parse_classroom]];
+    
+    StartBlock();
+    
+    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+        XCTAssert([[[[self.parse_student2 relationForKey:@"classes"] query] findObjects] count] == 1, @"Updated student not wired to class on server");
+        
+        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
+        XCTAssertNotNil(student4, @"Server insert not saved to local");
+        
+        XCTAssert([student4.classes count] == 1, @"New student not wired to class on local");
+        
+        XCTAssert([self.classroom.students count] == 3, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 3, @"Relation merge failed on cloud.");
+        
+        EndBlock();
+    } andFailureBlock:^(NSArray *objects, NSError *error) {
+        XCTFail(@"Sync Failed");
+        EndBlock();
+    }];
+    
+    WaitUntilBlockCompletes();
 }
 
 /**
@@ -102,7 +191,30 @@
  *  b that was linked to object c.
  */
 - (void) testUpdateDeleteSameRelatedObject {
+    [self.student2 addClassesObject:self.classroom];
+    [[TKDB defaultDB].rootContext save:nil];
     
+    [self.parse_student setValue:@YES forKeyPath:kTKDBIsDeletedField];
+    [[self.parse_classroom relationForKey:@"students"] removeObject:self.parse_student];
+    [PFObject saveAll:@[self.parse_student,self.parse_classroom]];
+    
+    StartBlock();
+    
+    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+        XCTAssert([[[[self.parse_student2 relationForKey:@"classes"] query] findObjects] count] == 1, @"Updated student not wired to class on server");
+        
+        XCTAssertNil(self.student.managedObjectContext, @"existing student not deleted");
+        
+        XCTAssert([self.classroom.students count] == 1, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 1, @"Relation merge failed on cloud.");
+        
+        EndBlock();
+    } andFailureBlock:^(NSArray *objects, NSError *error) {
+        XCTFail(@"Sync Failed");
+        EndBlock();
+    }];
+    
+    WaitUntilBlockCompletes();
 }
 
 /**
@@ -110,7 +222,40 @@
  *  object b and link to object c.
  */
 - (void) testDeleteInsertSameRelatedObject {
+    [[TKDB defaultDB].rootContext deleteObject:self.student];
+    [[TKDB defaultDB].rootContext save:nil];
     
+    PFObject *parse_student4 = [PFObject objectWithClassName:@"Student"];
+    [parse_student4 setValue:@"Hank" forKey:@"firstName"];
+    [parse_student4 setValue:@"Shrader" forKey:@"lastName"];
+    [parse_student4 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [parse_student4 save];
+    
+    [[parse_student4 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [[self.parse_classroom relationForKey:@"students"] addObject:parse_student4];
+    [PFObject saveAll:@[parse_student4,self.parse_classroom]];
+    
+    StartBlock();
+    
+    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+        [self.parse_student refresh];
+        XCTAssert([[self.parse_student valueForKey:kTKDBIsDeletedField] boolValue], @"Not deleted on server");
+        
+        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
+        XCTAssertNotNil(student4, @"Server insert not saved to local");
+        
+        XCTAssert([student4.classes count] == 1, @"New student not wired to class on local");
+        
+        XCTAssert([self.classroom.students count] == 1, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 1, @"Relation merge failed on cloud.");
+        
+        EndBlock();
+    } andFailureBlock:^(NSArray *objects, NSError *error) {
+        XCTFail(@"Sync Failed");
+        EndBlock();
+    }];
+    
+    WaitUntilBlockCompletes();
 }
 
 /**
@@ -118,13 +263,31 @@
  *  b that was linked to object c.
  */
 - (void) testDeleteUpdateSameRelatedObject {
+    [[TKDB defaultDB].rootContext deleteObject:self.student];
+    [[TKDB defaultDB].rootContext save:nil];
     
+    [[self.parse_student2 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [[self.parse_classroom relationForKey:@"students"] addObject:self.parse_student2];
+    [PFObject saveAll:@[self.parse_student2,self.parse_classroom]];
+    
+    StartBlock();
+    
+    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+        [self.parse_student refresh];
+        XCTAssert([[self.parse_student valueForKey:kTKDBIsDeletedField] boolValue], @"Not deleted on server");
+        
+        XCTAssert([self.student2.classes count] == 1, @"existing student not wired to class on local");
+        
+        XCTAssert([self.classroom.students count] == 1, @"Relation merge failed locally.");
+        XCTAssert([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count] == 1, @"Relation merge failed on cloud.");
+        
+        EndBlock();
+    } andFailureBlock:^(NSArray *objects, NSError *error) {
+        XCTFail(@"Sync Failed");
+        EndBlock();
+    }];
+    
+    WaitUntilBlockCompletes();
 }
 
-/**
- *  Delete two objects on server and local that were linked to same object.
- */
-- (void) testDeleteDeleteSameRelatedObject {
-    
-}
 @end
