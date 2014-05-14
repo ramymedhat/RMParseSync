@@ -12,6 +12,7 @@
 #import "Attendance.h"
 #import "AttendanceType.h"
 #import "TKDBCacheManager.h"
+#import <Bolts/Bolts.h>
 
 @interface ParseBaseTestCase : XCTestCase
 

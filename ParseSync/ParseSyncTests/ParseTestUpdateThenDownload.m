@@ -32,17 +32,33 @@
 - (void)testAttributeUpdate
 {
     [self.parse_attendanceType setValue:@"Absent" forKeyPath:@"title"];
-    [self.parse_attendanceType save];
+    BOOL saved = [self.parse_attendanceType save];
     
+    if (!saved) {
+        XCTFail(@"Sync Failed");
+        return;
+    }
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqualObjects(self.attendanceType.title, @"Absent", @"Title field of object is not correct on cloud.");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        XCTAssertEqualObjects(self.attendanceType.title, @"Absent", @"Title field of object is not correct on cloud.");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
+    
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqualObjects(self.attendanceType.title, @"Absent", @"Title field of object is not correct on cloud.");
+            EndBlock();
+        }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -55,14 +71,27 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSArray *arr = [self.classroom.students allObjects];
-        XCTAssert([arr count] == 2, @"Classroom not linked to student");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        NSArray *arr = [self.classroom.students allObjects];
+//        XCTAssert([arr count] == 2, @"Classroom not linked to student");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
+    
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSArray *arr = [self.classroom.students allObjects];
+            XCTAssert([arr count] == 2, @"Classroom not linked to student");
+            EndBlock();
+        }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -78,16 +107,28 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSArray *arr = [self.classroom.students allObjects];
-        XCTAssert([arr count] == 0, @"Classroom still linked to student");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        NSArray *arr = [self.classroom.students allObjects];
+//        XCTAssert([arr count] == 0, @"Classroom still linked to student");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSArray *arr = [self.classroom.students allObjects];
+            XCTAssert([arr count] == 0, @"Classroom still linked to student");
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 
@@ -98,15 +139,26 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertNotNil(self.attendance1.attendanceType, @"Linking to One object failed on cloud.");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        XCTAssertNotNil(self.attendance1.attendanceType, @"Linking to One object failed on cloud.");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertNotNil(self.attendance1.attendanceType, @"Linking to One object failed on cloud.");
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 
@@ -117,15 +169,26 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertNil(self.attendance2.attendanceType, @"Removing link to One object failed on cloud.");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        XCTAssertNil(self.attendance2.attendanceType, @"Removing link to One object failed on cloud.");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertNil(self.attendance2.attendanceType, @"Removing link to One object failed on cloud.");
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 
@@ -135,16 +198,28 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
-        XCTAssertNil(self.attendance1.managedObjectContext, @"Object not deleted locally");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
+//        XCTAssertNil(self.attendance1.managedObjectContext, @"Object not deleted locally");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
+            XCTAssertNil(self.attendance1.managedObjectContext, @"Object not deleted locally");
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 
@@ -154,18 +229,32 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
-        XCTAssertNil(self.attendance2.managedObjectContext, @"Object not deleted locally");
-        XCTAssert([self.attendanceType.attendances count] == 0, @"Relationship not deleted.");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
+//        XCTAssertNil(self.attendance2.managedObjectContext, @"Object not deleted locally");
+//        XCTAssert([self.attendanceType.attendances count] == 0, @"Relationship not deleted.");
+//        
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [[TKDB defaultDB].rootContext refreshObject:self.attendance1 mergeChanges:YES];
+            XCTAssertNil(self.attendance2.managedObjectContext, @"Object not deleted locally");
+            XCTAssert([self.attendanceType.attendances count] == 0, @"Relationship not deleted.");
+            
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 

@@ -36,17 +36,31 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Title field of object is not correct on cloud.");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Title field of object is not correct on cloud.");
+            EndBlock();
+        }
+        return nil;
     }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        
+//        XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Title field of object is not correct on cloud.");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
     WaitUntilBlockCompletes();
 }
@@ -57,18 +71,35 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssert([arr count] == 2, @"Classroom not linked to student");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        
+//        PFQuery *query = [[object relationForKey:@"students"] query];
+//        NSArray *arr = [query findObjects];
+//        XCTAssert([arr count] == 2, @"Classroom not linked to student");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
+    
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"students"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssert([arr count] == 2, @"Classroom not linked to student");
+            EndBlock();
+        }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -80,18 +111,35 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssert([arr count] == 0, @"Classroom still linked to student");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        
+//        PFQuery *query = [[object relationForKey:@"students"] query];
+//        NSArray *arr = [query findObjects];
+//        XCTAssert([arr count] == 0, @"Classroom still linked to student");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
+    
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"students"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssert([arr count] == 0, @"Classroom still linked to student");
+            EndBlock();
+        }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -103,16 +151,29 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance1.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNotNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance1.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertNotNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
+            EndBlock();
+        }
+        return nil;
     }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance1.serverObjectID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        XCTAssertNotNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
     WaitUntilBlockCompletes();
 }
@@ -123,17 +184,30 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        XCTAssertNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertNil([object valueForKey:@"attendanceType"], @"Linking to One object failed on cloud.");
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 
@@ -144,17 +218,30 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 
@@ -165,23 +252,42 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
-        
-        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        NSArray *attendances = [[[object relationForKey:@"attendances"] query] findObjects];
-        XCTAssert([attendances count] == 0, @"Relationship not deleted.");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
-    }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
+//        
+//        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
+//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+//        NSArray *attendances = [[[object relationForKey:@"attendances"] query] findObjects];
+//        XCTAssert([attendances count] == 0, @"Relationship not deleted.");
+//        
+//        EndBlock();
+//        
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:serverID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertEqualObjects([object valueForKey:kTKDBIsDeletedField],@YES, @"Object with server ID not deleted");
+            
+            object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:self.attendanceType.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            NSArray *attendances = [[[object relationForKey:@"attendances"] query] findObjects];
+            XCTAssert([attendances count] == 0, @"Relationship not deleted.");
+            
+            EndBlock();
+        }
+        return nil;
+    }];
     WaitUntilBlockCompletes();
 }
 

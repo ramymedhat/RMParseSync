@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		686C5A9C191BAB2400440A9E /* Parse+Bolts.m in Sources */ = {isa = PBXBuildFile; fileRef = 686C5A9B191BAB2400440A9E /* Parse+Bolts.m */; };
+		686C5A9D191BAB2400440A9E /* Parse+Bolts.m in Sources */ = {isa = PBXBuildFile; fileRef = 686C5A9B191BAB2400440A9E /* Parse+Bolts.m */; };
+		688FF085191A812C00A37025 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 688FF084191A812C00A37025 /* Bolts.framework */; };
+		688FF086191A812C00A37025 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 688FF084191A812C00A37025 /* Bolts.framework */; };
 		7F085FD4190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */; };
 		7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */; };
 		7F085FD8190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD7190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m */; };
@@ -89,6 +93,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		686C5A9A191BAB2400440A9E /* Parse+Bolts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Parse+Bolts.h"; sourceTree = "<group>"; };
+		686C5A9B191BAB2400440A9E /* Parse+Bolts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Parse+Bolts.m"; sourceTree = "<group>"; };
+		688FF084191A812C00A37025 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenUpload.m; sourceTree = "<group>"; };
 		7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenDownload.m; sourceTree = "<group>"; };
 		7F085FD7190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestUploadDownloadNoConflict.m; sourceTree = "<group>"; };
@@ -157,6 +164,7 @@
 				7FD4FEA218F2301200F2D17A /* Parse.framework in Frameworks */,
 				7F54652D190E184800952AB2 /* MobileCoreServices.framework in Frameworks */,
 				7F54652E190E184800952AB2 /* Security.framework in Frameworks */,
+				688FF085191A812C00A37025 /* Bolts.framework in Frameworks */,
 				7F54652F190E184800952AB2 /* SystemConfiguration.framework in Frameworks */,
 				7F546530190E184800952AB2 /* CFNetwork.framework in Frameworks */,
 				7F546531190E184800952AB2 /* Parse.framework in Frameworks */,
@@ -180,6 +188,7 @@
 				7F546538190E186300952AB2 /* SystemConfiguration.framework in Frameworks */,
 				7F546539190E186300952AB2 /* CFNetwork.framework in Frameworks */,
 				7F54653A190E186300952AB2 /* Parse.framework in Frameworks */,
+				688FF086191A812C00A37025 /* Bolts.framework in Frameworks */,
 				7F54653B190E186300952AB2 /* CoreData.framework in Frameworks */,
 				7FD4FE8B18F22F1B00F2D17A /* Foundation.framework in Frameworks */,
 			);
@@ -210,6 +219,7 @@
 		7FD4FE7A18F22F1B00F2D17A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				688FF084191A812C00A37025 /* Bolts.framework */,
 				7F546524190E184800952AB2 /* MobileCoreServices.framework */,
 				7F546525190E184800952AB2 /* Security.framework */,
 				7F546526190E184800952AB2 /* SystemConfiguration.framework */,
@@ -230,6 +240,8 @@
 		7FD4FE7D18F22F1B00F2D17A /* ParseSync */ = {
 			isa = PBXGroup;
 			children = (
+				686C5A9A191BAB2400440A9E /* Parse+Bolts.h */,
+				686C5A9B191BAB2400440A9E /* Parse+Bolts.m */,
 				7F5464FB190E182700952AB2 /* TKDB.h */,
 				7F5464FC190E182700952AB2 /* TKDB.m */,
 				7F5464FD190E182700952AB2 /* TKServerObjectHelper.h */,
@@ -407,6 +419,7 @@
 				7F546511190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
 				7F546519190E182700952AB2 /* TKDBCacheEntry.m in Sources */,
 				7F546515190E182700952AB2 /* TKParseServerSyncManager.m in Sources */,
+				686C5A9C191BAB2400440A9E /* Parse+Bolts.m in Sources */,
 				7F54650F190E182700952AB2 /* TKDB.m in Sources */,
 				7F54651F190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */,
 			);
@@ -427,6 +440,7 @@
 				7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */,
 				7F085FDA190FDE4A00E651D6 /* ParseTestConflictDirect.m in Sources */,
 				7F54651C190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */,
+				686C5A9D191BAB2400440A9E /* Parse+Bolts.m in Sources */,
 				7F9CD6E019149E63003EC988 /* AttendanceType.m in Sources */,
 				7FE7BECE19112D04005FE165 /* ParseTestConflictIndirect.m in Sources */,
 				7F085FD8190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m in Sources */,
@@ -589,6 +603,7 @@
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(PROJECT_DIR)/ParseSyncExample",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParseSync/ParseSync-Prefix.pch";
@@ -610,6 +625,7 @@
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(PROJECT_DIR)/ParseSyncExample",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ParseSync/ParseSync-Prefix.pch";

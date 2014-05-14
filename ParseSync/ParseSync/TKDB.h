@@ -20,6 +20,8 @@
 typedef void (^TKSyncSuccessBlock)(NSArray *objects);
 typedef void (^TKSyncFailureBlock)(NSArray *objects, NSError *error);
 
+@class BFTask;
+
 // Set the flag for a block completion handler
 #define StartBlock() __block BOOL waitingForBlock = YES
 
@@ -62,5 +64,7 @@ while(condition) { \
 - (void) setLastSyncDate:(NSDate*)date;
 
 - (void) syncWithSuccessBlock:(TKSyncSuccessBlock)successBlock andFailureBlock:(TKSyncFailureBlock)failureBlock;
+
+- (BFTask *)sync;
 
 @end

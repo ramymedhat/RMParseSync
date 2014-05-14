@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "ParseBaseTestCase.h"
+#import <Bolts/Bolts.h>
 
 @interface ParseTestDownload : ParseBaseTestCase
 
@@ -36,17 +37,32 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"];
-        NSArray *array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
-        XCTAssert([array count] == 1, @"No object downloaded");
-        XCTAssertNotNil([array[0] valueForKey:kTKDBServerIDField], @"No server ID for Object");
-        XCTAssertEqualObjects([array[0] valueForKey:@"title"], @"Present", @"Title not downloaded correctly");
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"];
+            NSArray *array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+            XCTAssert([array count] == 1, @"No object downloaded");
+            XCTAssertNotNil([array[0] valueForKey:kTKDBServerIDField], @"No server ID for Object");
+            XCTAssertEqualObjects([array[0] valueForKey:@"title"], @"Present", @"Title not downloaded correctly");
+            EndBlock();
+        }
+        return nil;
     }];
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"];
+//        NSArray *array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+//        XCTAssert([array count] == 1, @"No object downloaded");
+//        XCTAssertNotNil([array[0] valueForKey:kTKDBServerIDField], @"No server ID for Object");
+//        XCTAssertEqualObjects([array[0] valueForKey:@"title"], @"Present", @"Title not downloaded correctly");
+//        EndBlock();
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
     WaitUntilBlockCompletes();
 }
@@ -73,31 +89,62 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Classroom"];
-        NSArray *array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
-        XCTAssert([array count] == 1, @"No object downloaded");
-        Classroom *classroom = array[0];
-        XCTAssertNotNil([classroom valueForKey:kTKDBServerIDField], @"No server ID for Object");
-        XCTAssertEqualObjects([classroom valueForKey:@"title"], @"Mathematics", @"Title not downloaded correctly");
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
         
-        fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Student"];
-        array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
-        XCTAssert([array count] == 1, @"No object downloaded");
-        Student *student = array[0];
-        XCTAssertNotNil([student valueForKey:kTKDBServerIDField], @"No server ID for Object");
-        XCTAssertEqualObjects([student valueForKey:@"firstName"], @"Walter", @"First name not downloaded correctly");
+        if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Classroom"];
+            NSArray *array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+            XCTAssert([array count] == 1, @"No object downloaded");
+            Classroom *classroom = array[0];
+            XCTAssertNotNil([classroom valueForKey:kTKDBServerIDField], @"No server ID for Object");
+            XCTAssertEqualObjects([classroom valueForKey:@"title"], @"Mathematics", @"Title not downloaded correctly");
+            
+            fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Student"];
+            array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+            XCTAssert([array count] == 1, @"No object downloaded");
+            Student *student = array[0];
+            XCTAssertNotNil([student valueForKey:kTKDBServerIDField], @"No server ID for Object");
+            XCTAssertEqualObjects([student valueForKey:@"firstName"], @"Walter", @"First name not downloaded correctly");
+            
+            XCTAssert([classroom.students count] == 1, @"No students linked to classroom.");
+            XCTAssert([student.classes count] == 1, @"No classes linked to student.");
+            XCTAssertEqualObjects([classroom.students anyObject], student, @"Error in join.");
+            XCTAssertEqualObjects([student.classes anyObject], classroom, @"Error in join.");
+            EndBlock();
+        }
         
-        XCTAssert([classroom.students count] == 1, @"No students linked to classroom.");
-        XCTAssert([student.classes count] == 1, @"No classes linked to student.");
-        XCTAssertEqualObjects([classroom.students anyObject], student, @"Error in join.");
-        XCTAssertEqualObjects([student.classes anyObject], classroom, @"Error in join.");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+        return nil;
     }];
+    
+//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
+//        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Classroom"];
+//        NSArray *array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+//        XCTAssert([array count] == 1, @"No object downloaded");
+//        Classroom *classroom = array[0];
+//        XCTAssertNotNil([classroom valueForKey:kTKDBServerIDField], @"No server ID for Object");
+//        XCTAssertEqualObjects([classroom valueForKey:@"title"], @"Mathematics", @"Title not downloaded correctly");
+//        
+//        fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Student"];
+//        array = [[TKDB defaultDB].rootContext executeFetchRequest:fetchRequest error:nil];
+//        XCTAssert([array count] == 1, @"No object downloaded");
+//        Student *student = array[0];
+//        XCTAssertNotNil([student valueForKey:kTKDBServerIDField], @"No server ID for Object");
+//        XCTAssertEqualObjects([student valueForKey:@"firstName"], @"Walter", @"First name not downloaded correctly");
+//        
+//        XCTAssert([classroom.students count] == 1, @"No students linked to classroom.");
+//        XCTAssert([student.classes count] == 1, @"No classes linked to student.");
+//        XCTAssertEqualObjects([classroom.students anyObject], student, @"Error in join.");
+//        XCTAssertEqualObjects([student.classes anyObject], classroom, @"Error in join.");
+//        
+//        EndBlock();
+//    } andFailureBlock:^(NSArray *objects, NSError *error) {
+//        XCTFail(@"Sync Failed");
+//        EndBlock();
+//    }];
     
     WaitUntilBlockCompletes();
 }
