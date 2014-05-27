@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "TKServerObject.h"
+#import "RMParseSync.h"
 
 @interface TKServerObjectHelper : NSObject
 

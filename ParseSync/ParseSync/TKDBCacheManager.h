@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "TKDBCacheEntry.h"
+#import "RMParseSync.h"
 
 @interface TKDBCacheManager : NSObject
 
@@ -15,7 +16,6 @@
 
 - (void) addCacheEntry:(TKDBCacheEntry*)entry;
 - (void) removeEntry:(TKDBCacheEntry*)entry;
-- (void) clearCache;
 - (TKDBCacheEntry*) entryForObjectID:(NSString*)objectID withType:(TKDBCacheEntryType)type;
 
 - (NSDictionary*) dictInserts;

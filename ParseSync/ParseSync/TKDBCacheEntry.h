@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RMParseSync.h"
 
 /**
  *  Type of cache entry. Whether insert, update or delete.

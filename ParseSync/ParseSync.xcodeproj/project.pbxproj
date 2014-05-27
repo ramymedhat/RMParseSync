@@ -95,6 +95,7 @@
 /* Begin PBXFileReference section */
 		686C5A9A191BAB2400440A9E /* Parse+Bolts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Parse+Bolts.h"; sourceTree = "<group>"; };
 		686C5A9B191BAB2400440A9E /* Parse+Bolts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Parse+Bolts.m"; sourceTree = "<group>"; };
+		688CB9A61923AC1A0024FEE6 /* RMParseSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMParseSync.h; sourceTree = "<group>"; };
 		688FF084191A812C00A37025 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenUpload.m; sourceTree = "<group>"; };
 		7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenDownload.m; sourceTree = "<group>"; };
@@ -263,6 +264,7 @@
 				7F54650D190E182700952AB2 /* TKDBCacheManager.h */,
 				7F54650E190E182700952AB2 /* TKDBCacheManager.m */,
 				7FD4FE7E18F22F1B00F2D17A /* Supporting Files */,
+				688CB9A61923AC1A0024FEE6 /* RMParseSync.h */,
 			);
 			path = ParseSync;
 			sourceTree = "<group>";

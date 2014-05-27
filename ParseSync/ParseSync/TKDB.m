@@ -7,12 +7,13 @@
 //
 
 #import "TKDB.h"
+#import "RMParseSync.h"
 #import "TKParseServerSyncManager.h"
 #import "TKServerObject.h"
 #import "TKServerObjectHelper.h"
 #import "TKDBCacheManager.h"
-
-#import <Bolts/Bolts.h>
+#import "NSManagedObject+Sync.h"
+#import "NSManagedObjectContext+Sync.h"
 
 @implementation TKDB {
     /**
@@ -30,6 +31,13 @@
     });
     
     return _defaultDB;
+}
+
+- (NSArray *)entities {
+    if (!_entities) {
+        _entities = kEntities;
+    }
+    return _entities;
 }
 
 - (instancetype)init
@@ -87,7 +95,7 @@
     }
     
     NSError *error;
-    [[TKDB defaultDB].referenceContext save:&error];
+    [[TKDB defaultDB].syncContext mergeChangesFromContextDidSaveNotification:notification];
     
     if (error) {
 #warning Handle this error.
@@ -245,7 +253,7 @@
         dispatch_semaphore_t sem = dispatch_semaphore_create(0);
         
 #pragma mark Step 1: Download all objects updated on the server since last sync
-        for (NSString *entity in kEntities) {
+        for (NSString *entity in self.entities) {
             [manager downloadUpdatedObjectsForEntity:entity withSuccessBlock:^(NSArray *objects) {
                 [arrServerObjects addObjectsFromArray:objects];
                 dispatch_semaphore_signal(sem);
@@ -387,7 +395,7 @@
         NSMutableArray __block *arrServerObjects = [NSMutableArray array];
 
         NSMutableArray *tasks = @[].mutableCopy;
-        for (NSString *entity in kEntities) {
+        for (NSString *entity in self.entities) {
             BFTaskCompletionSource *source = [BFTaskCompletionSource taskCompletionSource];
             
             [[manager downloadUpdatedObjectsAsyncForEntity:entity] continueWithBlock:^id(BFTask *task) {
@@ -562,12 +570,12 @@
 }
 
 // final step
-- (void)saveAll {
+- (void)saveAll:(NSError **)error {
     NSManagedObjectContext __weak *weakSyncContext = self.syncContext;
     [self.syncContext performBlockAndWait:^{
-        [weakSyncContext save:nil];
+        [weakSyncContext save:error];
         disableNotifications = YES;
-        [weakSyncContext.parentContext save:nil];
+        [weakSyncContext.parentContext save:error];
         disableNotifications = NO;
     }];
     
@@ -592,7 +600,7 @@
     return [pullFromServerTask continueWithSuccessBlock:^id(BFTask *pullTask) {
         
         NSMutableArray __block *arrServerObjects = pullTask.result;
-        
+
 #pragma mark Step 2: Insert newly created objects on local from server and vice versa.
         BFTask *insertThenUploadLocalDataTask = [self insertServerObjects:arrServerObjects thenUploadLocalData:localInsertedObjects withManager:manager];
         
@@ -624,14 +632,30 @@
                     
 #pragma mark Step 9: Delete all shadow objects
                     [self deleteShadowObjects:arrShadowObjects];
+
+                    NSError *savingError;
+                    [self saveAll:&savingError];
                     
-                    [self saveAll];
-                    
-                    return nil;
+                    if (savingError) {
+                        return [BFTask taskWithError:savingError];
+                    }
+                    else {
+                        return [BFTask taskWithResult:nil];
+                    }
                 }];
             }];
         }];
     }];
+}
+
+- (BFTask *)checkServerForExistingObjects {
+    return [[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
+        
+        TKParseServerSyncManager *manager = [[TKParseServerSyncManager alloc] init];
+        
+        return [manager downloadUpdatedObjectsAsyncForEntity:@"Gradetype"];
+    }];
+
 }
 
 @end

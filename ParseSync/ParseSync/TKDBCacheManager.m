@@ -52,8 +52,6 @@
     NSMutableDictionary __weak *weakInserts = dictCacheInserts;
     NSMutableDictionary __weak *weakUpdates = dictCacheUpdates;
     NSMutableDictionary __weak *weakDeletes = dictCacheDeletes;
-    NSMutableDictionary __weak *weakLocalMappings = dictUniqueIDtoLocal;
-    NSMutableDictionary __weak *weakServerMappings = dictUniqueIDtoServer;
     dispatch_async(dispatch_queue_create("dbcache", nil), ^{
         NSString *applicationName = [[[NSBundle mainBundle] infoDictionary] valueForKey:(NSString *)kCFBundleNameKey];
         NSString *applicationStorageDirectory = [[NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:applicationName];
@@ -95,7 +93,6 @@
             __autoreleasing NSError *error;
             BOOL ret = [[NSFileManager defaultManager] createDirectoryAtPath:applicationStorageDirectory withIntermediateDirectories:YES attributes:nil error:&error];
             if(!ret) {
-                NSLog(@"ERROR app support: %@", error);
                 exit(0);
             }
         }

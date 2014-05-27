@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RMParseSync.h"
 
 @interface NSManagedObjectContext (Sync)
 

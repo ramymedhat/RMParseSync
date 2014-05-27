@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Inovaton. All rights reserved.
 //
 
-#import "TKServerObject.h"
+#import "RMParseSync.h"
 
 @interface NSManagedObject (Sync)
 
@@ -44,17 +44,8 @@
  */
 - (NSString*) assignUniqueObjectID;
 
-- (NSDictionary*) toDictionary;
-
 - (TKServerObject*) toServerObject;
 
 - (TKServerObject*) toServerObjectInContext:(NSManagedObjectContext*)context;
-
-- (NSDictionary*) attributeDictionary;
-- (NSDictionary*) toOneRelationshipDictionary;
-- (NSDictionary*) toManyRelationshipDictionary;
-
-+ (NSManagedObject*) createManagedObjectFromDictionary:(NSDictionary*)dict
-                                             inContext:(NSManagedObjectContext*)context;
 
 @end
