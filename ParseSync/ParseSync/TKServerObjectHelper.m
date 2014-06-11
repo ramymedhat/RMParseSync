@@ -22,7 +22,7 @@
         managedObject =[NSEntityDescription insertNewObjectForEntityForName:object.entityName inManagedObjectContext:weakSyncContext];
     }];
 
-    [managedObject setValue:object.uniqueObjectID forKeyPath:kTKDBUniqueIDField];
+    [managedObject setValue:object.uniqueObjectID forKey:kTKDBUniqueIDField];
     [managedObject setValue:object.serverObjectID forKey:kTKDBServerIDField];
     [managedObject setValue:object.creationDate forKey:kTKDBCreatedDateField];
     [managedObject setValue:object.lastModificationDate forKey:kTKDBUpdatedDateField];
@@ -47,11 +47,20 @@
             }
             else {
                 NSManagedObject *relatedManagedObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:relatedServerObject.uniqueObjectID]]];
-                [managedObject setValue:relatedManagedObject forKey:key];
+                if (relatedManagedObject) {
+                    // this would happen with Parse only relations
+                    [managedObject setValue:relatedManagedObject forKey:key];
+                }
             }
         }
         else if ([serverObject.relatedObjects[key] isKindOfClass:[NSArray class]]) {
             NSMutableSet *relatedObjects = [NSMutableSet set];
+            NSArray *relatedObjectsArray = serverObject.relatedObjects[key];
+            if (relatedObjectsArray.count == 0) {
+                // all objects are deleted
+                [managedObject setValue:relatedObjects forKey:key];
+                continue;
+            }
             for (TKServerObject *relatedServerObject in serverObject.relatedObjects[key]) {
                 if (relatedServerObject.isDeleted) {
                     continue;
@@ -92,6 +101,7 @@
         serverObject.serverObjectID = entry.serverObjectID;
         serverObject.uniqueObjectID = entry.uniqueObjectID;
         serverObject.entityName = entry.entity;
+        serverObject.lastModificationDate = entry.lastModificationDate;
         serverObject.isDeleted = YES;
         [updatedObjects addObject:serverObject];
     }
@@ -168,18 +178,34 @@
     for (TKServerObject *serverObject in serverObjects) {
         NSManagedObject *object = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:serverObject.uniqueObjectID]]];
         
-        if (serverObject.isDeleted) {
-            [[TKDB defaultDB].syncContext deleteObject:object];
-        }
-        else {
-            for (NSString *key in serverObject.attributeValues) {
-                if ([key isEqualToString:@"ACL"]) {
-                    continue;
-                }
-                [object setValue:serverObject.attributeValues[key] forKey:key];
+        if (object == nil) {
+            // check serverObject
+            if (serverObject.isDeleted) {
+                // do nothing
             }
-            
-            [TKServerObjectHelper wireRelationshipsForManagedObject:object withServerObject:serverObject];
+            else {
+                // check for the lastModifiedDate
+                // this means that this object was deleted from local then updated on another
+                // device.
+                // we will treat it as a new insertion
+                [self insertServerObjectsInLocalDatabase:@[serverObject]];
+            }
+        }
+        else
+        {
+            if (serverObject.isDeleted) {
+                [[TKDB defaultDB].syncContext deleteObject:object];
+            }
+            else {
+                for (NSString *key in serverObject.attributeValues) {
+                    if ([key isEqualToString:@"ACL"]) {
+                        continue;
+                    }
+                    [object setValue:serverObject.attributeValues[key] forKey:key];
+                }
+                
+                [TKServerObjectHelper wireRelationshipsForManagedObject:object withServerObject:serverObject];
+            }
         }
     }
 }
@@ -200,6 +226,9 @@
     outputObject.serverObjectID = conflictPair.serverObject.serverObjectID;
     outputObject.localObjectIDURL = conflictPair.localObject.localObjectIDURL;
     outputObject.lastModificationDate = [NSDate date];
+    
+    // to handle Update Delete conflicts
+    outputObject.isDeleted = newerObject.isDeleted;
     
     NSMutableDictionary *dictAttributes = [NSMutableDictionary dictionary];
     

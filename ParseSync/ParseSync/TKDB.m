@@ -15,6 +15,9 @@
 #import "NSManagedObject+Sync.h"
 #import "NSManagedObjectContext+Sync.h"
 
+NSString * const TKDBSyncDidSucceedNotification = @"TKDBSyncDidSucceedNotification";
+NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
+
 @implementation TKDB {
     /**
      *  Used to stop notifications form firing during sync.
@@ -94,13 +97,8 @@
         }
     }
     
-    NSError *error;
     [[TKDB defaultDB].syncContext mergeChangesFromContextDidSaveNotification:notification];
-    
-    if (error) {
-#warning Handle this error.
-        abort();
-    }
+    [[TKDBCacheManager sharedManager] saveToFileSystem];
 }
 
 - (void) contextWillSave:(NSNotification*)notification {
@@ -150,6 +148,7 @@
             entry.serverObjectID = object.tk_serverObjectID;
             entry.uniqueObjectID = object.tk_uniqueObjectID;
             entry.entity = object.entity.name;
+            entry.lastModificationDate = [NSDate date];
             [[TKDBCacheManager sharedManager] addCacheEntry:entry];
         }
         
@@ -180,6 +179,10 @@
     
     for (NSManagedObject *object in [TKDB defaultDB].rootContext.deletedObjects) {
         // If there is an insert entry for this object, we remove it.
+        // check if this was a nil object ==> weird issue where deleted objects sent multiple notifications on different save operations.
+        if (object.tk_uniqueObjectID == nil) {
+            continue;
+        }
         TKDBCacheEntry *entry = [[TKDBCacheManager sharedManager] entryForObjectID:object.tk_uniqueObjectID withType:TKDBCacheInsert];
         
         if (entry) {
@@ -203,6 +206,7 @@
         entry.localObjectIDURL = [[[object objectID] URIRepresentation] absoluteString];
         entry.serverObjectID = [object tk_serverObjectID];
         entry.uniqueObjectID = object.tk_uniqueObjectID;
+        entry.lastModificationDate = [NSDate date];
         entry.entity = object.entity.name;
         [[TKDBCacheManager sharedManager] addCacheEntry:entry];
     }
@@ -236,156 +240,6 @@
 - (void) setLastSyncDate:(NSDate*)date {
      [[NSUserDefaults standardUserDefaults] setValue:date forKey:@"lastSyncDate"];
 }
-
-- (void) syncWithSuccessBlock:(TKSyncSuccessBlock)successBlock andFailureBlock:(TKSyncFailureBlock)failureBlock {
-    
-    dispatch_async(dispatch_queue_create("sync", nil), ^{
-        NSArray *localInsertedObjects = [TKServerObjectHelper getInsertedObjectsFromCache];
-        NSArray __block *localUpdatedObjects = [TKServerObjectHelper getUpdatedObjectsFromCache];
-        NSArray __block *insertedObjectsWithServerIDs;
-        NSMutableSet *localUpdatesNoConflict;
-        NSMutableSet *serverUpdatesNoConflict;
-        NSMutableSet *conflictPairs = [NSMutableSet set];
-        TKParseServerSyncManager *manager = [[TKParseServerSyncManager alloc] init];
-        NSMutableArray __block *arrServerObjects = [NSMutableArray array];
-        NSError __block *syncError;
-        [[TKDBCacheManager sharedManager] startCheckpoint];
-        dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-        
-#pragma mark Step 1: Download all objects updated on the server since last sync
-        for (NSString *entity in self.entities) {
-            [manager downloadUpdatedObjectsForEntity:entity withSuccessBlock:^(NSArray *objects) {
-                [arrServerObjects addObjectsFromArray:objects];
-                dispatch_semaphore_signal(sem);
-            } andFailureBlock:^(NSArray *objects, NSError *error) {
-                syncError = error;
-                dispatch_semaphore_signal(sem);
-            }];
-            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
-            if (syncError) {
-                failureBlock(nil,syncError);
-                [[TKDBCacheManager sharedManager] rollbackToCheckpoint];
-                return;
-            }
-        }
-        
-#pragma mark Step 2: Insert newly created objects on local from server and vice versa.
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"creationDate > %@", [self lastSyncDate]];
-        NSArray *newServerObjects = [arrServerObjects filteredArrayUsingPredicate:predicate];
-        [TKServerObjectHelper insertServerObjectsInLocalDatabase:newServerObjects];
-        [manager uploadInsertedObjects:localInsertedObjects withSuccessBlock:^(NSArray *objects) {
-            insertedObjectsWithServerIDs = objects;
-            dispatch_semaphore_signal(sem);
-        } andFailureBlock:^(NSArray *objects, NSError *error) {
-            syncError = error;
-            dispatch_semaphore_signal(sem);
-        }];
-        
-        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
-        if (syncError) {
-            failureBlock(nil,syncError);
-            [[TKDBCacheManager sharedManager] rollbackToCheckpoint];
-            return;
-        }
-        
-#pragma mark Step 3: Update managed objects with server IDs
-        [TKServerObjectHelper updateServerIDInLocalDatabase:insertedObjectsWithServerIDs];
-        
-#pragma mark Step 4: Upload inserted objects as updates to wire relationships on the cloud.
-        [manager uploadUpdatedObjects:insertedObjectsWithServerIDs WithSuccessBlock:^(NSArray *objects) {
-            dispatch_semaphore_signal(sem);
-        } andFailureBlock:^(NSArray *objects, NSError *error) {
-            syncError = error;
-            dispatch_semaphore_signal(sem);
-        }];
-        
-        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
-        if (syncError) {
-            failureBlock(nil,syncError);
-            [[TKDBCacheManager sharedManager] rollbackToCheckpoint];
-            return;
-        }
-        
-#pragma mark Step 5: Separate updated objects into local no conflict, server no conflict, and conflict
-        predicate = [NSPredicate predicateWithFormat:@"creationDate <= %@", [self lastSyncDate]];
-        NSArray *updatedServerObjects = [arrServerObjects filteredArrayUsingPredicate:predicate];
-        NSSet *updatedServerObjectsSet = [NSSet setWithArray:updatedServerObjects];
-        NSSet *updatedLocalObjectsSet = [NSSet setWithArray:localUpdatedObjects];
-        serverUpdatesNoConflict = [[updatedServerObjectsSet objectsPassingTest:^BOOL(id obj, BOOL *stop) {
-            return ![localUpdatedObjects containsObject:obj];
-        }] mutableCopy];
-        localUpdatesNoConflict = [[updatedLocalObjectsSet objectsPassingTest:^BOOL(id obj, BOOL *stop) {
-            return ![updatedServerObjectsSet containsObject:obj];
-        }] mutableCopy];
-        for (TKServerObject *serverObject in updatedServerObjectsSet) {
-            for (TKServerObject *localObject in updatedLocalObjectsSet) {
-                if ([serverObject isEqual:localObject]) {
-                    TKDBCacheEntry *entry = [[TKDBCacheManager sharedManager] entryForObjectID:localObject.uniqueObjectID withType:TKDBCacheUpdate];
-                    TKServerObject *shadowServerObject = entry.originalObject;
-                    [conflictPairs addObject:[[TKServerObjectConflictPair alloc] initWithServerObject:serverObject localObject:localObject shadowObject:shadowServerObject]];
-                }
-            }
-        }
-        
-#pragma mark Step 6: Resolve conflicts
-        for (TKServerObjectConflictPair *conflictPair in conflictPairs) {
-            [TKServerObjectHelper resolveConflict:conflictPair localUpdates:localUpdatedObjects serverUpdates:updatedServerObjects];
-            if (conflictPair.resolutionType == TKDBMergeLocalWins) {
-                [serverUpdatesNoConflict addObject:conflictPair.outputObject];
-            }
-            else if (conflictPair.resolutionType == TKDBMergeServerWins) {
-                [localUpdatesNoConflict addObject:conflictPair.outputObject];
-            }
-            else if (conflictPair.resolutionType == TKDBMergeBothUpdated) {
-                [serverUpdatesNoConflict addObject:conflictPair.outputObject];
-                [localUpdatesNoConflict addObject:conflictPair.outputObject];                
-            }
-        }
-        
-#pragma mark Step 7: Save objects updated on the server to local db (no conflict + conflict resolved)
-        [TKServerObjectHelper updateServerObjectsInLocalDatabase:[serverUpdatesNoConflict allObjects]];
-        
-#pragma mark Step 8: Save objects updated locally to server (no conflict + conflict resolved)
-        [manager uploadUpdatedObjects:[localUpdatesNoConflict allObjects] WithSuccessBlock:^(NSArray *objects) {
-            dispatch_semaphore_signal(sem);
-        } andFailureBlock:^(NSArray *objects, NSError *error) {
-            syncError = error;
-            dispatch_semaphore_signal(sem);
-        }];
-        
-        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
-        if (syncError) {
-            failureBlock(nil,syncError);
-            [[TKDBCacheManager sharedManager] rollbackToCheckpoint];
-            return;
-        }
-        
-        NSManagedObjectContext __weak *weakSyncContext = self.syncContext;
-
-#warning Replace with MagicalRecord save to persistent store.
-        [self.syncContext performBlockAndWait:^{
-            NSError *error;
-            [weakSyncContext save:&error];
-            disableNotifications = YES;
-            [weakSyncContext.parentContext save:&error];
-            disableNotifications = NO;
-        }];
-        
-        if (syncError) {
-            failureBlock(nil,syncError);
-            [[TKDBCacheManager sharedManager] rollbackToCheckpoint];
-            return;
-        }
-        else {
-            [self setLastSyncDate:[NSDate date]];
-            [[TKDBCacheManager sharedManager] clearCache];
-            [[TKDBCacheManager sharedManager] endCheckpointSuccessfully];
-            successBlock(nil);
-        }
-        
-    });
-}
-
 
 // step 1
 - (BFTask *)downloadAllServerUpdatesWithManager:(TKParseServerSyncManager *)manager {
@@ -640,6 +494,7 @@
                         return [BFTask taskWithError:savingError];
                     }
                     else {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:TKDBSyncDidSucceedNotification object:nil userInfo:nil];
                         return [BFTask taskWithResult:nil];
                     }
                 }];
@@ -652,8 +507,8 @@
     return [[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
         
         TKParseServerSyncManager *manager = [[TKParseServerSyncManager alloc] init];
-        
-        return [manager downloadUpdatedObjectsAsyncForEntity:@"Gradetype"];
+            
+        return [manager countOfObjectsForEntity:@"Gradetype"];
     }];
 
 }

@@ -60,8 +60,7 @@
                                  [attributes count] + 1];
     
     for (NSString* attr in attributes) {
-        if ([attr isEqualToString:kTKDBServerIDField] || [attr isEqualToString:kTKDBUniqueIDField] ||
-            [attr isEqualToString:kTKDBUpdatedDateField] || [attr isEqualToString:kTKDBCreatedDateField] ||
+        if ([attr isEqualToString:kTKDBServerIDField] || [attr isEqualToString:kTKDBUniqueIDField] || [attr isEqualToString:kTKDBCreatedDateField] ||
             [attr isEqualToString:kTKDBIsDeletedField]) {
             continue;
         }
