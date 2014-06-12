@@ -230,15 +230,15 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
 }
 
 - (NSDate*) lastSyncDate {
-    NSDate *date = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastSyncDate"];
+    NSDate *date = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
     if (!date) {
-        [[NSUserDefaults standardUserDefaults] setValue:[NSDate dateWithTimeIntervalSince1970:0] forKey:@"lastSyncDate"];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSDate dateWithTimeIntervalSince1970:0] forKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
     }
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"lastSyncDate"];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
 }
 
 - (void) setLastSyncDate:(NSDate*)date {
-     [[NSUserDefaults standardUserDefaults] setValue:date forKey:@"lastSyncDate"];
+     [[NSUserDefaults standardUserDefaults] setValue:date forKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
 }
 
 // step 1
@@ -432,7 +432,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         [weakSyncContext.parentContext save:error];
         disableNotifications = NO;
     }];
-    
+
     [self setLastSyncDate:[NSDate date]];
     [[TKDBCacheManager sharedManager] clearCache];
     [[TKDBCacheManager sharedManager] endCheckpointSuccessfully];

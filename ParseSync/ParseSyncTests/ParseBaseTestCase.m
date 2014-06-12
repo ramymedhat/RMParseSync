@@ -14,12 +14,12 @@
 - (void) setUp {
     [super setUp];
     
-    [Parse setApplicationId:@"2cjtLvANwrqhS94xOc9k4AKENGH8kjOpLNfov7cQ"
-                  clientKey:@"AbsBXCzUmb7983UBd5owHzyOy9qEcrWT2pNgjXH5"];
+    [Parse setApplicationId:@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"
+                  clientKey:@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"];
     
     //Create In memory store
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    NSURL *modelURL = [bundle URLForResource:@"ParseSyncTest" withExtension:@"momd"];
+    NSURL *modelURL = [bundle URLForResource:@"TeacherKit" withExtension:@"momd"];
     NSManagedObjectModel *_managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     NSPersistentStoreCoordinator *_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:_managedObjectModel];

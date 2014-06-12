@@ -40,28 +40,34 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"Student"] error:nil];
-        
-        XCTAssert([results count] == 3, @"New student not added");
-        XCTAssert([self.classroom.students count] == 2, @"Classroom not wired to new student");
-        
-        Student *newStudent = nil;
-        
-        for (NSManagedObject *student in results) {
-            if ([[student valueForKey:@"firstName"] isEqualToString:@"Jesse"]) {
-                newStudent = (Student*)student;
-                break;
-            }
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
         }
-        
-        XCTAssertNotNil(newStudent, @"Can't find new student");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"Student"] error:nil];
+            
+            XCTAssert([results count] == 3, @"New student not added");
+            XCTAssert([self.classroom.students count] == 2, @"Classroom not wired to new student");
+            
+            Student *newStudent = nil;
+            
+            for (NSManagedObject *student in results) {
+                if ([[student valueForKey:@"firstName"] isEqualToString:@"Jesse"]) {
+                    newStudent = (Student*)student;
+                    break;
+                }
+            }
+            
+            XCTAssertNotNil(newStudent, @"Can't find new student");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -74,14 +80,20 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssert([self.classroom.students count] == 0, @"Deleted student still wired");
-        XCTAssertNil(self.student.managedObjectContext, @"Student not deleted");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssert([self.classroom.students count] == 0, @"Deleted student still wired");
+            XCTAssertNil(self.student.managedObjectContext, @"Student not deleted");
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -102,30 +114,36 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"Student"] error:nil];
-        
-        XCTAssert([results count] == 2, @"Replace not successful");
-        XCTAssert([self.classroom.students count] == 1, @"Replace not successful");
-        
-        Student *newStudent = nil;
-        
-        for (NSManagedObject *student in results) {
-            if ([[student valueForKey:@"firstName"] isEqualToString:@"Jesse"]) {
-                newStudent = (Student*)student;
-                break;
-            }
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
         }
-        
-        XCTAssertNotNil(newStudent, @"Can't find new student");
-        
-        XCTAssertNil(self.student.managedObjectContext, @"Student not deleted");
-
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"Student"] error:nil];
+            
+            XCTAssert([results count] == 2, @"Replace not successful");
+            XCTAssert([self.classroom.students count] == 1, @"Replace not successful");
+            
+            Student *newStudent = nil;
+            
+            for (NSManagedObject *student in results) {
+                if ([[student valueForKey:@"firstName"] isEqualToString:@"Jesse"]) {
+                    newStudent = (Student*)student;
+                    break;
+                }
+            }
+            
+            XCTAssertNotNil(newStudent, @"Can't find new student");
+            
+            XCTAssertNil(self.student.managedObjectContext, @"Student not deleted");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -143,16 +161,22 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"] error:nil];
-        
-        XCTAssert([results count] == 2, @"New attendance type not added");
-        XCTAssertNotNil(self.attendance1.attendanceType, @"Attendance not wired to new type");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"] error:nil];
+            
+            XCTAssert([results count] == 2, @"New attendance type not added");
+            XCTAssertNotNil(self.attendance1.attendanceType, @"Attendance not wired to new type");
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -165,14 +189,20 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertNil(self.attendanceType.managedObjectContext, @"Object not removed");
-        XCTAssertNil(self.attendance2.attendanceType, @"Wiring not removed");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertNil(self.attendanceType.managedObjectContext, @"Object not removed");
+            XCTAssertNil(self.attendance2.attendanceType, @"Wiring not removed");
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -193,18 +223,24 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"] error:nil];
-        
-        XCTAssert([results count] == 1, @"New attendance type not added");
-        XCTAssertNotNil(self.attendance2.attendanceType, @"Attendance not wired to new type");
-        XCTAssertNil(self.attendanceType.managedObjectContext, @"Object not removed");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            NSArray *results = [[TKDB defaultDB].rootContext executeFetchRequest:[NSFetchRequest fetchRequestWithEntityName:@"AttendanceType"] error:nil];
+            
+            XCTAssert([results count] == 1, @"New attendance type not added");
+            XCTAssertNotNil(self.attendance2.attendanceType, @"Attendance not wired to new type");
+            XCTAssertNil(self.attendanceType.managedObjectContext, @"Object not removed");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();

@@ -36,26 +36,32 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"students"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssert([arr count] == 2, @"Classroom not linked to student");
+            
+            object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:student3.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            query = [[object relationForKey:@"classes"] query];
+            arr = [query findObjects];
+            XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Jesse", @"Attributes of new object not set");
+            XCTAssert([arr count] == 1, @"Student not linked to classroom");
+            EndBlock();
+        }
         
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssert([arr count] == 2, @"Classroom not linked to student");
-        
-        object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:student3.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        query = [[object relationForKey:@"classes"] query];
-        arr = [query findObjects];
-        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Jesse", @"Attributes of new object not set");
-        XCTAssert([arr count] == 1, @"Student not linked to classroom");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
     }];
     
     WaitUntilBlockCompletes();
@@ -68,20 +74,25 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssert([arr count] == 0, @"Classroom not linked to student");
-        object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"students"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssert([arr count] == 0, @"Classroom not linked to student");
+            object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:serverID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -98,31 +109,37 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"students"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssert([arr count] == 1, @"Error in classroom relationships");
-        
-        object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:student3.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        query = [[object relationForKey:@"classes"] query];
-        arr = [query findObjects];
-        XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Jesse", @"Attributes of new object not set");
-        XCTAssert([arr count] == 1, @"Student not linked to classroom");
-        
-        object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Classroom"] getObjectWithId:self.classroom.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"students"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssert([arr count] == 1, @"Error in classroom relationships");
+            
+            object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:student3.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            query = [[object relationForKey:@"classes"] query];
+            arr = [query findObjects];
+            XCTAssertEqualObjects([object valueForKey:@"firstName"], @"Jesse", @"Attributes of new object not set");
+            XCTAssert([arr count] == 1, @"Student not linked to classroom");
+            
+            object = [[PFQuery queryWithClassName:@"Student"] getObjectWithId:serverID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -136,24 +153,33 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance1.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNotNil([object valueForKey:@"attendanceType"], @"No foreign key set");
-        
-        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType2.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"attendances"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Attributes of new object not set");
-        XCTAssert([arr count] == 1, @"Attendance linked to type");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance1.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertNotNil([object valueForKey:@"attendanceType"], @"No foreign key set");
+            
+            object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType2.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"attendances"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Attributes of new object not set");
+            XCTAssert([arr count] == 1, @"Attendance linked to type");
+
+            EndBlock();
+            
+        }
+        return nil;
     }];
+
     
     WaitUntilBlockCompletes();
 }
@@ -165,20 +191,24 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNil([object valueForKey:@"attendanceType"], @"Deleted object foreign key still set");
-        
-        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertNil([object valueForKey:@"attendanceType"], @"Deleted object foreign key still set");
+            
+            object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:serverID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -194,30 +224,36 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertNotNil([object valueForKey:@"attendanceType"], @"Foreign key still set");
-        PFObject *relatedObject = [object valueForKey:@"attendanceType"];
-        [relatedObject fetchIfNeeded];
-        XCTAssertEqualObjects([relatedObject valueForKey:@"title"], @"Absent", @"Foreign key still set");
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *object = [[PFQuery queryWithClassName:@"Attendance"] getObjectWithId:self.attendance2.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertNotNil([object valueForKey:@"attendanceType"], @"Foreign key still set");
+            PFObject *relatedObject = [object valueForKey:@"attendanceType"];
+            [relatedObject fetchIfNeeded];
+            XCTAssertEqualObjects([relatedObject valueForKey:@"title"], @"Absent", @"Foreign key still set");
+            
+            object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType2.serverObjectID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            
+            PFQuery *query = [[object relationForKey:@"attendances"] query];
+            NSArray *arr = [query findObjects];
+            XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Attributes of new object not set");
+            XCTAssert([arr count] == 1, @"Attendance linked to type");
+            
+            object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:serverID];
+            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
+            XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
+            EndBlock();
+        }
         
-        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType2.serverObjectID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        
-        PFQuery *query = [[object relationForKey:@"attendances"] query];
-        NSArray *arr = [query findObjects];
-        XCTAssertEqualObjects([object valueForKey:@"title"], @"Absent", @"Attributes of new object not set");
-        XCTAssert([arr count] == 1, @"Attendance linked to type");
-        
-        object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:serverID];
-        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-        XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
     }];
     
     WaitUntilBlockCompletes();

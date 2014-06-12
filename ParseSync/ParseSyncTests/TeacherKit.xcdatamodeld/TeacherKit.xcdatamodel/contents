@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AccessCode" representedClassName="TKAccessCode" syncable="YES">
+        <attribute name="accesscodeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="parentCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentRoleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="studentCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="studentRoleName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="student" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="accessCode" inverseEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="Attachment" representedClassName="TKAttachment" syncable="YES">
+        <attribute name="attachmentId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachmentUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="lesson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Lesson" inverseName="attachments" inverseEntity="Lesson" syncable="YES"/>
+    </entity>
+    <entity name="Attendance" representedClassName="TKAttendance" syncable="YES">
+        <attribute name="attendanceId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="classroom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Classroom" inverseName="attendances" inverseEntity="Classroom" syncable="YES"/>
+        <relationship name="lesson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Lesson" inverseName="attendances" inverseEntity="Lesson" syncable="YES"/>
+        <relationship name="student" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="attendances" inverseEntity="Student" syncable="YES"/>
+        <relationship name="type" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Attendancetype" inverseName="attendances" inverseEntity="Attendancetype" syncable="YES"/>
+    </entity>
+    <entity name="Attendancetype" representedClassName="TKAttendanceType" syncable="YES">
+        <attribute name="attendancetypeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sortKey" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attendance" inverseName="type" inverseEntity="Attendance" syncable="YES"/>
+    </entity>
+    <entity name="Behavior" representedClassName="TKBehavior" syncable="YES">
+        <attribute name="behaviorDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="behaviorId" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="behaviorType" maxCount="1" deletionRule="Nullify" destinationEntity="Behaviortype" inverseName="behaviors" inverseEntity="Behaviortype" syncable="YES"/>
+        <relationship name="classroom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Classroom" inverseName="behaviors" inverseEntity="Classroom" syncable="YES"/>
+        <relationship name="student" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="behaviors" inverseEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="Behaviortype" representedClassName="TKBehaviorType" syncable="YES">
+        <attribute name="behaviortypeId" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isPositive" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="behaviors" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Behavior" inverseName="behaviorType" inverseEntity="Behavior" syncable="YES"/>
+    </entity>
+    <entity name="Classroom" representedClassName="TKClassroom" syncable="YES">
+        <attribute name="category" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="classroomDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="classroomId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lessonsEndDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lessonsStartDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lessonsType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attendance" inverseName="classroom" inverseEntity="Attendance" syncable="YES"/>
+        <relationship name="behaviors" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Behavior" inverseName="classroom" inverseEntity="Behavior" syncable="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Gradecategory" inverseName="classroom" inverseEntity="Gradecategory" syncable="YES"/>
+        <relationship name="lessons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Lesson" inverseName="classroom" inverseEntity="Lesson" syncable="YES"/>
+        <relationship name="seats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Seat" inverseName="classroom" inverseEntity="Seat" syncable="YES"/>
+        <relationship name="students" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Student" inverseName="classrooms" inverseEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="Configuration" representedClassName="TKConfiguration" syncable="YES">
+        <attribute name="configurationId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="configurationKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="configurationValue" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+    </entity>
+    <entity name="Gradableitem" representedClassName="TKGradableItem" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="gradableitemId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="itemDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="maximumGrade" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Float" defaultValueString="-1" syncable="YES"/>
+        <relationship name="gradeCategory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Gradecategory" inverseName="gradableItems" inverseEntity="Gradecategory" syncable="YES"/>
+        <relationship name="grades" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Grade" inverseName="gradableItem" inverseEntity="Grade" syncable="YES"/>
+        <relationship name="gradeType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Gradetype" inverseName="gradableItems" inverseEntity="Gradetype" syncable="YES"/>
+    </entity>
+    <entity name="Grade" representedClassName="TKGrade" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="gradeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gradeValue" optional="YES" attributeType="Float" defaultValueString="0" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="gradableItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Gradableitem" inverseName="grades" inverseEntity="Gradableitem" syncable="YES"/>
+        <relationship name="student" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="grades" inverseEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="Gradecategory" representedClassName="TKGradeCategory" syncable="YES">
+        <attribute name="calculationMode" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="gradecategoryId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="percent" optional="YES" attributeType="Float" defaultValueString="-1" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="classroom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Classroom" inverseName="categories" inverseEntity="Classroom" syncable="YES"/>
+        <relationship name="gradableItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Gradableitem" inverseName="gradeCategory" inverseEntity="Gradableitem" syncable="YES"/>
+    </entity>
+    <entity name="Gradetype" representedClassName="TKGradeType" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="gradetypeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="values" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="gradableItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Gradableitem" inverseName="gradeType" inverseEntity="Gradableitem" syncable="YES"/>
+    </entity>
+    <entity name="Lesson" representedClassName="TKLesson" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lessonDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lessonEndTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lessonId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lessonLocation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lessonPeriod" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="lessonStartDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lessonStartTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lessonTitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recurrenceDays" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="recurrenceId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recurrenceParam" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recurrenceType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attachment" inverseName="lesson" inverseEntity="Attachment" syncable="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendance" inverseName="lesson" inverseEntity="Attendance" syncable="YES"/>
+        <relationship name="classroom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Classroom" inverseName="lessons" inverseEntity="Classroom" syncable="YES"/>
+    </entity>
+    <entity name="Seat" representedClassName="TKSeat" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="seatId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="xposition" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="yposition" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="classroom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Classroom" inverseName="seats" inverseEntity="Classroom" syncable="YES"/>
+        <relationship name="student" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Student" inverseName="seats" inverseEntity="Student" syncable="YES"/>
+    </entity>
+    <entity name="Student" representedClassName="TKStudent" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="iconPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentEmail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentPhone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parentSkype" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serverObjectID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="skype" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="studentId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tkID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="accessCode" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="AccessCode" inverseName="student" inverseEntity="AccessCode" syncable="YES"/>
+        <relationship name="attendances" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attendance" inverseName="student" inverseEntity="Attendance" syncable="YES"/>
+        <relationship name="behaviors" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Behavior" inverseName="student" inverseEntity="Behavior" syncable="YES"/>
+        <relationship name="classrooms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Classroom" inverseName="students" inverseEntity="Classroom" syncable="YES"/>
+        <relationship name="grades" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Grade" inverseName="student" inverseEntity="Grade" syncable="YES"/>
+        <relationship name="seats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Seat" inverseName="student" inverseEntity="Seat" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AccessCode" positionX="9" positionY="153" width="128" height="195"/>
+        <element name="Attachment" positionX="0" positionY="0" width="128" height="163"/>
+        <element name="Attendance" positionX="0" positionY="0" width="128" height="193"/>
+        <element name="Attendancetype" positionX="0" positionY="0" width="128" height="195"/>
+        <element name="Behavior" positionX="0" positionY="0" width="128" height="165"/>
+        <element name="Behaviortype" positionX="0" positionY="0" width="128" height="165"/>
+        <element name="Classroom" positionX="0" positionY="0" width="128" height="360"/>
+        <element name="Configuration" positionX="0" positionY="0" width="128" height="165"/>
+        <element name="Gradableitem" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="Grade" positionX="0" positionY="0" width="128" height="135"/>
+        <element name="Gradecategory" positionX="0" positionY="0" width="128" height="210"/>
+        <element name="Gradetype" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="Lesson" positionX="0" positionY="0" width="128" height="300"/>
+        <element name="Seat" positionX="0" positionY="0" width="128" height="150"/>
+        <element name="Student" positionX="0" positionY="0" width="128" height="420"/>
+    </elements>
+</model>

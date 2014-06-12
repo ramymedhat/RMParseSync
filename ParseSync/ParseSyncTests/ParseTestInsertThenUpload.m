@@ -8,6 +8,9 @@
 
 #import <XCTest/XCTest.h>
 #import "ParseBaseTestCase.h"
+#import "TKClassroom.h"
+#import "TKStudent.h"
+#import "TKBehavior.h"
 
 @interface ParseTestInsertThenUpload : ParseBaseTestCase
 

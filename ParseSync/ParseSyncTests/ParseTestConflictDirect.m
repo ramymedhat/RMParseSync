@@ -37,19 +37,25 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqualObjects([self.students[0] valueForKey:@"firstName"], @"Saul", @"Firstname local rolledback");
-        XCTAssertEqualObjects([self.students[0] valueForKey:@"lastName"], @"Goodman", @"Lastname local not updated");
-        
-        [self.parse_students[0] refresh];
-        XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"firstName"], @"Saul", @"Firstname server not updated");
-        XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"lastName"], @"Goodman", @"Lastname server rolledback");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqualObjects([self.students[0] valueForKey:@"firstName"], @"Saul", @"Firstname local rolledback");
+            XCTAssertEqualObjects([self.students[0] valueForKey:@"lastName"], @"Goodman", @"Lastname local not updated");
+            
+            [self.parse_students[0] refresh];
+            XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"firstName"], @"Saul", @"Firstname server not updated");
+            XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"lastName"], @"Goodman", @"Lastname server rolledback");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -67,17 +73,23 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqualObjects([self.students[0] valueForKey:@"firstName"], @"Mike", @"Firstname local not updated");
-        
-        [self.parse_students[0] refresh];
-        XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"firstName"], @"Mike", @"Firstname server rolledback");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqualObjects([self.students[0] valueForKey:@"firstName"], @"Mike", @"Firstname local not updated");
+            
+            [self.parse_students[0] refresh];
+            XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"firstName"], @"Mike", @"Firstname server rolledback");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -95,17 +107,23 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqualObjects([self.students[0] valueForKey:@"firstName"], @"Saul", @"Firstname local rolledback");
-        
-        [self.parse_students[0] refresh];
-        XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"firstName"], @"Saul", @"Firstname server not updated");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqualObjects([self.students[0] valueForKey:@"firstName"], @"Saul", @"Firstname local rolledback");
+            
+            [self.parse_students[0] refresh];
+            XCTAssertEqualObjects([self.parse_students[0] valueForKey:@"firstName"], @"Saul", @"Firstname server not updated");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -129,19 +147,25 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqual([[self.classroom students] count], 4, @"Not all students are added to local class");
-        
-        [self.parse_classroom refresh];
-        [self.parse_students[2] refresh];
-        XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 4, @"Not all students are added to server class");
-        XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not added to server student");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqual([[self.classroom students] count], 4, @"Not all students are added to local class");
+            
+            [self.parse_classroom refresh];
+            [self.parse_students[2] refresh];
+            XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 4, @"Not all students are added to server class");
+            XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not added to server student");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -157,19 +181,25 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqual([[self.classroom students] count], 2, @"Error in local students count");
-        
-        [self.parse_classroom refresh];
-        [self.parse_students[2] refresh];
-        XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 2, @"Error in server students count");
-        XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not added to server student");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqual([[self.classroom students] count], 2, @"Error in local students count");
+            
+            [self.parse_classroom refresh];
+            [self.parse_students[2] refresh];
+            XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 2, @"Error in server students count");
+            XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not added to server student");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -185,19 +215,25 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqual([[self.classroom students] count], 2, @"Not all students are added to local class");
-        
-        [self.parse_classroom refresh];
-        [self.parse_students[1] refresh];
-        XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 2, @"Not all students are added to server class");
-        XCTAssertEqual([[[[self.parse_students[1] relationForKey:@"classes"] query] findObjects] count], 0, @"Class not added to server student");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqual([[self.classroom students] count], 2, @"Not all students are added to local class");
+            
+            [self.parse_classroom refresh];
+            [self.parse_students[1] refresh];
+            XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 2, @"Not all students are added to server class");
+            XCTAssertEqual([[[[self.parse_students[1] relationForKey:@"classes"] query] findObjects] count], 0, @"Class not added to server student");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -217,29 +253,35 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        XCTAssertEqual([[self.classroom students] count], 2, @"Not all students are added to local class");
-        XCTAssertEqual([[self.students[0] classes] count], 0, @"Student not updated on local");
-        XCTAssertEqual([[self.students[1] classes] count], 0, @"Student not updated on local");
-        XCTAssertEqual([[self.students[2] classes] count], 1, @"Student not updated on local");
-        XCTAssertEqual([[self.students[3] classes] count], 1, @"Student not updated on local");
-        
-        [self.parse_classroom refresh];
-        [self.parse_students[3] refresh];
-        [self.parse_students[2] refresh];
-        [self.parse_students[1] refresh];
-        [self.parse_students[0] refresh];
-        XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 2, @"Not all students are added to server class");
-        XCTAssertEqual([[[[self.parse_students[0] relationForKey:@"classes"] query] findObjects] count], 0, @"Class not removed from server student");
-        XCTAssertEqual([[[[self.parse_students[1] relationForKey:@"classes"] query] findObjects] count], 0, @"Class not removed from server student");
-        XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not removed from server student");
-        XCTAssertEqual([[[[self.parse_students[3] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not removed from server student");
-        
-        EndBlock();
-        
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            XCTAssertEqual([[self.classroom students] count], 2, @"Not all students are added to local class");
+            XCTAssertEqual([[self.students[0] classes] count], 0, @"Student not updated on local");
+            XCTAssertEqual([[self.students[1] classes] count], 0, @"Student not updated on local");
+            XCTAssertEqual([[self.students[2] classes] count], 1, @"Student not updated on local");
+            XCTAssertEqual([[self.students[3] classes] count], 1, @"Student not updated on local");
+            
+            [self.parse_classroom refresh];
+            [self.parse_students[3] refresh];
+            [self.parse_students[2] refresh];
+            [self.parse_students[1] refresh];
+            [self.parse_students[0] refresh];
+            XCTAssertEqual([[[[self.parse_classroom relationForKey:@"students"] query] findObjects] count], 2, @"Not all students are added to server class");
+            XCTAssertEqual([[[[self.parse_students[0] relationForKey:@"classes"] query] findObjects] count], 0, @"Class not removed from server student");
+            XCTAssertEqual([[[[self.parse_students[1] relationForKey:@"classes"] query] findObjects] count], 0, @"Class not removed from server student");
+            XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not removed from server student");
+            XCTAssertEqual([[[[self.parse_students[3] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not removed from server student");
+            
+            EndBlock();
+            
+        }
     }];
     
     WaitUntilBlockCompletes();

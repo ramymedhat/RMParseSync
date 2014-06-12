@@ -41,19 +41,25 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
-        
-        XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
-        
-        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
-        
-        XCTAssertNotNil(student4, @"Server insert not saved to local");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
+            
+            XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
+            
+            Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
+            
+            XCTAssertNotNil(student4, @"Server insert not saved to local");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -70,17 +76,23 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
-        
-        XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
-        
-        XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
+            
+            XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
+            
+            XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -96,17 +108,23 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
-        
-        XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
-        
-        XCTAssertNil(self.student2.managedObjectContext, @"Server delete not applied locally");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            PFObject *parse_student3 = [super searchCloudDBForObjectWithUniqueID:student3.tk_uniqueObjectID entity:@"Student"];
+            
+            XCTAssertNotNil(parse_student3, @"Local insert not saved to cloud");
+            
+            XCTAssertNil(self.student2.managedObjectContext, @"Server delete not applied locally");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -124,18 +142,24 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [self.parse_student refresh];
-        XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
-        
-        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
-        
-        XCTAssertNotNil(student4, @"Server insert not saved to local");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [self.parse_student refresh];
+            XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
+            
+            Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
+            
+            XCTAssertNotNil(student4, @"Server insert not saved to local");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -151,16 +175,22 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [self.parse_student refresh];
-        XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
-        
-        XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [self.parse_student refresh];
+            XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
+            
+            XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -175,16 +205,22 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [self.parse_student refresh];
-        XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
-        
-        XCTAssertNil(self.student2.managedObjectContext, @"Server delete not applied locally");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [self.parse_student refresh];
+            XCTAssertEqualObjects([self.parse_student valueForKey:@"lastName"], @"Abdelaal", @"Local update not saved to cloud");
+            
+            XCTAssertNil(self.student2.managedObjectContext, @"Server delete not applied locally");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -202,18 +238,24 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [self.parse_student refresh];
-        XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
-        
-        Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
-        
-        XCTAssertNotNil(student4, @"Server insert not saved to local");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [self.parse_student refresh];
+            XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
+            
+            Student *student4 = (Student*)[super searchLocalDBForObjectWithUniqueID:[parse_student4 valueForKey:kTKDBUniqueIDField] entity:@"Student"];
+            
+            XCTAssertNotNil(student4, @"Server insert not saved to local");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -229,16 +271,22 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [self.parse_student refresh];
-        XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
-        
-        XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [self.parse_student refresh];
+            XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
+            
+            XCTAssertEqualObjects(self.student2.firstName, @"Hank", @"Server update not downloaded correctly");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();
@@ -253,16 +301,22 @@
     
     StartBlock();
     
-    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-        [self.parse_student refresh];
-        XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
-        
-        XCTAssertNil(self.student2.managedObjectContext, @"Server delete not applied locally");
-        
-        EndBlock();
-    } andFailureBlock:^(NSArray *objects, NSError *error) {
-        XCTFail(@"Sync Failed");
-        EndBlock();
+    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
+        if (task.isCancelled) {
+            
+        }
+        else if (task.error) {
+            XCTFail(@"Sync Failed");
+            EndBlock();
+        }
+        else {
+            [self.parse_student refresh];
+            XCTAssertEqualObjects([self.parse_student valueForKey:@"isDeleted"], @YES, @"Local delete not saved to cloud");
+            
+            XCTAssertNil(self.student2.managedObjectContext, @"Server delete not applied locally");
+            
+            EndBlock();
+        }
     }];
     
     WaitUntilBlockCompletes();

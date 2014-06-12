@@ -6,7 +6,54 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		6840C9821948882100B99A67 /* mogenerator */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6840C9831948882100B99A67 /* Build configuration list for PBXAggregateTarget "mogenerator" */;
+			buildPhases = (
+				6840C9861948885700B99A67 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = mogenerator;
+			productName = mogenerator;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
+		6840C9811948800400B99A67 /* TeacherKit.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6840C97F1948800400B99A67 /* TeacherKit.xcdatamodeld */; };
+		6840C9C719488CD400B99A67 /* TKAccessCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C98B19488CD400B99A67 /* TKAccessCode.m */; };
+		6840C9C819488CD400B99A67 /* TKAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C98D19488CD400B99A67 /* TKAttachment.m */; };
+		6840C9C919488CD400B99A67 /* TKAttendance.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C98F19488CD400B99A67 /* TKAttendance.m */; };
+		6840C9CA19488CD400B99A67 /* TKAttendanceType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99119488CD400B99A67 /* TKAttendanceType.m */; };
+		6840C9CB19488CD400B99A67 /* TKBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99319488CD400B99A67 /* TKBehavior.m */; };
+		6840C9CC19488CD400B99A67 /* TKBehaviorType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99519488CD400B99A67 /* TKBehaviorType.m */; };
+		6840C9CD19488CD400B99A67 /* TKClassroom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99719488CD400B99A67 /* TKClassroom.m */; };
+		6840C9CE19488CD400B99A67 /* TKConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99919488CD400B99A67 /* TKConfiguration.m */; };
+		6840C9CF19488CD400B99A67 /* TKGradableItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99B19488CD400B99A67 /* TKGradableItem.m */; };
+		6840C9D019488CD400B99A67 /* TKGrade.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99D19488CD400B99A67 /* TKGrade.m */; };
+		6840C9D119488CD400B99A67 /* TKGradeCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C99F19488CD400B99A67 /* TKGradeCategory.m */; };
+		6840C9D219488CD400B99A67 /* TKGradeType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9A119488CD400B99A67 /* TKGradeType.m */; };
+		6840C9D319488CD400B99A67 /* TKLesson.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9A319488CD400B99A67 /* TKLesson.m */; };
+		6840C9D419488CD400B99A67 /* TKSeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9A519488CD400B99A67 /* TKSeat.m */; };
+		6840C9D519488CD400B99A67 /* TKStudent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9A719488CD400B99A67 /* TKStudent.m */; };
+		6840C9D619488CD400B99A67 /* _TKAccessCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9AA19488CD400B99A67 /* _TKAccessCode.m */; };
+		6840C9D719488CD400B99A67 /* _TKAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9AC19488CD400B99A67 /* _TKAttachment.m */; };
+		6840C9D819488CD400B99A67 /* _TKAttendance.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9AE19488CD400B99A67 /* _TKAttendance.m */; };
+		6840C9D919488CD400B99A67 /* _TKAttendanceType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9B019488CD400B99A67 /* _TKAttendanceType.m */; };
+		6840C9DA19488CD400B99A67 /* _TKBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9B219488CD400B99A67 /* _TKBehavior.m */; };
+		6840C9DB19488CD400B99A67 /* _TKBehaviorType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9B419488CD400B99A67 /* _TKBehaviorType.m */; };
+		6840C9DC19488CD400B99A67 /* _TKClassroom.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9B619488CD400B99A67 /* _TKClassroom.m */; };
+		6840C9DD19488CD400B99A67 /* _TKConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9B819488CD400B99A67 /* _TKConfiguration.m */; };
+		6840C9DE19488CD400B99A67 /* _TKGradableItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9BA19488CD400B99A67 /* _TKGradableItem.m */; };
+		6840C9DF19488CD400B99A67 /* _TKGrade.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9BC19488CD400B99A67 /* _TKGrade.m */; };
+		6840C9E019488CD400B99A67 /* _TKGradeCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9BE19488CD400B99A67 /* _TKGradeCategory.m */; };
+		6840C9E119488CD400B99A67 /* _TKGradeType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9C019488CD400B99A67 /* _TKGradeType.m */; };
+		6840C9E219488CD400B99A67 /* _TKLesson.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9C219488CD400B99A67 /* _TKLesson.m */; };
+		6840C9E319488CD400B99A67 /* _TKSeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9C419488CD400B99A67 /* _TKSeat.m */; };
+		6840C9E419488CD400B99A67 /* _TKStudent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9C619488CD400B99A67 /* _TKStudent.m */; };
+		6840C9E61948973900B99A67 /* ParseMultipleDeviceTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9E51948973900B99A67 /* ParseMultipleDeviceTestCase.m */; };
+		6840C9E919489FD000B99A67 /* ParseTestDeleteUpdateConflicts.m in Sources */ = {isa = PBXBuildFile; fileRef = 6840C9E819489FD000B99A67 /* ParseTestDeleteUpdateConflicts.m */; };
 		686C5A9C191BAB2400440A9E /* Parse+Bolts.m in Sources */ = {isa = PBXBuildFile; fileRef = 686C5A9B191BAB2400440A9E /* Parse+Bolts.m */; };
 		686C5A9D191BAB2400440A9E /* Parse+Bolts.m in Sources */ = {isa = PBXBuildFile; fileRef = 686C5A9B191BAB2400440A9E /* Parse+Bolts.m */; };
 		688FF085191A812C00A37025 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 688FF084191A812C00A37025 /* Bolts.framework */; };
@@ -71,6 +118,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6840C98719488B8C00B99A67 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7FD4FE7018F22F1B00F2D17A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6840C9821948882100B99A67;
+			remoteInfo = mogenerator;
+		};
 		7FD4FE8E18F22F1B00F2D17A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7FD4FE7018F22F1B00F2D17A /* Project object */;
@@ -93,6 +147,71 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6840C9801948800400B99A67 /* TeacherKit.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TeacherKit.xcdatamodel; sourceTree = "<group>"; };
+		6840C98A19488CD400B99A67 /* TKAccessCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKAccessCode.h; sourceTree = "<group>"; };
+		6840C98B19488CD400B99A67 /* TKAccessCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKAccessCode.m; sourceTree = "<group>"; };
+		6840C98C19488CD400B99A67 /* TKAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKAttachment.h; sourceTree = "<group>"; };
+		6840C98D19488CD400B99A67 /* TKAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKAttachment.m; sourceTree = "<group>"; };
+		6840C98E19488CD400B99A67 /* TKAttendance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKAttendance.h; sourceTree = "<group>"; };
+		6840C98F19488CD400B99A67 /* TKAttendance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKAttendance.m; sourceTree = "<group>"; };
+		6840C99019488CD400B99A67 /* TKAttendanceType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKAttendanceType.h; sourceTree = "<group>"; };
+		6840C99119488CD400B99A67 /* TKAttendanceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKAttendanceType.m; sourceTree = "<group>"; };
+		6840C99219488CD400B99A67 /* TKBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBehavior.h; sourceTree = "<group>"; };
+		6840C99319488CD400B99A67 /* TKBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBehavior.m; sourceTree = "<group>"; };
+		6840C99419488CD400B99A67 /* TKBehaviorType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBehaviorType.h; sourceTree = "<group>"; };
+		6840C99519488CD400B99A67 /* TKBehaviorType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBehaviorType.m; sourceTree = "<group>"; };
+		6840C99619488CD400B99A67 /* TKClassroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKClassroom.h; sourceTree = "<group>"; };
+		6840C99719488CD400B99A67 /* TKClassroom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKClassroom.m; sourceTree = "<group>"; };
+		6840C99819488CD400B99A67 /* TKConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKConfiguration.h; sourceTree = "<group>"; };
+		6840C99919488CD400B99A67 /* TKConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKConfiguration.m; sourceTree = "<group>"; };
+		6840C99A19488CD400B99A67 /* TKGradableItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKGradableItem.h; sourceTree = "<group>"; };
+		6840C99B19488CD400B99A67 /* TKGradableItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKGradableItem.m; sourceTree = "<group>"; };
+		6840C99C19488CD400B99A67 /* TKGrade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKGrade.h; sourceTree = "<group>"; };
+		6840C99D19488CD400B99A67 /* TKGrade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKGrade.m; sourceTree = "<group>"; };
+		6840C99E19488CD400B99A67 /* TKGradeCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKGradeCategory.h; sourceTree = "<group>"; };
+		6840C99F19488CD400B99A67 /* TKGradeCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKGradeCategory.m; sourceTree = "<group>"; };
+		6840C9A019488CD400B99A67 /* TKGradeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKGradeType.h; sourceTree = "<group>"; };
+		6840C9A119488CD400B99A67 /* TKGradeType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKGradeType.m; sourceTree = "<group>"; };
+		6840C9A219488CD400B99A67 /* TKLesson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKLesson.h; sourceTree = "<group>"; };
+		6840C9A319488CD400B99A67 /* TKLesson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKLesson.m; sourceTree = "<group>"; };
+		6840C9A419488CD400B99A67 /* TKSeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKSeat.h; sourceTree = "<group>"; };
+		6840C9A519488CD400B99A67 /* TKSeat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKSeat.m; sourceTree = "<group>"; };
+		6840C9A619488CD400B99A67 /* TKStudent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKStudent.h; sourceTree = "<group>"; };
+		6840C9A719488CD400B99A67 /* TKStudent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKStudent.m; sourceTree = "<group>"; };
+		6840C9A919488CD400B99A67 /* _TKAccessCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKAccessCode.h; sourceTree = "<group>"; };
+		6840C9AA19488CD400B99A67 /* _TKAccessCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKAccessCode.m; sourceTree = "<group>"; };
+		6840C9AB19488CD400B99A67 /* _TKAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKAttachment.h; sourceTree = "<group>"; };
+		6840C9AC19488CD400B99A67 /* _TKAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKAttachment.m; sourceTree = "<group>"; };
+		6840C9AD19488CD400B99A67 /* _TKAttendance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKAttendance.h; sourceTree = "<group>"; };
+		6840C9AE19488CD400B99A67 /* _TKAttendance.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKAttendance.m; sourceTree = "<group>"; };
+		6840C9AF19488CD400B99A67 /* _TKAttendanceType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKAttendanceType.h; sourceTree = "<group>"; };
+		6840C9B019488CD400B99A67 /* _TKAttendanceType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKAttendanceType.m; sourceTree = "<group>"; };
+		6840C9B119488CD400B99A67 /* _TKBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKBehavior.h; sourceTree = "<group>"; };
+		6840C9B219488CD400B99A67 /* _TKBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKBehavior.m; sourceTree = "<group>"; };
+		6840C9B319488CD400B99A67 /* _TKBehaviorType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKBehaviorType.h; sourceTree = "<group>"; };
+		6840C9B419488CD400B99A67 /* _TKBehaviorType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKBehaviorType.m; sourceTree = "<group>"; };
+		6840C9B519488CD400B99A67 /* _TKClassroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKClassroom.h; sourceTree = "<group>"; };
+		6840C9B619488CD400B99A67 /* _TKClassroom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKClassroom.m; sourceTree = "<group>"; };
+		6840C9B719488CD400B99A67 /* _TKConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKConfiguration.h; sourceTree = "<group>"; };
+		6840C9B819488CD400B99A67 /* _TKConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKConfiguration.m; sourceTree = "<group>"; };
+		6840C9B919488CD400B99A67 /* _TKGradableItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKGradableItem.h; sourceTree = "<group>"; };
+		6840C9BA19488CD400B99A67 /* _TKGradableItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKGradableItem.m; sourceTree = "<group>"; };
+		6840C9BB19488CD400B99A67 /* _TKGrade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKGrade.h; sourceTree = "<group>"; };
+		6840C9BC19488CD400B99A67 /* _TKGrade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKGrade.m; sourceTree = "<group>"; };
+		6840C9BD19488CD400B99A67 /* _TKGradeCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKGradeCategory.h; sourceTree = "<group>"; };
+		6840C9BE19488CD400B99A67 /* _TKGradeCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKGradeCategory.m; sourceTree = "<group>"; };
+		6840C9BF19488CD400B99A67 /* _TKGradeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKGradeType.h; sourceTree = "<group>"; };
+		6840C9C019488CD400B99A67 /* _TKGradeType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKGradeType.m; sourceTree = "<group>"; };
+		6840C9C119488CD400B99A67 /* _TKLesson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKLesson.h; sourceTree = "<group>"; };
+		6840C9C219488CD400B99A67 /* _TKLesson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKLesson.m; sourceTree = "<group>"; };
+		6840C9C319488CD400B99A67 /* _TKSeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKSeat.h; sourceTree = "<group>"; };
+		6840C9C419488CD400B99A67 /* _TKSeat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKSeat.m; sourceTree = "<group>"; };
+		6840C9C519488CD400B99A67 /* _TKStudent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _TKStudent.h; sourceTree = "<group>"; };
+		6840C9C619488CD400B99A67 /* _TKStudent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _TKStudent.m; sourceTree = "<group>"; };
+		6840C9E51948973900B99A67 /* ParseMultipleDeviceTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseMultipleDeviceTestCase.m; sourceTree = "<group>"; };
+		6840C9E71948976300B99A67 /* ParseMultipleDeviceTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseMultipleDeviceTestCase.h; sourceTree = "<group>"; };
+		6840C9E819489FD000B99A67 /* ParseTestDeleteUpdateConflicts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestDeleteUpdateConflicts.m; sourceTree = "<group>"; };
+		6840C9EA1949041A00B99A67 /* TKDB+Multiple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TKDB+Multiple.h"; sourceTree = "<group>"; };
 		686C5A9A191BAB2400440A9E /* Parse+Bolts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Parse+Bolts.h"; sourceTree = "<group>"; };
 		686C5A9B191BAB2400440A9E /* Parse+Bolts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Parse+Bolts.m"; sourceTree = "<group>"; };
 		688CB9A61923AC1A0024FEE6 /* RMParseSync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMParseSync.h; sourceTree = "<group>"; };
@@ -198,6 +317,80 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6840C98919488CD400B99A67 /* Human */ = {
+			isa = PBXGroup;
+			children = (
+				6840C98A19488CD400B99A67 /* TKAccessCode.h */,
+				6840C98B19488CD400B99A67 /* TKAccessCode.m */,
+				6840C98C19488CD400B99A67 /* TKAttachment.h */,
+				6840C98D19488CD400B99A67 /* TKAttachment.m */,
+				6840C98E19488CD400B99A67 /* TKAttendance.h */,
+				6840C98F19488CD400B99A67 /* TKAttendance.m */,
+				6840C99019488CD400B99A67 /* TKAttendanceType.h */,
+				6840C99119488CD400B99A67 /* TKAttendanceType.m */,
+				6840C99219488CD400B99A67 /* TKBehavior.h */,
+				6840C99319488CD400B99A67 /* TKBehavior.m */,
+				6840C99419488CD400B99A67 /* TKBehaviorType.h */,
+				6840C99519488CD400B99A67 /* TKBehaviorType.m */,
+				6840C99619488CD400B99A67 /* TKClassroom.h */,
+				6840C99719488CD400B99A67 /* TKClassroom.m */,
+				6840C99819488CD400B99A67 /* TKConfiguration.h */,
+				6840C99919488CD400B99A67 /* TKConfiguration.m */,
+				6840C99A19488CD400B99A67 /* TKGradableItem.h */,
+				6840C99B19488CD400B99A67 /* TKGradableItem.m */,
+				6840C99C19488CD400B99A67 /* TKGrade.h */,
+				6840C99D19488CD400B99A67 /* TKGrade.m */,
+				6840C99E19488CD400B99A67 /* TKGradeCategory.h */,
+				6840C99F19488CD400B99A67 /* TKGradeCategory.m */,
+				6840C9A019488CD400B99A67 /* TKGradeType.h */,
+				6840C9A119488CD400B99A67 /* TKGradeType.m */,
+				6840C9A219488CD400B99A67 /* TKLesson.h */,
+				6840C9A319488CD400B99A67 /* TKLesson.m */,
+				6840C9A419488CD400B99A67 /* TKSeat.h */,
+				6840C9A519488CD400B99A67 /* TKSeat.m */,
+				6840C9A619488CD400B99A67 /* TKStudent.h */,
+				6840C9A719488CD400B99A67 /* TKStudent.m */,
+			);
+			path = Human;
+			sourceTree = "<group>";
+		};
+		6840C9A819488CD400B99A67 /* Machine */ = {
+			isa = PBXGroup;
+			children = (
+				6840C9A919488CD400B99A67 /* _TKAccessCode.h */,
+				6840C9AA19488CD400B99A67 /* _TKAccessCode.m */,
+				6840C9AB19488CD400B99A67 /* _TKAttachment.h */,
+				6840C9AC19488CD400B99A67 /* _TKAttachment.m */,
+				6840C9AD19488CD400B99A67 /* _TKAttendance.h */,
+				6840C9AE19488CD400B99A67 /* _TKAttendance.m */,
+				6840C9AF19488CD400B99A67 /* _TKAttendanceType.h */,
+				6840C9B019488CD400B99A67 /* _TKAttendanceType.m */,
+				6840C9B119488CD400B99A67 /* _TKBehavior.h */,
+				6840C9B219488CD400B99A67 /* _TKBehavior.m */,
+				6840C9B319488CD400B99A67 /* _TKBehaviorType.h */,
+				6840C9B419488CD400B99A67 /* _TKBehaviorType.m */,
+				6840C9B519488CD400B99A67 /* _TKClassroom.h */,
+				6840C9B619488CD400B99A67 /* _TKClassroom.m */,
+				6840C9B719488CD400B99A67 /* _TKConfiguration.h */,
+				6840C9B819488CD400B99A67 /* _TKConfiguration.m */,
+				6840C9B919488CD400B99A67 /* _TKGradableItem.h */,
+				6840C9BA19488CD400B99A67 /* _TKGradableItem.m */,
+				6840C9BB19488CD400B99A67 /* _TKGrade.h */,
+				6840C9BC19488CD400B99A67 /* _TKGrade.m */,
+				6840C9BD19488CD400B99A67 /* _TKGradeCategory.h */,
+				6840C9BE19488CD400B99A67 /* _TKGradeCategory.m */,
+				6840C9BF19488CD400B99A67 /* _TKGradeType.h */,
+				6840C9C019488CD400B99A67 /* _TKGradeType.m */,
+				6840C9C119488CD400B99A67 /* _TKLesson.h */,
+				6840C9C219488CD400B99A67 /* _TKLesson.m */,
+				6840C9C319488CD400B99A67 /* _TKSeat.h */,
+				6840C9C419488CD400B99A67 /* _TKSeat.m */,
+				6840C9C519488CD400B99A67 /* _TKStudent.h */,
+				6840C9C619488CD400B99A67 /* _TKStudent.m */,
+			);
+			path = Machine;
+			sourceTree = "<group>";
+		};
 		7FD4FE6F18F22F1B00F2D17A = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +473,9 @@
 		7FD4FE9118F22F1B00F2D17A /* ParseSyncTests */ = {
 			isa = PBXGroup;
 			children = (
+				6840C9E71948976300B99A67 /* ParseMultipleDeviceTestCase.h */,
+				6840C9E51948973900B99A67 /* ParseMultipleDeviceTestCase.m */,
+				6840C9E819489FD000B99A67 /* ParseTestDeleteUpdateConflicts.m */,
 				7FE649D6190E1E8100AF74B8 /* ParseBaseTestCase.h */,
 				7FE649D7190E1E8100AF74B8 /* ParseBaseTestCase.m */,
 				7FE649D2190E1E0900AF74B8 /* ParseTestInsertThenUpload.m */,
@@ -292,6 +488,7 @@
 				7F085FD9190FDE4A00E651D6 /* ParseTestConflictDirect.m */,
 				7FE7BECD19112D04005FE165 /* ParseTestConflictIndirect.m */,
 				7FD4FE9218F22F1B00F2D17A /* Supporting Files */,
+				6840C9EA1949041A00B99A67 /* TKDB+Multiple.h */,
 			);
 			path = ParseSyncTests;
 			sourceTree = "<group>";
@@ -299,6 +496,9 @@
 		7FD4FE9218F22F1B00F2D17A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6840C98919488CD400B99A67 /* Human */,
+				6840C9A819488CD400B99A67 /* Machine */,
+				6840C97F1948800400B99A67 /* TeacherKit.xcdatamodeld */,
 				7FD4FE9318F22F1B00F2D17A /* ParseSyncTests-Info.plist */,
 				7FD4FE9418F22F1B00F2D17A /* InfoPlist.strings */,
 				7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */,
@@ -346,6 +546,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6840C98819488B8C00B99A67 /* PBXTargetDependency */,
 				7FD4FE8F18F22F1B00F2D17A /* PBXTargetDependency */,
 			);
 			name = ParseSyncTests;
@@ -376,6 +577,7 @@
 			targets = (
 				7FD4FE7718F22F1B00F2D17A /* ParseSync */,
 				7FD4FE8718F22F1B00F2D17A /* ParseSyncTests */,
+				6840C9821948882100B99A67 /* mogenerator */,
 			);
 		};
 /* End PBXProject section */
@@ -392,6 +594,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6840C9861948885700B99A67 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mogenerator --template-var arc=true -m \"ParseSyncTests/TeacherKit.xcdatamodeld/TeacherKit.xcdatamodel/\" -M \"ParseSyncTests/Machine\" -H \"ParseSyncTests/Human\"";
+		};
 		7FE649EA190EE10000AF74B8 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -431,38 +646,76 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6840C9E119488CD400B99A67 /* _TKGradeType.m in Sources */,
+				6840C9D319488CD400B99A67 /* TKLesson.m in Sources */,
 				7F546518190E182700952AB2 /* TKServerSyncManager.m in Sources */,
+				6840C9E219488CD400B99A67 /* _TKLesson.m in Sources */,
+				6840C9E419488CD400B99A67 /* _TKStudent.m in Sources */,
+				6840C9E61948973900B99A67 /* ParseMultipleDeviceTestCase.m in Sources */,
+				6840C9C719488CD400B99A67 /* TKAccessCode.m in Sources */,
 				7F546514190E182700952AB2 /* TKServerObject.m in Sources */,
+				6840C9DE19488CD400B99A67 /* _TKGradableItem.m in Sources */,
+				6840C9E919489FD000B99A67 /* ParseTestDeleteUpdateConflicts.m in Sources */,
 				7F54651E190E182700952AB2 /* NSManagedObject+Sync.m in Sources */,
+				6840C9CE19488CD400B99A67 /* TKConfiguration.m in Sources */,
 				7F822182190FBD3B007D2DA8 /* ParseTestUpdateThenDownload.m in Sources */,
+				6840C9CC19488CD400B99A67 /* TKBehaviorType.m in Sources */,
+				6840C9D419488CD400B99A67 /* TKSeat.m in Sources */,
 				7F9CD6DD19149E62003EC988 /* Attendance.m in Sources */,
 				7F085FD4190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m in Sources */,
 				7F546522190E182700952AB2 /* TKDBCacheManager.m in Sources */,
+				6840C9E319488CD400B99A67 /* _TKSeat.m in Sources */,
+				6840C9D819488CD400B99A67 /* _TKAttendance.m in Sources */,
+				6840C9DF19488CD400B99A67 /* _TKGrade.m in Sources */,
+				6840C9D519488CD400B99A67 /* TKStudent.m in Sources */,
 				7F9CD6E319149E63003EC988 /* Classroom.m in Sources */,
 				7FE649D8190E1E8100AF74B8 /* ParseBaseTestCase.m in Sources */,
+				6840C9DA19488CD400B99A67 /* _TKBehavior.m in Sources */,
 				7F085FDA190FDE4A00E651D6 /* ParseTestConflictDirect.m in Sources */,
+				6840C9E019488CD400B99A67 /* _TKGradeCategory.m in Sources */,
+				6840C9C919488CD400B99A67 /* TKAttendance.m in Sources */,
+				6840C9811948800400B99A67 /* TeacherKit.xcdatamodeld in Sources */,
 				7F54651C190E182700952AB2 /* NSEntityDescription+ObjectID.m in Sources */,
+				6840C9DD19488CD400B99A67 /* _TKConfiguration.m in Sources */,
 				686C5A9D191BAB2400440A9E /* Parse+Bolts.m in Sources */,
 				7F9CD6E019149E63003EC988 /* AttendanceType.m in Sources */,
 				7FE7BECE19112D04005FE165 /* ParseTestConflictIndirect.m in Sources */,
 				7F085FD8190FDE3B00E651D6 /* ParseTestUploadDownloadNoConflict.m in Sources */,
 				7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */,
 				7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */,
+				6840C9D119488CD400B99A67 /* TKGradeCategory.m in Sources */,
+				6840C9DB19488CD400B99A67 /* _TKBehaviorType.m in Sources */,
 				7F546512190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
+				6840C9CD19488CD400B99A67 /* TKClassroom.m in Sources */,
 				7F9CD6E619149E63003EC988 /* Student.m in Sources */,
+				6840C9D719488CD400B99A67 /* _TKAttachment.m in Sources */,
+				6840C9D919488CD400B99A67 /* _TKAttendanceType.m in Sources */,
+				6840C9CB19488CD400B99A67 /* TKBehavior.m in Sources */,
+				6840C9C819488CD400B99A67 /* TKAttachment.m in Sources */,
+				6840C9D619488CD400B99A67 /* _TKAccessCode.m in Sources */,
+				6840C9D019488CD400B99A67 /* TKGrade.m in Sources */,
 				7FE649E9190E38DA00AF74B8 /* ParseTestUpdateThenUpload.m in Sources */,
 				7FE649CE190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld in Sources */,
 				7F54651A190E182700952AB2 /* TKDBCacheEntry.m in Sources */,
+				6840C9DC19488CD400B99A67 /* _TKClassroom.m in Sources */,
 				7FE649D3190E1E0900AF74B8 /* ParseTestInsertThenUpload.m in Sources */,
+				6840C9CA19488CD400B99A67 /* TKAttendanceType.m in Sources */,
 				7F546516190E182700952AB2 /* TKParseServerSyncManager.m in Sources */,
+				6840C9D219488CD400B99A67 /* TKGradeType.m in Sources */,
 				7F546510190E182700952AB2 /* TKDB.m in Sources */,
 				7F546520190E182700952AB2 /* NSManagedObjectContext+Sync.m in Sources */,
+				6840C9CF19488CD400B99A67 /* TKGradableItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6840C98819488B8C00B99A67 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6840C9821948882100B99A67 /* mogenerator */;
+			targetProxy = 6840C98719488B8C00B99A67 /* PBXContainerItemProxy */;
+		};
 		7FD4FE8F18F22F1B00F2D17A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7FD4FE7718F22F1B00F2D17A /* ParseSync */;
@@ -482,6 +735,20 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		6840C9841948882100B99A67 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6840C9851948882100B99A67 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		7FD4FE9918F22F1B00F2D17A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -640,6 +907,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6840C9831948882100B99A67 /* Build configuration list for PBXAggregateTarget "mogenerator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6840C9841948882100B99A67 /* Debug */,
+				6840C9851948882100B99A67 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		7FD4FE7318F22F1B00F2D17A /* Build configuration list for PBXProject "ParseSync" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -670,6 +945,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
+		6840C97F1948800400B99A67 /* TeacherKit.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				6840C9801948800400B99A67 /* TeacherKit.xcdatamodel */,
+			);
+			currentVersion = 6840C9801948800400B99A67 /* TeacherKit.xcdatamodel */;
+			path = TeacherKit.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		7FE649CC190E1B5F00AF74B8 /* ParseSyncTest.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

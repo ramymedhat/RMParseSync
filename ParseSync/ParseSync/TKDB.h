@@ -16,7 +16,7 @@
 #define kTKDBUpdatedDateField       @"lastModifiedDate"
 
 #define kLastSyncDate @"LastSync"
-#define kEntities @[@"Classroom", @"Student", @"Attendance", @"AttendanceType"]
+#define kEntities @[@"Classroom", @"Student", @"Behavior", @"Behaviortype"]
 
 NSString * const TKDBSyncDidSucceedNotification;
 NSString * const TKDBSyncFailedNotification;

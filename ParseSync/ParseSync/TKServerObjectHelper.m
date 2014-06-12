@@ -66,8 +66,12 @@
                     continue;
                 }
                 NSManagedObject *relatedManagedObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:[[TKDBCacheManager sharedManager] localObjectURLForUniqueObjectID:relatedServerObject.uniqueObjectID]]];
-                [relatedObjects addObject:relatedManagedObject];
-                [managedObject setValue:relatedObjects forKey:key];
+                if (!relatedManagedObject) {
+                    NSLog(@"ERRORRRRRRR ==> related object not found");
+                } else {
+                    [relatedObjects addObject:relatedManagedObject];
+                    [managedObject setValue:relatedObjects forKey:key];
+                }
             }
         }
         else if ([serverObject.relatedObjects[key] isEqual:[NSNull null]]) {
