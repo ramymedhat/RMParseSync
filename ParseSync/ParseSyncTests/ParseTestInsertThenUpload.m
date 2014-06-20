@@ -10,10 +10,10 @@
 #import "ParseBaseTestCase.h"
 #import "TKClassroom.h"
 #import "TKStudent.h"
-#import "TKBehavior.h"
+#import "TKBehaviorType.h"
 
 @interface ParseTestInsertThenUpload : ParseBaseTestCase
-
+@property (nonatomic, strong) TKBehaviorType *behaviorType;
 @end
 
 @implementation ParseTestInsertThenUpload
@@ -32,8 +32,11 @@
 
 - (void)testSimpleInsert
 {
-    AttendanceType *attendanceType = [NSEntityDescription insertNewObjectForEntityForName:@"AttendanceType" inManagedObjectContext:[TKDB defaultDB].rootContext];
-    attendanceType.title = @"Present";
+    self.behaviorType = [TKBehaviorType insertInManagedObjectContext:[TKDB defaultDB].rootContext];
+    self.behaviorType.title = @"Good Boy";
+    self.behaviorType.isPositive = @YES;
+    self.behaviorType.behaviortypeId = [self getAUniqueID];
+    
     [[TKDB defaultDB].rootContext save:nil];
     
     StartBlock();
@@ -47,33 +50,19 @@
             EndBlock();
         }
         else {
-            XCTAssertNotNil(attendanceType.serverObjectID, @"Object did not acquire a server ID");
+            XCTAssertNotNil(self.behaviorType.serverObjectID, @"Object did not acquire a server ID");
             
-            PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType.serverObjectID];
+            PFObject *object = [[PFQuery queryWithClassName:[TKBehaviorType entityName]] getObjectWithId:self.behaviorType.serverObjectID];
             XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
             
-            XCTAssertEqualObjects([object valueForKey:@"title"], @"Present", @"Title field of object is not correct on cloud.");
+            XCTAssertEqualObjects([object valueForKey:@"title"], @"Good Boy", @"Title field of object is not correct on cloud.");
             
             EndBlock();
             
         }
         return nil;
     }];
-    
-//    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-//        XCTAssertNotNil(attendanceType.serverObjectID, @"Object did not acquire a server ID");
-//        
-//        PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType.serverObjectID];
-//        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-//        
-//        XCTAssertEqualObjects([object valueForKey:@"title"], @"Present", @"Title field of object is not correct on cloud.");
-//        EndBlock();
-//        
-//    } andFailureBlock:^(NSArray *objects, NSError *error) {
-//        XCTFail(@"Sync Failed");
-//        EndBlock();
-//    }];
-//    
+
     WaitUntilBlockCompletes();
 }
 

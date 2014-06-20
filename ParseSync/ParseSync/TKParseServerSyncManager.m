@@ -19,6 +19,10 @@
 - (TKServerObject*) serverObjectBasicInfoForParseObject:(PFObject*)parseObject {
     TKServerObject *serverObject = [[TKServerObject alloc] init];
     serverObject.entityName = parseObject.parseClassName;
+    NSEntityDescription *entity = [[TKDB defaultDB].rootContext.persistentStoreCoordinator.managedObjectModel entitiesByName][serverObject.entityName];
+    Class managedObjectClass = NSClassFromString(entity.managedObjectClassName);
+    serverObject.primaryKeyFields = [managedObjectClass primaryKeyFields];
+//    serverObject.entityClass = entity.managedObjectClassName;
     serverObject.uniqueObjectID = [parseObject valueForKey:kTKDBUniqueIDField];
     serverObject.serverObjectID = parseObject.objectId;
     serverObject.creationDate = parseObject.createdAt;
@@ -83,7 +87,8 @@
                     else {
                         PFObject *object = task.result;
                         TKServerObject *toOneServerObject = [self serverObjectBasicInfoForParseObject:object];
-                        if (toOneServerObject.isDeleted) {
+                        if (toOneServerObject.isDeleted &&
+                            [toOneServerObject.lastModificationDate compare:[TKDB defaultDB].lastSyncDate] == NSOrderedAscending) {
                             [relatedObjects setObject:[NSNull null] forKey:key];
                         }
                         else {
@@ -113,7 +118,11 @@
                         
                         for (PFObject *relatedObject in parseObjects) {
                             TKServerObject *serverRelatedObject = [self serverObjectBasicInfoForParseObject:relatedObject];
-                            if (!serverRelatedObject.isDeleted) {
+                            if (serverRelatedObject.isDeleted &&
+                                [serverRelatedObject.lastModificationDate compare:[TKDB defaultDB].lastSyncDate] == NSOrderedAscending) {
+//                                [arrServerObjects addObject:[NSNull null]];
+                            }
+                            else {
                                 [arrServerObjects addObject:serverRelatedObject];
                             }
                         }

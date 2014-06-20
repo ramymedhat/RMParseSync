@@ -7,12 +7,18 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "TKClassroom.h"
-#import "TKStudent.h"
-#import "TKBehavior.h"
-#import "TKBehaviorType.h"
 #import "TKDBCacheManager.h"
 #import <Bolts/Bolts.h>
+
+#import "TKClassroom.h"
+#import "TKStudent.h"
+#import "TKAccessCode.h"
+#import "TKBehavior.h"
+#import "TKBehaviorType.h"
+#import "TKAttendance.h"
+#import "TKAttendanceType.h"
+#import "TKLesson.h"
+
 
 @interface ParseMultipleDeviceTestCase : XCTestCase
 
@@ -24,5 +30,8 @@
 - (NSString*) getAUniqueID;
 - (NSManagedObject*) searchLocalDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;
 - (PFObject*) searchCloudDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;
+
+- (TKClassroom *)createClassroomInContext:(NSManagedObjectContext *)context;
+- (TKStudent *)createStudentInContext:(NSManagedObjectContext *)context;
 
 @end

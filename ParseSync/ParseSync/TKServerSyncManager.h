@@ -49,4 +49,6 @@
 - (BFTask *)uploadUpdatedObjectsAsync:(NSArray *)serverObjects;
 
 - (NSArray*) toManyRelationshipKeysForEntity:(NSString*)name;
+
+
 @end

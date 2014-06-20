@@ -10,6 +10,4 @@
 
 @implementation TKClassroom
 
-// Custom logic goes here.
-
 @end

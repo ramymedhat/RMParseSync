@@ -56,8 +56,8 @@
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
     
-    [Parse setApplicationId:@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"
-                  clientKey:@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"];
+    [Parse setApplicationId:@"wOA4mkcFIhmqDHQtLASnIiQtpZp5uiywF8FBjevv"/*@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"*/
+                  clientKey:@"SLLX0NJ3NCcUR40XB6DP2lIJWILdApYwAdnQ2QIx"/*@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"*/];
     
     [PFUser logInWithUsername:@"moraly" password:@"a"];
     [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
@@ -77,26 +77,18 @@
 }
 
 - (void)clearParse {
-    PFQuery *query = [PFQuery queryWithClassName:@"Classroom"];
-    NSArray *objects = [query findObjects];
-    [PFObject deleteAll:objects];
+    NSArray *entities = [self.d1_db entities];
     
-    query = [PFQuery queryWithClassName:@"Student"];
-    objects = [query findObjects];
-    [PFObject deleteAll:objects];
-    
-    query = [PFQuery queryWithClassName:@"Behaviortype"];
-    objects = [query findObjects];
-    [PFObject deleteAll:objects];
-    
-    query = [PFQuery queryWithClassName:@"Behavior"];
-    objects = [query findObjects];
-    [PFObject deleteAll:objects];
+    for (NSString *entity in entities) {
+        PFQuery *query = [PFQuery queryWithClassName:entity];
+        NSArray *objects = [query findObjects];
+        [PFObject deleteAll:objects];
+    }
 }
 
 - (void) tearDown {
     //Clear cloud database
-    [self clearParse];
+    //[self clearParse];
     
     [super tearDown];
 }
@@ -132,4 +124,110 @@
     return [[NSUUID UUID] UUIDString];
 }
 
+- (TKClassroom *)createClassroomInContext:(NSManagedObjectContext *)context {
+    TKClassroom *classroom = [TKClassroom insertInManagedObjectContext:context];
+    classroom.classroomId = [self getAUniqueID];
+    
+    classroom.title = @"Math 1";
+    classroom.code = @"BS-1";
+    classroom.category = @"Basic Science";
+    classroom.lessonsStartDate = [NSDate date];
+    classroom.lessonsEndDate = [NSDate dateWithTimeInterval:3*30*24*60*60 sinceDate:classroom.lessonsStartDate];
+    
+    return classroom;
+}
+
+- (TKStudent *)createStudentInContext:(NSManagedObjectContext *)context {
+    TKStudent *student = [TKStudent insertInManagedObjectContext:context];
+    student.studentId = [self getAUniqueID];
+    
+    student.firstName = @"Ahmad";
+    student.lastName = @"AlMoraly";
+    
+    TKAccessCode *accessCode = [TKAccessCode insertInManagedObjectContext:context];
+    accessCode.accesscodeId = [self getAUniqueID];
+    accessCode.studentCode = [[NSUUID UUID] UUIDString];
+    accessCode.parentCode = [[NSUUID UUID] UUIDString];
+    NSString *parentRoleName = [@"parent-" stringByAppendingString:[[NSUUID UUID] UUIDString]];
+    NSString *studentRoleName = [@"student-" stringByAppendingString:[[NSUUID UUID] UUIDString]];
+    accessCode.parentRoleName = parentRoleName;
+    accessCode.studentRoleName = studentRoleName;
+    
+    accessCode.student = student;
+    
+    student.accessCode = accessCode;
+    
+    return student;
+}
+
+
+-(void)getImageForEntity:(NSManagedObject *)entity forKey:(NSString*)key withCompletion:(id)pictureDownloadComplete {
+    
+    NSString *dzFileKey =[@"dz_"stringByAppendingString:key];
+    NSString *pfFileName = [entity valueForKey:dzFileKey];
+    
+    if (pfFileName && pfFileName.length >0) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+        
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        
+        NSString *fullPath;// = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:dzPath_pfFileCatch,pfFileName]];
+        
+        //Check if file exists in the catch directory. If it exists load the catch.
+        //When no file present reload the pfFile to fill the catch and use the image.
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:fullPath]) {
+            
+            UIImage *returnImage =[UIImage imageWithContentsOfFile:fullPath];
+            
+            if (pictureDownloadComplete) {
+                //            pictureDownloadComplete(YES,returnImage,YES,nil);
+            }
+            
+            [self refreshPictureDataIfPossibleOnEntity:entity forKey:key
+                                           onDzFileKey:dzFileKey
+                                        withCompletion:pictureDownloadComplete];
+        }
+        else
+        {
+            //If the file does not exist get the PFFile and the data.
+            
+            [self refreshPictureDataIfPossibleOnEntity:entity forKey:key
+                                           onDzFileKey:dzFileKey withCompletion:pictureDownloadComplete];
+        }
+    }
+    else
+    {
+        [self refreshPictureDataIfPossibleOnEntity:entity
+                                            forKey:key
+                                       onDzFileKey:dzFileKey
+                                    withCompletion:pictureDownloadComplete];
+    }
+    
+}
+
+-(void)refreshPictureDataIfPossibleOnEntity:(NSManagedObject *)entity forKey:(NSString*)key onDzFileKey:(NSString*)dzFileKey withCompletion:(id)pictureDownloadComplete {
+    
+    if (true /*self.isConnectionPossible*/) {
+        PFObject *emptyPFObject;
+        [emptyPFObject refreshInBackgroundWithBlock:^(PFObject
+                                                             *object, NSError *error) {
+            if (!error) {
+                PFFile *pfImageFile = [object valueForKey:key];
+//                [self getDataFromPFFile:pfImageFile forEntity:entity onDzFileKey:dzFileKey cached:NO withCompletion:pictureDownloadComplete];
+            }
+            else{
+//                TFLog(@"ERROR: refresh picture failed with error %@", error);
+                if (pictureDownloadComplete) {
+//                    pictureDownloadComplete(NO, nil, NO, nil);
+                }
+            }
+        }];
+        
+    }else{
+        if (pictureDownloadComplete) {
+//            pictureDownloadComplete(NO, nil, NO, nil);
+        }
+    }
+}
 @end

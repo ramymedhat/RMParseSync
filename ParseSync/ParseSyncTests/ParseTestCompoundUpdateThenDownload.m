@@ -76,6 +76,8 @@
 - (void)testToManyRelationshipUpdateRemoveDeleteChild {
     [[self.parse_classroom relationForKey:@"students"] removeObject:self.parse_student];
     [self.parse_student setValue:@YES forKey:@"isDeleted"];
+    [self.parse_classroom setValue:[NSDate date] forKey:@"lastModifiedDate"];
+    [self.parse_student setValue:[NSDate date] forKey:@"lastModifiedDate"];
     [PFObject saveAll:@[self.parse_student,self.parse_classroom]];
     
     StartBlock();

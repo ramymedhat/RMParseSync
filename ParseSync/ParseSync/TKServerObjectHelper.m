@@ -224,23 +224,47 @@
         newerObject = conflictPair.localObject;
     }
     
-    TKServerObject *outputObject = [[TKServerObject alloc] initWithUniqueID:conflictPair.localObject.uniqueObjectID];
-    outputObject.entityName = conflictPair.localObject.entityName;
-    outputObject.creationDate = conflictPair.localObject.creationDate;
-    outputObject.serverObjectID = conflictPair.serverObject.serverObjectID;
+    TKServerObject *outputObject = [[TKServerObject alloc] initWithUniqueID:newerObject.uniqueObjectID];
+    outputObject.entityName = newerObject.entityName;
+    outputObject.creationDate = newerObject.creationDate;
+    outputObject.serverObjectID = newerObject.serverObjectID;
     outputObject.localObjectIDURL = conflictPair.localObject.localObjectIDURL;
     outputObject.lastModificationDate = [NSDate date];
     
     // to handle Update Delete conflicts
     outputObject.isDeleted = newerObject.isDeleted;
     
-    NSMutableDictionary *dictAttributes = [NSMutableDictionary dictionary];
+    if (conflictPair.localObject.isDeleted || conflictPair.serverObject.isDeleted) {
+        // if one of them is deleted, then newerObject wins, no need to check for every key 
+        outputObject.attributeValues = newerObject.attributeValues;
+        outputObject.relatedObjects = newerObject.relatedObjects;
+        
+        conflictPair.outputObject = outputObject;
+        conflictPair.resolutionType = TKDBMergeBothUpdated;
+        return;
+    }
     
-    for (NSString *key in [conflictPair.localObject.attributeValues allKeys]) {
+    NSMutableDictionary *dictAttributes = [NSMutableDictionary dictionary];
+    NSArray *localKeys = [conflictPair.localObject.attributeValues allKeys];
+    NSArray *serverKeys = [conflictPair.serverObject.attributeValues allKeys];
+    
+    NSSet *allKeys = [[NSSet setWithArray:localKeys] setByAddingObjectsFromArray:serverKeys];
+    
+    for (NSString *key in allKeys) {
         
         id localValue = [conflictPair.localObject.attributeValues valueForKey:key];
         id serverValue = [conflictPair.serverObject.attributeValues valueForKey:key];
         id shadowValue = [conflictPair.shadowObject.attributeValues valueForKey:key];
+        
+        if (!localValue) {
+            localValue = @"";
+        }
+        if (!serverValue) {
+            serverValue = @"";
+        }
+        if (!shadowValue) {
+            shadowValue = @"";
+        }
         
         BOOL localChanged = ![localValue isEqual:shadowValue];
         BOOL serverChanged = ![serverValue isEqual:shadowValue];
@@ -270,6 +294,9 @@
         
         
         if ([localValue isKindOfClass:[NSArray class]]) {
+            if (shadowValue == nil) {
+                shadowValue = [NSArray array];
+            }
             NSSet *localSet = [NSSet setWithArray:localValue];
             NSSet *serverSet = [NSSet setWithArray:serverValue];
             NSSet *shadowSet = [NSSet setWithArray:shadowValue];

@@ -14,12 +14,15 @@
 - (void) setUp {
     [super setUp];
     
-    [Parse setApplicationId:@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"
-                  clientKey:@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"];
+//    [Parse setApplicationId:@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"
+//                  clientKey:@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"];
     
+    
+    [Parse setApplicationId:@"wOA4mkcFIhmqDHQtLASnIiQtpZp5uiywF8FBjevv"/*@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"*/
+                  clientKey:@"SLLX0NJ3NCcUR40XB6DP2lIJWILdApYwAdnQ2QIx"/*@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"*/];
     //Create In memory store
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    NSURL *modelURL = [bundle URLForResource:@"TeacherKit" withExtension:@"momd"];
+    NSURL *modelURL = [bundle URLForResource:@"ParseSyncTest" withExtension:@"momd"];
     NSManagedObjectModel *_managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     NSPersistentStoreCoordinator *_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:_managedObjectModel];
@@ -29,6 +32,8 @@
     [_managedObjectContext setPersistentStoreCoordinator:_persistentStoreCoordinator];
     
     [TKDB defaultDB].rootContext = _managedObjectContext;
+    
+    [TKDB defaultDB].entities = [[_managedObjectModel entitiesByName] allKeys];
     
     //Clear cloud database
     PFQuery *query = [PFQuery queryWithClassName:@"Classroom"];
@@ -45,14 +50,14 @@
         [object delete];
     }
     
-    query = [PFQuery queryWithClassName:@"AttendanceType"];
+    query = [PFQuery queryWithClassName:@"Behaviortype"];
     objects = [query findObjects];
     
     for (PFObject *object in objects) {
         [object delete];
     }
     
-    query = [PFQuery queryWithClassName:@"Attendance"];
+    query = [PFQuery queryWithClassName:@"Behavior"];
     objects = [query findObjects];
     
     for (PFObject *object in objects) {
