@@ -17,16 +17,6 @@
 @property (nonatomic, strong) NSString *entityName;
 
 /**
- *  The primary keys of the object.
- */
-@property (nonatomic, strong) NSOrderedSet *primaryKeys;
-
-/**
- *  The primary key fields names of the object.
- */
-@property (nonatomic, strong) NSOrderedSet *primaryKeyFields;
-
-/**
  *  The object's server based unique identifier.
  */
 @property (nonatomic, strong) NSString *serverObjectID;

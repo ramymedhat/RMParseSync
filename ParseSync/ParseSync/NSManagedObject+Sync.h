@@ -10,8 +10,6 @@
 
 @interface NSManagedObject (Sync)
 
-+ (NSOrderedSet *)primaryKeyFields;
-
 - (NSString *) tk_localURL;
 /**
  *  The object's unique identifier. Assigned locally.

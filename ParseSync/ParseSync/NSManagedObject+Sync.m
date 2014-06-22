@@ -43,33 +43,12 @@
 
 - (id) assignUniqueObjectID {
     if ([self valueForKey:kTKDBUniqueIDField] == nil) {
-        NSOrderedSet *primaryKeyFields = [self.class primaryKeyFields];
-        if (primaryKeyFields.count == 1 && [[primaryKeyFields firstObject] isEqualToString:kTKDBUniqueIDField]) {
-            // generate a uniqueID
-            id objectId = nil;
-            CFUUIDRef uuid = CFUUIDCreate(CFAllocatorGetDefault());
-            objectId = (__bridge_transfer NSString *)CFUUIDCreateString(CFAllocatorGetDefault(), uuid);
-            [self setValue:objectId forKey:kTKDBUniqueIDField];
-            CFRelease(uuid);
-        }
-        else {
-            // get the primaryKeys
-            NSOrderedSet *primaryKeys = [self primaryKeys];
-            NSMutableString *uniqID = [NSMutableString string];
-            for (id key in primaryKeys) {
-                if ([key respondsToSelector:@selector(tk_uniqueObjectID)]) {
-                    id val = [key tk_uniqueObjectID];
-                    if (!val) {
-                        val = [key assignUniqueObjectID];
-                    }
-                    [uniqID appendString:val];
-                }
-                else {
-                    [uniqID appendString:key];
-                }
-            }
-            [self setValue:[uniqID copy] forKey:kTKDBUniqueIDField];
-        }
+        // generate a uniqueID
+        id objectId = nil;
+        CFUUIDRef uuid = CFUUIDCreate(CFAllocatorGetDefault());
+        objectId = (__bridge_transfer NSString *)CFUUIDCreateString(CFAllocatorGetDefault(), uuid);
+        [self setValue:objectId forKey:kTKDBUniqueIDField];
+        CFRelease(uuid);
     }
     return [self tk_uniqueObjectID];
 }
@@ -189,14 +168,6 @@
     return dict;
 }
 
-+ (NSOrderedSet *)primaryKeyFields {
-    return [NSOrderedSet orderedSetWithObjects:kTKDBUniqueIDField, nil];
-}
-
-- (NSOrderedSet *)primaryKeys {
-    return [NSOrderedSet orderedSetWithObjects:self.tk_uniqueObjectID, nil];
-}
-
 - (TKServerObject*) toServerObject {
     TKServerObject *serverObject = [[TKServerObject alloc] init];
     serverObject.entityName = [self.entity name];
@@ -207,7 +178,6 @@
     serverObject.attributeValues = [self attributeDictionary];
     serverObject.creationDate = [self tk_creationDate];
     serverObject.lastModificationDate = [self tk_lastModificationDate];
-    serverObject.primaryKeys = [self primaryKeys];
     NSMutableDictionary *dictRelationships = [NSMutableDictionary dictionary];
     [dictRelationships addEntriesFromDictionary:[self toOneRelationshipDictionary]];
     [dictRelationships addEntriesFromDictionary:[self toManyRelationshipDictionary]];

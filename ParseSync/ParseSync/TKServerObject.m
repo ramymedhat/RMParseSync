@@ -72,27 +72,6 @@
     [encoder encodeBool:self.isOriginal forKey:kIsOriginal];
 }
 
-- (NSOrderedSet *)primaryKeys {
-    if (!_primaryKeys) {
-        NSMutableOrderedSet *set = [NSMutableOrderedSet orderedSetWithCapacity:self.primaryKeyFields.count];
-        for (id key in self.primaryKeyFields) {
-            id val;
-            if ([key isEqualToString:kTKDBUniqueIDField]) {
-                val = self.uniqueObjectID;
-            }
-            if (!val) {
-                val = self.attributeValues[key];
-            }
-            if (!val) {
-                val = self.relatedObjects[key];
-            }
-            [set addObject:val];
-        }
-        _primaryKeys = [set copy];
-    }
-    return _primaryKeys;
-}
-
 - (BOOL) isEqual:(id)object {
     TKServerObject *otherObject = (TKServerObject*)object;
     if ([self.uniqueObjectID isEqualToString:otherObject.uniqueObjectID]) {
