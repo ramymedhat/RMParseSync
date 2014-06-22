@@ -661,8 +661,15 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
     [[TKDBCacheManager sharedManager] startCheckpoint];
     
     __weak TKDB *weakself = self;
-    
+
+    CFTimeInterval __block startTime = CACurrentMediaTime();
+
     return [[self pullServerChanges] continueWithSuccessBlock:^id(BFTask *pullTask) {
+        CFTimeInterval __block endTime = CACurrentMediaTime();
+        NSNumber __block *step1Time = @(endTime - startTime);
+
+        startTime = CACurrentMediaTime();
+        
         NSMutableArray *arrServerObjects = pullTask.result;
         
         NSArray *localInsertedObjects = [TKServerObjectHelper getInsertedObjectsFromCache];
@@ -674,6 +681,9 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         NSArray *conflicts = [weakself detectConflictsWithServerObjects:arrServerObjects localObjects:[localUpdatedObjects arrayByAddingObjectsFromArray:localInsertedObjects] localUpdatesNoConflicts:&localUpdatesNoConflicts serverUpdatesNoConflicts:&serverUpdatesNoConflicts];
         
         [weakself resolveConflicts:conflicts withLocalUpdates:&localUpdatesNoConflicts andServerUpdates:&serverUpdatesNoConflicts];
+        
+        endTime = CACurrentMediaTime();
+        NSNumber __block *step2Time = @(endTime - startTime);
         
         // conflict management should return all server updates
         // @param serverUpdatesNoConflicts should have all server changes with conflicts resolved.
@@ -687,7 +697,10 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         
         [objectsSet minusSet:newObjects];
         
+        startTime = CACurrentMediaTime();
         return [[weakself pushNewLocalObjects:newObjects.allObjects] continueWithSuccessBlock:^id(BFTask *task) {
+            endTime = CACurrentMediaTime();
+            NSNumber __block *uploadingLocalInserts = @(endTime - startTime);
             
             NSArray *newObjectsWithServerIDs = task.result;
             
@@ -697,7 +710,10 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
             NSArray *allObjects = [objectsSet.allObjects arrayByAddingObjectsFromArray:newObjectsWithServerIDs];
             
             // then push local relations
+            startTime = CACurrentMediaTime();
             return [[weakself pushNewLocalObjectsWithRelations:allObjects] continueWithSuccessBlock:^id(BFTask *task) {
+                endTime = CACurrentMediaTime();
+                NSNumber __block *uploadingLocalChanges = @(endTime - startTime);
                 
                 // save to Db
                 NSError __block *savingError;
@@ -718,48 +734,10 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
                     [[TKDBCacheManager sharedManager] clearCache];
                     [[TKDBCacheManager sharedManager] endCheckpointSuccessfully];
                 }
-                return nil;
+                
+                return [BFTask taskWithResult:@{@"Downloading server changes": step1Time, @"Resolving Conflicts" : step2Time, @"Uploading local Inserts": uploadingLocalInserts, @"Uploading local updates": uploadingLocalChanges}];
             }];
         }];
-
-        
-        // save to db
-        NSError __block *savingError;
-        [weakself.syncContext performBlockAndWait:^{
-            [weakself.syncContext save:&savingError];
-            disableNotifications = YES;
-            [weakself.syncContext.parentContext save:&savingError];
-            disableNotifications = NO;
-        }];
-        
-        if (savingError) {
-            // rollback and
-            [[TKDBCacheManager sharedManager] rollbackToCheckpoint];
-            return [BFTask taskWithError:savingError];
-        }
-        else {
-            //push local changes
-            // first push new objects without relations.
-            NSArray *objectsToPush = [[localUpdatesNoConflicts allObjects] arrayByAddingObjectsFromArray:localInsertedObjects];
-            
-            return [[weakself pushNewLocalObjects:objectsToPush] continueWithSuccessBlock:^id(BFTask *task) {
-                
-                NSArray *newObjectsWithServerIDs = task.result;
-                
-                [TKServerObjectHelper updateServerIDInLocalDatabase:newObjectsWithServerIDs];
-                
-                // then push local relations
-                return [[weakself pushNewLocalObjectsWithRelations:newObjectsWithServerIDs] continueWithSuccessBlock:^id(BFTask *task) {
-                    
-                    [weakself setLastSyncDate:[NSDate date]];
-                    [[TKDBCacheManager sharedManager] clearCache];
-                    [[TKDBCacheManager sharedManager] endCheckpointSuccessfully];
-                    
-                    return nil;
-                }];
-            }];
-        }
-        
     }];
 }
 
