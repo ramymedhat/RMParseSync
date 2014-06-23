@@ -56,6 +56,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -90,6 +91,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -124,6 +126,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -164,8 +167,8 @@
             XCTAssertEqual([[[[self.parse_students[2] relationForKey:@"classes"] query] findObjects] count], 1, @"Class not added to server student");
             
             EndBlock();
-            
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -200,6 +203,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -234,6 +238,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -282,6 +287,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();

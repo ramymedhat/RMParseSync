@@ -32,42 +32,6 @@
 
 - (void)testSimpleInsert
 {
-    self.behaviorType = [TKBehaviorType insertInManagedObjectContext:[TKDB defaultDB].rootContext];
-    self.behaviorType.title = @"Good Boy";
-    self.behaviorType.isPositive = @YES;
-    self.behaviorType.behaviortypeId = [self getAUniqueID];
-    
-    [[TKDB defaultDB].rootContext save:nil];
-    
-    StartBlock();
-    
-    [[[TKDB defaultDB] sync] continueWithBlock:^id(BFTask *task) {
-        if (task.isCancelled) {
-            
-        }
-        else if (task.error) {
-            XCTFail(@"Sync Failed");
-            EndBlock();
-        }
-        else {
-            XCTAssertNotNil(self.behaviorType.serverObjectID, @"Object did not acquire a server ID");
-            
-            PFObject *object = [[PFQuery queryWithClassName:[TKBehaviorType entityName]] getObjectWithId:self.behaviorType.serverObjectID];
-            XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-            
-            XCTAssertEqualObjects([object valueForKey:@"title"], @"Good Boy", @"Title field of object is not correct on cloud.");
-            
-            EndBlock();
-            
-        }
-        return nil;
-    }];
-
-    WaitUntilBlockCompletes();
-}
-
-- (void)testSimpleInsertFailed
-{
     AttendanceType *attendanceType = [NSEntityDescription insertNewObjectForEntityForName:@"AttendanceType" inManagedObjectContext:[TKDB defaultDB].rootContext];
     attendanceType.title = @"Present";
     [[TKDB defaultDB].rootContext save:nil];
@@ -96,20 +60,6 @@
         return nil;
     }];
     
-    //    [[TKDB defaultDB] syncWithSuccessBlock:^(NSArray *objects) {
-    //        XCTAssertNotNil(attendanceType.serverObjectID, @"Object did not acquire a server ID");
-    //
-    //        PFObject *object = [[PFQuery queryWithClassName:@"AttendanceType"] getObjectWithId:attendanceType.serverObjectID];
-    //        XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
-    //
-    //        XCTAssertEqualObjects([object valueForKey:@"title"], @"Present", @"Title field of object is not correct on cloud.");
-    //        EndBlock();
-    //
-    //    } andFailureBlock:^(NSArray *objects, NSError *error) {
-    //        XCTFail(@"Sync Failed");
-    //        EndBlock();
-    //    }];
-    //    
     WaitUntilBlockCompletes();
 }
 

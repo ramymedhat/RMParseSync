@@ -61,7 +61,7 @@
             XCTAssert([arr count] == 1, @"Student not linked to classroom");
             EndBlock();
         }
-        
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -93,6 +93,7 @@
             XCTAssertNotNil(object, @"Object with server ID doesn't exist on Parse");
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -140,6 +141,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -209,6 +211,7 @@
             XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -253,6 +256,7 @@
             XCTAssertEqualObjects([object valueForKey:@"isDeleted"], @YES, @"Object not marked as deleted");
             EndBlock();
         }
+        return nil;
         
     }];
     

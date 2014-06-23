@@ -10,7 +10,7 @@ const struct TKClassroomAttributes TKClassroomAttributes = {
 	.code = @"code",
 	.createdDate = @"createdDate",
 	.icon = @"icon",
-	.iconPath = @"iconPath",
+	.image_BinaryPathKey = @"image_BinaryPathKey",
 	.isShadow = @"isShadow",
 	.lastModifiedDate = @"lastModifiedDate",
 	.lessonsEndDate = @"lessonsEndDate",
@@ -119,7 +119,7 @@ const struct TKClassroomFetchedProperties TKClassroomFetchedProperties = {
 
 
 
-@dynamic iconPath;
+@dynamic image_BinaryPathKey;
 
 
 

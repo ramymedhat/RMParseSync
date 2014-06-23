@@ -85,7 +85,7 @@
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="iconPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image_BinaryPathKey" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lessonsEndDate" optional="YES" attributeType="Date" syncable="YES"/>
@@ -210,7 +210,7 @@
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="iconPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image_BinaryPathKey" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isShadow" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastModifiedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
@@ -239,7 +239,7 @@
         <element name="Attendancetype" positionX="0" positionY="0" width="128" height="195"/>
         <element name="Behavior" positionX="0" positionY="0" width="128" height="165"/>
         <element name="Behaviortype" positionX="0" positionY="0" width="128" height="165"/>
-        <element name="Classroom" positionX="0" positionY="0" width="128" height="360"/>
+        <element name="Classroom" positionX="0" positionY="0" width="128" height="373"/>
         <element name="Configuration" positionX="0" positionY="0" width="128" height="165"/>
         <element name="Gradableitem" positionX="0" positionY="0" width="128" height="255"/>
         <element name="Grade" positionX="0" positionY="0" width="128" height="135"/>

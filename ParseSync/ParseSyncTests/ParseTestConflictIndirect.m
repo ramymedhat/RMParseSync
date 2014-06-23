@@ -73,6 +73,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -116,6 +117,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -158,6 +160,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -205,6 +208,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -242,6 +246,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -289,6 +294,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -327,6 +333,7 @@
             
             EndBlock();
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();

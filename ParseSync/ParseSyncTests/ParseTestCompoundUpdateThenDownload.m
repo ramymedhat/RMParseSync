@@ -68,6 +68,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -94,8 +95,8 @@
             XCTAssert([self.classroom.students count] == 0, @"Deleted student still wired");
             XCTAssertNil(self.student.managedObjectContext, @"Student not deleted");
             EndBlock();
-            
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -146,6 +147,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -179,6 +181,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -205,6 +208,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();
@@ -243,6 +247,7 @@
             EndBlock();
             
         }
+        return nil;
     }];
     
     WaitUntilBlockCompletes();

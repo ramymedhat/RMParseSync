@@ -8,6 +8,11 @@
 
 #import "ParseMultipleDeviceTestCase.h"
 
+@interface UIColor (Random)
+
++ (UIColor *)randomColor;
+
+@end
 
 @implementation ParseMultipleDeviceTestCase
 
@@ -67,11 +72,17 @@
     self.d1_db = [[TKDB alloc] init];
     self.d1_db.rootContext = [self setUpCoreDataStackWithName:@"Device1.sqlite"];
     self.d1_cacheManager = [[TKDBCacheManager alloc] init];
+    self.d2_cacheManager.dictCacheFilename = [NSString stringWithFormat:@"%lu-%@", self.d1_cacheManager.hash, self.d1_cacheManager.dictCacheFilename];
+    self.d2_cacheManager.dictLocalMappingFilename = [NSString stringWithFormat:@"%lu-%@", self.d1_cacheManager.hash, self.d1_cacheManager.dictLocalMappingFilename];
+    self.d2_cacheManager.dictServerMappingFilename = [NSString stringWithFormat:@"%lu-%@", self.d1_cacheManager.hash, self.d1_cacheManager.dictServerMappingFilename];
     
     
     self.d2_db = [[TKDB alloc] init];
     self.d2_db.rootContext = [self setUpCoreDataStackWithName:@"Device2.sqlite"];
     self.d2_cacheManager = [[TKDBCacheManager alloc] init];
+    self.d2_cacheManager.dictCacheFilename = [NSString stringWithFormat:@"%lu-%@", self.d2_cacheManager.hash, self.d2_cacheManager.dictCacheFilename];
+    self.d2_cacheManager.dictLocalMappingFilename = [NSString stringWithFormat:@"%lu-%@", self.d2_cacheManager.hash, self.d2_cacheManager.dictLocalMappingFilename];
+    self.d2_cacheManager.dictServerMappingFilename = [NSString stringWithFormat:@"%lu-%@", self.d2_cacheManager.hash, self.d2_cacheManager.dictServerMappingFilename];
     
     [self clearParse];
 }
@@ -137,6 +148,20 @@
     return classroom;
 }
 
+- (TKClassroom *)createClassroomWithImageInContext:(NSManagedObjectContext *)context {
+    TKClassroom *classroom = [TKClassroom insertInManagedObjectContext:context];
+    classroom.classroomId = [self getAUniqueID];
+    
+    classroom.title = @"Math 1";
+    classroom.code = @"BS-1";
+    classroom.category = @"Basic Science";
+    classroom.lessonsStartDate = [NSDate date];
+    classroom.lessonsEndDate = [NSDate dateWithTimeInterval:3*30*24*60*60 sinceDate:classroom.lessonsStartDate];
+    
+    classroom.image_BinaryPathKey = [self newImagePath];
+    return classroom;
+}
+
 - (TKStudent *)createStudentInContext:(NSManagedObjectContext *)context {
     TKStudent *student = [TKStudent insertInManagedObjectContext:context];
     student.studentId = [self getAUniqueID];
@@ -160,74 +185,85 @@
     return student;
 }
 
-
--(void)getImageForEntity:(NSManagedObject *)entity forKey:(NSString*)key withCompletion:(id)pictureDownloadComplete {
+- (NSString *)newImagePath {
+    UIImage *image = [self randomColoredImage];
+    NSString *imageName = [[NSUUID UUID] UUIDString];
+    NSString *path = [[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:imageName] stringByAppendingPathExtension:@"jpg"];
+    [UIImageJPEGRepresentation(image, 0.5) writeToFile:path atomically:YES];
     
-    NSString *dzFileKey =[@"dz_"stringByAppendingString:key];
-    NSString *pfFileName = [entity valueForKey:dzFileKey];
-    
-    if (pfFileName && pfFileName.length >0) {
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-        
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        
-        NSString *fullPath;// = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:dzPath_pfFileCatch,pfFileName]];
-        
-        //Check if file exists in the catch directory. If it exists load the catch.
-        //When no file present reload the pfFile to fill the catch and use the image.
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:fullPath]) {
-            
-            UIImage *returnImage =[UIImage imageWithContentsOfFile:fullPath];
-            
-            if (pictureDownloadComplete) {
-                //            pictureDownloadComplete(YES,returnImage,YES,nil);
-            }
-            
-            [self refreshPictureDataIfPossibleOnEntity:entity forKey:key
-                                           onDzFileKey:dzFileKey
-                                        withCompletion:pictureDownloadComplete];
-        }
-        else
-        {
-            //If the file does not exist get the PFFile and the data.
-            
-            [self refreshPictureDataIfPossibleOnEntity:entity forKey:key
-                                           onDzFileKey:dzFileKey withCompletion:pictureDownloadComplete];
-        }
-    }
-    else
-    {
-        [self refreshPictureDataIfPossibleOnEntity:entity
-                                            forKey:key
-                                       onDzFileKey:dzFileKey
-                                    withCompletion:pictureDownloadComplete];
-    }
-    
+    NSString *relativePath = [path stringByReplacingCharactersInRange:[path rangeOfString:NSHomeDirectory()] withString:@""];
+    return relativePath;
 }
 
--(void)refreshPictureDataIfPossibleOnEntity:(NSManagedObject *)entity forKey:(NSString*)key onDzFileKey:(NSString*)dzFileKey withCompletion:(id)pictureDownloadComplete {
+- (UIImage *)randomColoredImage {
+    UIImage *img = [UIImage imageWithContentsOfFile:@"/Users/ahmedalmoraly/Developer/RMParseSync/ParseSync/ParseSyncTests/user_placeholder.png"];
     
-    if (true /*self.isConnectionPossible*/) {
-        PFObject *emptyPFObject;
-        [emptyPFObject refreshInBackgroundWithBlock:^(PFObject
-                                                             *object, NSError *error) {
-            if (!error) {
-                PFFile *pfImageFile = [object valueForKey:key];
-//                [self getDataFromPFFile:pfImageFile forEntity:entity onDzFileKey:dzFileKey cached:NO withCompletion:pictureDownloadComplete];
-            }
-            else{
-//                TFLog(@"ERROR: refresh picture failed with error %@", error);
-                if (pictureDownloadComplete) {
-//                    pictureDownloadComplete(NO, nil, NO, nil);
-                }
-            }
-        }];
-        
-    }else{
-        if (pictureDownloadComplete) {
-//            pictureDownloadComplete(NO, nil, NO, nil);
-        }
-    }
+    // begin a new image context, to draw our colored image onto
+    UIGraphicsBeginImageContext(img.size);
+    
+    // get a reference to that context we created
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // set the fill color
+    [[UIColor randomColor] setFill];
+    
+    // translate/flip the graphics context (for transforming from CG* coords to UI* coords
+    CGContextTranslateCTM(context, 0, img.size.height);
+    CGContextScaleCTM(context, 1.0, -1.0);
+    
+    // set the blend mode to color burn, and the original image
+    CGContextSetBlendMode(context, kCGBlendModeColorBurn);
+    CGRect rect = CGRectMake(0, 0, img.size.width, img.size.height);
+    CGContextDrawImage(context, rect, img.CGImage);
+    
+    // set a mask that matches the shape of the image, then draw (color burn) a colored rectangle
+    CGContextClipToMask(context, rect, img.CGImage);
+    CGContextAddRect(context, rect);
+    CGContextDrawPath(context,kCGPathFill);
+    
+    // generate a new UIImage from the graphics context we drew onto
+    UIImage *coloredImg = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    //return the color-burned image
+    return coloredImg;
 }
+
+@end
+
+
+@implementation UIColor (Random)
+
++ (UIColor *)randomColor {
+    /*
+     
+     Distributed under The MIT License:
+     http://opensource.org/licenses/mit-license.php
+     
+     Permission is hereby granted, free of charge, to any person obtaining
+     a copy of this software and associated documentation files (the
+     "Software"), to deal in the Software without restriction, including
+     without limitation the rights to use, copy, modify, merge, publish,
+     distribute, sublicense, and/or sell copies of the Software, and to
+     permit persons to whom the Software is furnished to do so, subject to
+     the following conditions:
+     
+     The above copyright notice and this permission notice shall be
+     included in all copies or substantial portions of the Software.
+     
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+     OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+     */
+    
+    CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
+    CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
+    CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
+    return [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
+}
+
 @end

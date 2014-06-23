@@ -17,10 +17,17 @@
 //    [Parse setApplicationId:@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"
 //                  clientKey:@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"];
     
+    [Parse setApplicationId:@"dF5jw2NyW1xV7PwT2OLTQlXdfNDNfA6fj7bv8eE2"/*@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"*/
+                  clientKey:@"tmAegbSiFExlTQSPjVYAQBohQtjbLLUsHx45nhEt"/*@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"*/];
     
-    [Parse setApplicationId:@"wOA4mkcFIhmqDHQtLASnIiQtpZp5uiywF8FBjevv"/*@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"*/
-                  clientKey:@"SLLX0NJ3NCcUR40XB6DP2lIJWILdApYwAdnQ2QIx"/*@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"*/];
+    
+//    [Parse setApplicationId:@"wOA4mkcFIhmqDHQtLASnIiQtpZp5uiywF8FBjevv"/*@"vvIFEVKHztE3l8CZrECjn09T3j8cjB3y0E3VxCN8"*/
+//                  clientKey:@"SLLX0NJ3NCcUR40XB6DP2lIJWILdApYwAdnQ2QIx"/*@"skHvUZEUu1GqdD0LbqMyhzutGCwjIm5fUcWV6Ddj"*/];
     //Create In memory store
+    
+    [PFUser logInWithUsername:@"moraly" password:@"a"];
+    [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
+    
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *modelURL = [bundle URLForResource:@"ParseSyncTest" withExtension:@"momd"];
     NSManagedObjectModel *_managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
@@ -36,32 +43,13 @@
     [TKDB defaultDB].entities = [[_managedObjectModel entitiesByName] allKeys];
     
     //Clear cloud database
-    PFQuery *query = [PFQuery queryWithClassName:@"Classroom"];
-    NSArray *objects = [query findObjects];
     
-    for (PFObject *object in objects) {
-        [object delete];
-    }
+    NSArray *entities = [[TKDB defaultDB] entities];
     
-    query = [PFQuery queryWithClassName:@"Student"];
-    objects = [query findObjects];
-    
-    for (PFObject *object in objects) {
-        [object delete];
-    }
-    
-    query = [PFQuery queryWithClassName:@"Behaviortype"];
-    objects = [query findObjects];
-    
-    for (PFObject *object in objects) {
-        [object delete];
-    }
-    
-    query = [PFQuery queryWithClassName:@"Behavior"];
-    objects = [query findObjects];
-    
-    for (PFObject *object in objects) {
-        [object delete];
+    for (NSString *entity in entities) {
+        PFQuery *query = [PFQuery queryWithClassName:entity];
+        NSArray *objects = [query findObjects];
+        [PFObject deleteAll:objects];
     }
 }
 

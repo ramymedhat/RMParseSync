@@ -32,6 +32,8 @@
 - (void)testAttributeUpdate
 {
     [self.parse_attendanceType setValue:@"Absent" forKeyPath:@"title"];
+    [self.parse_attendanceType setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
+    
     BOOL saved = [self.parse_attendanceType save];
     
     if (!saved) {
@@ -66,7 +68,9 @@
 
 - (void) testToManyRelationshipUpdateAddChild {
     [[self.parse_classroom relationForKey:@"students"] addObject:self.parse_student2];
+    [self.parse_classroom setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [[self.parse_student2 relationForKey:@"classes"] addObject:self.parse_classroom];
+    [self.parse_student2 setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [PFObject saveAll:@[self.parse_classroom,self.parse_student2]];
     
     StartBlock();
@@ -102,7 +106,9 @@
     [[TKDB defaultDB].rootContext save:nil];
     
     [[self.parse_classroom relationForKey:@"students"] removeObject:self.parse_student];
+    [self.parse_classroom setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [[self.parse_student relationForKey:@"classes"] removeObject:self.parse_classroom];
+    [self.parse_student setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [PFObject saveAll:@[self.parse_classroom,self.parse_student]];
     
     StartBlock();
@@ -134,7 +140,9 @@
 
 - (void) testToOneRelationshipSet {
     [self.parse_attendance1 setValue:self.parse_attendanceType forKey:@"attendanceType"];
+    [self.parse_attendance1 setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [[self.parse_attendanceType relationForKey:@"attendances"] addObject:self.parse_attendance1];
+    [self.parse_attendanceType setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [PFObject saveAll:@[self.parse_attendance1,self.parse_attendanceType]];
     
     StartBlock();
@@ -164,7 +172,9 @@
 
 - (void) testToOneRelationshipClear {
     [self.parse_attendance2 removeObjectForKey:@"attendanceType"];
+    [self.parse_attendance2 setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [[self.parse_attendanceType relationForKey:@"attendances"] removeObject:self.parse_attendance2];
+    [self.parse_attendanceType setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [PFObject saveAll:@[self.parse_attendance2,self.parse_attendanceType]];
     
     StartBlock();
@@ -194,6 +204,7 @@
 
 - (void) testSimpleDeleteObject {
     [self.parse_attendance1 setValue:@YES forKey:kTKDBIsDeletedField];
+    [self.parse_attendance1 setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [self.parse_attendance1 save];
     
     StartBlock();
@@ -225,6 +236,7 @@
 
 - (void) testDeleteObjectWithRelationships {
     [self.parse_attendance2 setValue:@YES forKey:kTKDBIsDeletedField];
+    [self.parse_attendance2 setValue:[NSDate date] forKeyPath:@"lastModifiedDate"];
     [self.parse_attendance2 save];
     
     StartBlock();

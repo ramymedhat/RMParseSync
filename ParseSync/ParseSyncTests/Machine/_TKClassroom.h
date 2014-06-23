@@ -11,7 +11,7 @@ extern const struct TKClassroomAttributes {
 	__unsafe_unretained NSString *code;
 	__unsafe_unretained NSString *createdDate;
 	__unsafe_unretained NSString *icon;
-	__unsafe_unretained NSString *iconPath;
+	__unsafe_unretained NSString *image_BinaryPathKey;
 	__unsafe_unretained NSString *isShadow;
 	__unsafe_unretained NSString *lastModifiedDate;
 	__unsafe_unretained NSString *lessonsEndDate;
@@ -132,11 +132,11 @@ extern const struct TKClassroomFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSString* iconPath;
+@property (nonatomic, strong) NSString* image_BinaryPathKey;
 
 
 
-//- (BOOL)validateIconPath:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateImage_BinaryPathKey:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -358,8 +358,8 @@ extern const struct TKClassroomFetchedProperties {
 
 
 
-- (NSString*)primitiveIconPath;
-- (void)setPrimitiveIconPath:(NSString*)value;
+- (NSString*)primitiveImage_BinaryPathKey;
+- (void)setPrimitiveImage_BinaryPathKey:(NSString*)value;
 
 
 

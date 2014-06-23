@@ -23,23 +23,27 @@ typedef enum : NSUInteger {
 
 @implementation TKDB (Multiple)
 
+#define LAST_SYNC_DATE_HASH [NSString stringWithFormat:@"%lu-%@", (unsigned long)self.hash, @"lastSyncDate"]
+
 #if MULTIPLE_DEVICES
 
 + (TKDB *)defaultDB {
-    
+    if (!currentDB) {
+        currentDB = [[TKDB alloc] init];
+    }
     return currentDB;
 }
 
 - (NSDate*) lastSyncDate {
-    NSDate *date = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
+    NSDate *date = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_SYNC_DATE_HASH];
     if (!date) {
-        [[NSUserDefaults standardUserDefaults] setValue:[NSDate dateWithTimeIntervalSince1970:0] forKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSDate dateWithTimeIntervalSince1970:0] forKey:LAST_SYNC_DATE_HASH];
     }
-    return [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:LAST_SYNC_DATE_HASH];
 }
 
 - (void) setLastSyncDate:(NSDate*)date {
-    [[NSUserDefaults standardUserDefaults] setValue:date forKey:[NSString stringWithFormat:@"%i-%@", self.hash, @"lastSyncDate"]];
+    [[NSUserDefaults standardUserDefaults] setValue:date forKey:LAST_SYNC_DATE_HASH];
 }
 
 #endif
@@ -50,8 +54,12 @@ typedef enum : NSUInteger {
 
 #if MULTIPLE_DEVICES
 + (TKDBCacheManager *)sharedManager {
+    if (!currentCacheManager) {
+        currentCacheManager = [[TKDBCacheManager alloc] init];
+    }
     return currentCacheManager;
 }
+
 #endif
 
 @end
@@ -81,52 +89,6 @@ typedef enum : NSUInteger {
 {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
-
-    /*
-     1- create template on D1
-     2- sync D1
-     3- sync D2
-     
-     ensure D2 is synchronized with D1
-     */
-    return;
-    currentDB = self.d1_db;
-    currentCacheManager = self.d1_cacheManager;
-
-    [self createTemplateObjectsInContext:self.d1_db.rootContext];
-    
-    StartBlock();
-    
-    [[self.d1_db sync] continueWithBlock:^id(BFTask *task) {
-        if (task.isCancelled) {
-            
-        }
-        else if (task.error) {
-            XCTFail(@"setup test failed with error: %@", task.error);
-            EndBlock();
-        }
-        else {
-            currentDB = self.d2_db;
-            currentCacheManager = self.d2_cacheManager;
-            return [[self.d2_db sync] continueWithBlock:^id(BFTask *task) {
-                if (task.isCancelled) {
-                    
-                }
-                else if (task.error) {
-                    
-                    XCTFail(@"setup test failed with error: %@", task.error);
-                    EndBlock();
-                }
-                else {
-                    EndBlock();
-                }
-                return nil;
-            }];
-        }
-        return nil;
-    }];
-    
-    WaitUntilBlockCompletes();
 }
 
 - (void)tearDown
@@ -135,13 +97,44 @@ typedef enum : NSUInteger {
     [super tearDown];
 }
 
+- (void)testAddClassroomWithImage {
+    TKClassroom *classroom;
+    [self setCurrentDevice:TKDevice1];
+    {
+        classroom = [self createClassroomWithImageInContext:currentDB.rootContext];
+        NSError *error;
+        [currentDB.rootContext save:&error];
+        if (error) {
+            XCTFail(@"Failed to save to database with error: %@", error);
+        }
+    }
+    StartBlock();
+    
+    [[self runSyncWithStartingDevice:TKDevice1] continueWithBlock:^id(BFTask *task) {
+        
+        [self setCurrentDevice:TKDevice1];
+        classroom.image_BinaryPathKey = [self newImagePath];
+        [currentDB.rootContext save:nil];
+        
+        return [[self runSyncWithStartingDevice:TKDevice1] continueWithBlock:^id(BFTask *task) {
+            EndBlock();
+            return nil;
+        }];
+        
+    }];
+    
+    WaitUntilBlockCompletes();
+}
+
 
 //Add Class1 in TK1, Add Class2 in TK2, Sync TK1, Sync TK2
 - (void)testAddClassroom {
     // Device 1
     [self setCurrentDevice:TKDevice1];
     {
-        [self createClassroomInContext:currentDB.rootContext];
+        TKClassroom *classroom = [self createClassroomInContext:currentDB.rootContext];
+        classroom.image_BinaryPathKey = [self newImagePath];
+        
         NSError *error;
         [currentDB.rootContext save:&error];
         if (error) {
@@ -152,7 +145,9 @@ typedef enum : NSUInteger {
     // Device 2
     [self setCurrentDevice:TKDevice2];
     {
-        [self createClassroomInContext:currentDB.rootContext];
+        TKClassroom *classroom = [self createClassroomInContext:currentDB.rootContext];
+        classroom.image_BinaryPathKey = [self newImagePath];
+        
         NSError *error;
         [currentDB.rootContext save:&error];
         if (error) {
@@ -167,17 +162,17 @@ typedef enum : NSUInteger {
         // check Parse
         PFQuery *query = [PFQuery queryWithClassName:[TKClassroom entityName]];
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 2, @"Sync Failuer: Server should have 2 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 2, @"Sync Failuer: Server should have 2 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d1_count, 2, @"Sync Failuer: D1 should have 2 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 2, @"Sync Failuer: D1 should have 2 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d2_count, 2, @"Sync Failuer: D2 should have 2 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 2, @"Sync Failuer: D2 should have 2 objects got: %li instead", (long)d2_count);
         EndBlock();
         return nil;
     }];
@@ -188,7 +183,9 @@ typedef enum : NSUInteger {
     // Device 1
     [self setCurrentDevice:TKDevice1];
     {
-        [self createClassroomInContext:currentDB.rootContext];
+        TKClassroom *classroom = [self createClassroomInContext:currentDB.rootContext];
+        classroom.image_BinaryPathKey = [self newImagePath];
+        
         NSError *error;
         [currentDB.rootContext save:&error];
         if (error) {
@@ -199,7 +196,9 @@ typedef enum : NSUInteger {
     // Device 2
     [self setCurrentDevice:TKDevice2];
     {
-        [self createClassroomInContext:currentDB.rootContext];
+        TKClassroom *classroom = [self createClassroomInContext:currentDB.rootContext];
+        classroom.image_BinaryPathKey = [self newImagePath];
+        
         NSError *error;
         [currentDB.rootContext save:&error];
         if (error) {
@@ -214,17 +213,17 @@ typedef enum : NSUInteger {
         // check Parse
         PFQuery *query = [PFQuery queryWithClassName:[TKClassroom entityName]];
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 2, @"Sync Failuer: Server should have 2 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 2, @"Sync Failuer: Server should have 2 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d1_count, 2, @"Sync Failuer: D1 should have 2 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 2, @"Sync Failuer: D1 should have 2 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d2_count, 2, @"Sync Failuer: D2 should have 2 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 2, @"Sync Failuer: D2 should have 2 objects got: %li instead", (long)d2_count);
         EndBlock();
         return nil;
     }];
@@ -496,17 +495,17 @@ typedef enum : NSUInteger {
         [query whereKey:@"isDeleted" equalTo:@NO];
         
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 0, @"Sync Failuer: Server should have 0 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 0, @"Sync Failuer: Server should have 0 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d1_count, 0, @"Sync Failuer: D1 should have 0 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 0, @"Sync Failuer: D1 should have 0 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d2_count, 0, @"Sync Failuer: D2 should have 0 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 0, @"Sync Failuer: D2 should have 0 objects got: %li instead", (long)d2_count);
         
         EndBlock();
         return nil;
@@ -554,17 +553,17 @@ typedef enum : NSUInteger {
         PFQuery *query = [PFQuery queryWithClassName:[TKClassroom entityName]];
         [query whereKey:@"isDeleted" equalTo:@NO];
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 0, @"Sync Failuer: Server should have 0 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 0, @"Sync Failuer: Server should have 0 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d1_count, 0, @"Sync Failuer: D1 should have 0 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 0, @"Sync Failuer: D1 should have 0 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d2_count, 0, @"Sync Failuer: D2 should have 0 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 0, @"Sync Failuer: D2 should have 0 objects got: %li instead", (long)d2_count);
         
         EndBlock();
         return nil;
@@ -615,18 +614,18 @@ typedef enum : NSUInteger {
         [query whereKey:@"isDeleted" equalTo:@NO];
         
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 1, @"Sync Failure: Server should have 1 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 1, @"Sync Failure: Server should have 1 objects got: %lu instead", (unsigned long)parseObjs.count);
         XCTAssert([[parseObjs lastObject][@"title"] isEqualToString:@"Physics"], @"Sync Failure: Server object should be named Physics instead of: %@", [parseObjs lastObject][@"title"]);
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d1_count, 1, @"Sync Failuer: D1 should have 1 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 1, @"Sync Failuer: D1 should have 1 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d2_count, 1, @"Sync Failuer: D2 should have 1 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 1, @"Sync Failuer: D2 should have 1 objects got: %li instead", (long)d2_count);
         
         EndBlock();
         return nil;
@@ -675,18 +674,18 @@ typedef enum : NSUInteger {
         [query whereKey:@"isDeleted" equalTo:@NO];
         
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 1, @"Sync Failure: Server should have 1 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 1, @"Sync Failure: Server should have 1 objects got: %lu instead", (unsigned long)parseObjs.count);
         XCTAssert([[parseObjs lastObject][@"title"] isEqualToString:@"Physics"], @"Sync Failure: Server object should be named Physics instead of: %@", [parseObjs lastObject][@"title"]);
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d1_count, 1, @"Sync Failuer: D1 should have 1 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 1, @"Sync Failuer: D1 should have 1 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKClassroom entityName]] error:nil];
-        XCTAssertEqual(d2_count, 1, @"Sync Failuer: D2 should have 1 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 1, @"Sync Failuer: D2 should have 1 objects got: %li instead", (long)d2_count);
         
         EndBlock();
         return nil;
@@ -707,6 +706,7 @@ typedef enum : NSUInteger {
         TKClassroom *class = [[classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
         
         TKStudent *student1 = [self createStudentInContext:currentDB.rootContext];
+        student1.image_BinaryPathKey = [self newImagePath];
         student1.firstName = @"student";
         student1.lastName = @"1";
         
@@ -728,7 +728,8 @@ typedef enum : NSUInteger {
         TKStudent *student2 = [self createStudentInContext:currentDB.rootContext];
         student2.firstName = @"student";
         student2.lastName = @"2";
-        
+        student2.image_BinaryPathKey = [self newImagePath];
+
         [student2 addClassroomsObject:class];
         
         NSError *error;
@@ -746,18 +747,18 @@ typedef enum : NSUInteger {
         PFQuery *query = [PFQuery queryWithClassName:[TKStudent entityName]];
         
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 3, @"Sync Failure: Server should have 3 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 3, @"Sync Failure: Server should have 3 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSInteger d1_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKStudent entityName]] error:nil];
-        XCTAssertEqual(d1_count, 3, @"Sync Failuer: D1 should have 3 objects got: %i instead", d1_count);
+        XCTAssertEqual(d1_count, 3, @"Sync Failuer: D1 should have 3 objects got: %li instead", (long)d1_count);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSInteger d2_count = [currentDB.rootContext countForFetchRequest:[NSFetchRequest fetchRequestWithEntityName:[TKStudent entityName]] error:nil];
-        XCTAssertEqual(d2_count, 3, @"Sync Failuer: D2 should have 3 objects got: %i instead", d2_count);
+        XCTAssertEqual(d2_count, 3, @"Sync Failuer: D2 should have 3 objects got: %li instead", (long)d2_count);
         
         EndBlock();
         return nil;
@@ -780,7 +781,8 @@ typedef enum : NSUInteger {
         TKStudent *student1 = [self createStudentInContext:currentDB.rootContext];
         student1.firstName = @"student";
         student1.lastName = @"1";
-        
+        student1.image_BinaryPathKey = [self newImagePath];
+
         [student1 addClassroomsObject:class];
         
         NSError *error;
@@ -799,7 +801,8 @@ typedef enum : NSUInteger {
         TKStudent *student2 = [self createStudentInContext:currentDB.rootContext];
         student2.firstName = @"student";
         student2.lastName = @"2";
-        
+        student2.image_BinaryPathKey = [self newImagePath];
+
         [student2 addClassroomsObject:class];
         
         NSError *error;
@@ -817,20 +820,20 @@ typedef enum : NSUInteger {
         PFQuery *query = [PFQuery queryWithClassName:[TKStudent entityName]];
         
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 3, @"Sync Failure: Server should have 3 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 3, @"Sync Failure: Server should have 3 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSArray *d1_classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
         TKClassroom *firstClass = [[d1_classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
-        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D1 classroom should have 3 students got: %i instead", [firstClass.students count]);
+        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D1 classroom should have 3 students got: %lu instead", (unsigned long)[firstClass.students count]);
 
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSArray *d2_classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
         firstClass = [[d2_classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
-        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D2 classroom should have 3 students got: %i instead", [firstClass.students count]);
+        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D2 classroom should have 3 students got: %lu instead", (unsigned long)[firstClass.students count]);
         
         EndBlock();
         return nil;
@@ -851,7 +854,8 @@ typedef enum : NSUInteger {
         TKStudent *student1 = [self createStudentInContext:currentDB.rootContext];
         student1.firstName = @"student";
         student1.lastName = @"1";
-        
+        student1.image_BinaryPathKey = [self newImagePath];
+
         [student1 addClassroomsObject:class];
         
         NSError *error;
@@ -870,7 +874,8 @@ typedef enum : NSUInteger {
         TKStudent *student2 = [self createStudentInContext:currentDB.rootContext];
         student2.firstName = @"student";
         student2.lastName = @"2";
-        
+        student2.image_BinaryPathKey = [self newImagePath];
+
         [student2 addClassroomsObject:class];
         
         NSError *error;
@@ -888,20 +893,20 @@ typedef enum : NSUInteger {
         PFQuery *query = [PFQuery queryWithClassName:[TKStudent entityName]];
         
         NSArray *parseObjs = [query findObjects];
-        XCTAssertEqual(parseObjs.count, 3, @"Sync Failure: Server should have 3 objects got: %i instead", parseObjs.count);
+        XCTAssertEqual(parseObjs.count, 3, @"Sync Failure: Server should have 3 objects got: %lu instead", (unsigned long)parseObjs.count);
         
         
         // check D1
         [self setCurrentDevice:TKDevice1];
         NSArray *d1_classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
         TKClassroom *firstClass = [[d1_classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
-        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D1 classroom should have 3 students got: %i instead", [firstClass.students count]);
+        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D1 classroom should have 3 students got: %lu instead", (unsigned long)[firstClass.students count]);
         
         // check D2
         [self setCurrentDevice:TKDevice2];
         NSArray *d2_classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
         firstClass = [[d2_classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
-        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D2 classroom should have 3 students got: %i instead", [firstClass.students count]);
+        XCTAssertEqual([firstClass.students count], 3, @"Sync Failuer: D2 classroom should have 3 students got: %lu instead", (unsigned long)[firstClass.students count]);
         
         EndBlock();
         return nil;
@@ -1086,357 +1091,88 @@ typedef enum : NSUInteger {
     
 }
 
-- (void)comments {
-    //- (void)testAttendanceConflict {
-    //
-    //    {
-    //        currentDB = self.d1_db;
-    //        currentCacheManager = self.d1_cacheManager;
-    //
-    //        TKLesson *lesson = [self getLessonFromContext:currentDB.rootContext];
-    //        TKStudent *student = [self getObjectForEntity:[TKStudent entityName] inContext:currentDB.rootContext];
-    //        TKAttendanceType *type = [self getObjectForEntity:[TKAttendanceType entityName] inContext:currentDB.rootContext];
-    //
-    //        TKAttendance *attendance = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
-    //        attendance.type = type;
-    //        attendance.lesson = lesson;
-    //        attendance.student = student;
-    //
-    //        NSError *error;
-    //        [currentDB.rootContext save:&error];
-    //        if (error) {
-    //            XCTFail(@"Couldn't save Attendance in D1 withError:%@", error);
-    //        }
-    //    }
-    //
-    //    {
-    //        currentDB = self.d2_db;
-    //        currentCacheManager = self.d2_cacheManager;
-    //
-    //        TKLesson *lesson = [self getLessonFromContext:currentDB.rootContext];
-    //        TKStudent *student = [self getObjectForEntity:[TKStudent entityName] inContext:currentDB.rootContext];
-    //        TKAttendanceType *type = [self getObjectForEntity:[TKAttendanceType entityName] inContext:currentDB.rootContext];
-    //
-    //        TKAttendance *attendance = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
-    //        attendance.type = type;
-    //        attendance.lesson = lesson;
-    //        attendance.student = student;
-    //
-    //        NSError *error;
-    //        [currentDB.rootContext save:&error];
-    //        if (error) {
-    //            XCTFail(@"Couldn't save Attendance in D2 withError:%@", error);
-    //        }
-    //    }
-    //
-    //    StartBlock();
-    //
-    //    currentDB = self.d1_db;
-    //    currentCacheManager = self.d1_cacheManager;
-    //
-    //    [[currentDB sync] continueWithBlock:^id(BFTask *task) {
-    //        if (task.error) {
-    //            XCTFail(@"Sync D1 failed withError: %@", task.error);
-    //            EndBlock();
-    //            return nil;
-    //        }
-    //        else {
-    //            currentDB = self.d2_db;
-    //            currentCacheManager = self.d2_cacheManager;
-    //
-    //            return [[currentDB sync] continueWithBlock:^id(BFTask *task) {
-    //                if (task.error) {
-    //                    XCTFail(@"Sync D2 failed withError: %@", task.error);
-    //                    EndBlock();
-    //                    return nil;
-    //                }
-    //                else {
-    //                    // check for number of attendances local/server
-    //
-    //                    PFQuery *query = [PFQuery queryWithClassName:[TKAttendance entityName]];
-    //                    NSArray *objs = [query findObjects];
-    //
-    //                    XCTAssertEqual(objs.count, 1, @"Failed: Cloud objects %i not equal 1", objs.count);
-    //
-    //                    NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:[TKAttendance entityName]];
-    //                    NSArray *locals = [currentDB.rootContext executeFetchRequest:fetch error:nil];
-    //                    XCTAssertEqual(locals.count, 1, @"Failed: local objects %i not equal 1", objs.count);
-    //
-    //                    currentDB = self.d1_db;
-    //                    currentCacheManager = self.d1_cacheManager;
-    //
-    //                    return [[currentDB sync] continueWithBlock:^id(BFTask *task) {
-    //                        if (task.error) {
-    //                            XCTFail(@"Sync D1 again failed withError: %@", task.error);
-    //                            EndBlock();
-    //                            return nil;
-    //                        }
-    //                        else {
-    //                            // check for number of attendances local/server
-    //
-    //                            PFQuery *query = [PFQuery queryWithClassName:[TKAttendance entityName]];
-    //                            NSArray *objs = [query findObjects];
-    //
-    //                            XCTAssertEqual(objs.count, 1, @"D1-2 Failed: Cloud objects %i not equal 1", objs.count);
-    //
-    //                            NSFetchRequest *fetch = [NSFetchRequest fetchRequestWithEntityName:[TKAttendance entityName]];
-    //                            NSArray *locals = [currentDB.rootContext executeFetchRequest:fetch error:nil];
-    //                            XCTAssertEqual(locals.count, 1, @"D1-2 Failed: local objects %i not equal 1", objs.count);
-    //
-    //                            EndBlock();
-    //                            return nil;
-    //                        }
-    //                    }];
-    //
-    //                }
-    //            }];
-    //        }
-    //    }];
-    //
-    //
-    //    WaitUntilBlockCompletes();
-    //
-    //}
-    //
-    //- (void)testDeleteUpdateConflict {
-    //
-    //    /*
-    //     1-  Delete Behavior from D1
-    //     2-  Update Same Behavior from D2
-    //     3-  Sync D1
-    //     4-  Sync D2
-    //     */
-    //    return;
-    //    NSString *behaviorServerID;
-    //
-    //    // Device one ==> Delete
-    //    {
-    //        currentDB = self.d1_db;
-    //        currentCacheManager = self.d1_cacheManager;
-    //        TKBehavior *behavior = [self getbehaviorFromContext:self.d1_db.rootContext];
-    //        behaviorServerID = behavior.serverObjectID;
-    //
-    //        // delete
-    //        NSError *error;
-    //        [self.d1_db.rootContext deleteObject:behavior];
-    //        [self.d1_db.rootContext save:&error];
-    //        if (error) {
-    //            XCTFail(@"Couldn't save Deletion in Device one :%@", error);
-    //        }
-    //    }
-    //
-    //    // Device two ==> Update
-    //    {
-    //        currentDB = self.d2_db;
-    //        currentCacheManager = self.d2_cacheManager;
-    //        NSError *error;
-    //        TKBehavior *behavior = [self getbehaviorFromContext:self.d2_db.rootContext];
-    //        // update
-    //        behavior.notes = @"edited notes";
-    //
-    //        [self.d2_db.rootContext save:&error];
-    //        if (error) {
-    //            XCTFail(@"Couldn't save Deletion in Device two");
-    //        }
-    //    }
-    //
-    //    // Sync Device one
-    //
-    //    StartBlock();
-    //
-    //    currentDB = self.d1_db;
-    //    currentCacheManager = self.d1_cacheManager;
-    //    [[self.d1_db sync] continueWithBlock:^id(BFTask *task) {
-    //        if (task.isCancelled) {
-    //
-    //        }
-    //        else if (task.error) {
-    //            XCTFail(@"Sync Device one failed with error: %@", task.error);
-    //            EndBlock();
-    //        }
-    //        else {
-    //            // check for deleted object on Parse
-    //            PFObject *PF_Behavior = [PFObject objectWithoutDataWithClassName:[TKBehavior entityName] objectId:behaviorServerID];
-    //
-    //            [PF_Behavior fetchIfNeeded];
-    //
-    //            XCTAssertTrue([[PF_Behavior valueForKey:kTKDBIsDeletedField] boolValue], @"Device one failure: Behavior object is not deleted on cloud.");
-    //
-    //            currentDB = self.d2_db;
-    //            currentCacheManager = self.d2_cacheManager;
-    //            // Sync Device two
-    //            return [[self.d2_db sync] continueWithBlock:^id(BFTask *task) {
-    //                if (task.isCancelled) {
-    //                    // 01009070000
-    //                }
-    //                else if (task.error) {
-    //                    XCTFail(@"Sync Device two failed with error: %@", task.error);
-    //                    EndBlock();
-    //                }
-    //                else {
-    //                    // check for updated object Device two
-    //
-    //                    // check for deleted object on Parse
-    //                    PFObject *PF_Behavior = [PFObject objectWithoutDataWithClassName:[TKBehavior entityName] objectId:behaviorServerID];
-    //
-    //                    [PF_Behavior fetchIfNeeded];
-    //
-    //                    XCTAssertFalse([[PF_Behavior valueForKey:kTKDBIsDeletedField] boolValue], @"Device two failure: Behavior object is deleted on cloud.");
-    //
-    //                    TKBehavior *behavior = [self getbehaviorFromContext:self.d2_db.rootContext];
-    //                    XCTAssertEqual(behavior.notes, @"edited notes", @"Device two failure: sync override my updates :(");
-    //
-    //                    currentDB = self.d1_db;
-    //                    currentCacheManager = self.d1_cacheManager;
-    //                    // Sync Device one again
-    //                    return [[self.d1_db sync] continueWithBlock:^id(BFTask *task) {
-    //                        if (task.isCancelled) {
-    //
-    //                        }
-    //                        else if (task.error) {
-    //                            XCTFail(@"Sync Device one failed with error: %@", task.error);
-    //                            EndBlock();
-    //                        }
-    //                        else {
-    //                            // check for updated object Device one
-    //                            TKBehavior *behavior = [self getbehaviorFromContext:self.d1_db.rootContext];
-    //                            XCTAssertNotNil(behavior, @"Device one stage 2 failure: couldn't found any behavior  :(");
-    //                            XCTAssertEqual(behavior.notes, @"edited notes", @"Device one stage 2 failure: sync override my updates :(");
-    //
-    //                        }
-    //
-    //                        EndBlock();
-    //                        return nil;
-    //                    }];
-    //                }
-    //                return nil;
-    //            }];
-    //        }
-    //        return nil;
-    //    }];
-    //
-    //    WaitUntilBlockCompletes();
-    //
-    //}
-    //
-    //- (void)testUpdateUpdateConflict {
-    //
-    //    /*
-    //     1-  Delete Behavior from D1
-    //     2-  Update Same Behavior from D2
-    //     3-  Sync D1
-    //     4-  Sync D2
-    //     */
-    //    NSString *behaviorServerID;
-    //
-    //    // Device one ==> Delete
-    //    {
-    //        currentDB = self.d1_db;
-    //        currentCacheManager = self.d1_cacheManager;
-    //        TKBehavior *behavior = [self getbehaviorFromContext:self.d1_db.rootContext];
-    //        behaviorServerID = behavior.serverObjectID;
-    //
-    //        behavior.notes = @"device1 notes";
-    //        // delete
-    //        NSError *error;
-    //        [self.d1_db.rootContext save:&error];
-    //        if (error) {
-    //            XCTFail(@"Couldn't save Deletion in Device one :%@", error);
-    //        }
-    //    }
-    //
-    //    // Device two ==> Update
-    //    {
-    //        currentDB = self.d2_db;
-    //        currentCacheManager = self.d2_cacheManager;
-    //        NSError *error;
-    //        TKBehavior *behavior = [self getbehaviorFromContext:self.d2_db.rootContext];
-    //        // update
-    //        behavior.notes = @"device2 notes";
-    //
-    //        [self.d2_db.rootContext save:&error];
-    //        if (error) {
-    //            XCTFail(@"Couldn't save Deletion in Device two");
-    //        }
-    //    }
-    //
-    //    // Sync Device one
-    //
-    //    StartBlock();
-    //
-    //    currentDB = self.d1_db;
-    //    currentCacheManager = self.d1_cacheManager;
-    //    [[self.d1_db sync] continueWithBlock:^id(BFTask *task) {
-    //        if (task.isCancelled) {
-    //
-    //        }
-    //        else if (task.error) {
-    //            XCTFail(@"Sync Device one failed with error: %@", task.error);
-    //            EndBlock();
-    //        }
-    //        else {
-    //            // check for deleted object on Parse
-    //            PFObject *PF_Behavior = [PFObject objectWithoutDataWithClassName:[TKBehavior entityName] objectId:behaviorServerID];
-    //
-    //            [PF_Behavior fetchIfNeeded];
-    //            XCTAssertTrue([PF_Behavior[@"notes"] isEqualToString:@"device1 notes"], @"Device one failure: Behavior notes is not equal device1.");
-    //
-    //            currentDB = self.d2_db;
-    //            currentCacheManager = self.d2_cacheManager;
-    //            // Sync Device two
-    //            return [[self.d2_db sync] continueWithBlock:^id(BFTask *task) {
-    //                if (task.isCancelled) {
-    //                    // 01009070000
-    //                }
-    //                else if (task.error) {
-    //                    XCTFail(@"Sync Device two failed with error: %@", task.error);
-    //                    EndBlock();
-    //                }
-    //                else {
-    //                    // check for updated object Device two
-    //
-    //                    // check for deleted object on Parse
-    //                    PFObject *PF_Behavior = [PFObject objectWithoutDataWithClassName:[TKBehavior entityName] objectId:behaviorServerID];
-    //
-    //                    [PF_Behavior fetchIfNeeded];
-    //
-    //                    XCTAssertTrue([PF_Behavior[@"notes"] isEqualToString:@"device2 notes"], @"Device two failure: Behavior notes is not equal device2.");
-    //
-    //                    TKBehavior *behavior = [self getbehaviorFromContext:self.d2_db.rootContext];
-    //                    XCTAssertTrue([behavior.notes isEqualToString:@"device2 notes"], @"Device two failure: sync override my updates :(");
-    //                    XCTAssertEqual(behavior.notes, @"device2 notes", @"Device two failure: sync override my updates :(");
-    //
-    //                    currentDB = self.d1_db;
-    //                    currentCacheManager = self.d1_cacheManager;
-    //                    // Sync Device one again
-    //                    return [[self.d1_db sync] continueWithBlock:^id(BFTask *task) {
-    //                        if (task.isCancelled) {
-    //                            
-    //                        }
-    //                        else if (task.error) {
-    //                            XCTFail(@"Sync Device one failed with error: %@", task.error);
-    //                            EndBlock();
-    //                        }
-    //                        else {
-    //                            // check for updated object Device one
-    //                            TKBehavior *behavior = [self getbehaviorFromContext:self.d1_db.rootContext];
-    //                            XCTAssertTrue([behavior.notes isEqualToString:@"device2 notes"], @"Device one stage 2 failure: sync override my updates :(");
-    //                            
-    //                        }
-    //                        
-    //                        EndBlock();
-    //                        return nil;
-    //                    }];
-    //                }
-    //                return nil;
-    //            }];
-    //        }
-    //        return nil;
-    //    }];
-    //    
-    //    WaitUntilBlockCompletes();
-    //    
-    //}
+- (void)testAddAttendanceDifferentSutdentsDifferentClasses {
+    [self setUpDevicesWithClassrooms];
+    
+    // Device 1
+    [self setCurrentDevice:TKDevice1];
+    {
+        NSArray *classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
+        TKClassroom *classroom = [[classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
+        
+        NSArray *types = [self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName]];
+        TKAttendanceType *type = [[types filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Late"]] lastObject];
+        // get a student
+        TKStudent *student = [classroom.students anyObject];
+        // get a lesson
+        TKLesson *lesson = [classroom.lessons anyObject];
+        
+        
+        TKAttendance *absent = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
+        absent.student = student;
+        absent.lesson = lesson;
+        absent.type = type;
+        absent.classroom = classroom;
+        
+        NSError *error;
+        [currentDB.rootContext save:&error];
+        if (error) {
+            XCTFail(@"Failed to save to database with error: %@", error);
+        }
+    }
+    
+    // Device 2
+    [self setCurrentDevice:TKDevice2];
+    {
+        NSArray *classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
+        TKClassroom *classroom = [[classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Physics"]] lastObject];
+        
+        NSArray *types = [self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName]];
+        TKAttendanceType *type = [[types filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Sick"]] lastObject];
+        // get a student
+        TKStudent *student = [classroom.students anyObject];
+        // get a lesson
+        TKLesson *lesson = [classroom.lessons anyObject];
+        
+        
+        TKAttendance *absent = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
+        absent.student = student;
+        absent.lesson = lesson;
+        absent.type = type;
+        absent.classroom = classroom;
+        
+        NSError *error;
+        [currentDB.rootContext save:&error];
+        if (error) {
+            XCTFail(@"Failed to save to database with error: %@", error);
+        }
+    }
+    
+    StartBlock();
+    
+    [[self runSyncWithStartingDevice:TKDevice1] continueWithBlock:^id(BFTask *task) {
+
+        [self setCurrentDevice:TKDevice1];
+        // check for attendance
+        NSArray *classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
+        TKClassroom *classroom = [[classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Mathematics"]] lastObject];
+        NSSet *attendances = classroom.attendances;
+        XCTAssertEqual(attendances.count, 1, @"Failed to upload attendance");
+        
+        
+        [self setCurrentDevice:TKDevice2];
+        // check for attendance
+        classes = [self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName]];
+        classroom = [[classes filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Physics"]] lastObject];
+        attendances = classroom.attendances;
+        XCTAssertEqual(attendances.count, 1, @"Failed to upload attendance");
+        
+        EndBlock();
+        return nil;
+    }];
+    
+    WaitUntilBlockCompletes();
+
 }
 
 #pragma mark - Utilities
@@ -1449,7 +1185,7 @@ typedef enum : NSUInteger {
     [self setCurrentDevice:startingDevice];
     return [[currentDB sync] continueWithBlock:^id(BFTask *task) {
         if (task.error || task.exception) {
-            XCTFail(@"Sync D%i: failed with Error: %@ | Exception: %@", startingDevice, task.error, task.exception);
+            XCTFail(@"Sync D%lu: failed with Error: %@ | Exception: %@", startingDevice, task.error, task.exception);
             EndBlock();
             return nil;
         }
@@ -1457,7 +1193,7 @@ typedef enum : NSUInteger {
             [self setCurrentDevice:secondDevice];
             return [[currentDB sync] continueWithBlock:^id(BFTask *task) {
                 if (task.error || task.exception) {
-                    XCTFail(@"Sync D%i: failed with Error: %@ | Exception: %@", secondDevice, task.error, task.exception);
+                    XCTFail(@"Sync D%lu: failed with Error: %@ | Exception: %@", secondDevice, task.error, task.exception);
                     EndBlock();
                     return nil;
                 }
@@ -1465,7 +1201,7 @@ typedef enum : NSUInteger {
                     [self setCurrentDevice:startingDevice];
                     return [[currentDB sync] continueWithBlock:^id(BFTask *task) {
                         if (task.error || task.exception) {
-                            XCTFail(@"Sync D%i again: failed with Error: %@ | Exception: %@", startingDevice, task.error, task.exception);
+                            XCTFail(@"Sync D%lu again: failed with Error: %@ | Exception: %@", startingDevice, task.error, task.exception);
                         }
                         EndBlock();
                         return nil;
@@ -1496,17 +1232,15 @@ typedef enum : NSUInteger {
 - (void)createTemplateObjectsInContext:(NSManagedObjectContext *)context {
     
     TKClassroom *classroom = [self createClassroomInContext:context];
+    classroom.image_BinaryPathKey = [self newImagePath];
     classroom.title = @"Mathematics";
     
-    TKClassroom *classroom2 = [self createClassroomInContext:context];
-    classroom2.title = @"Physics";
-    
     TKStudent *student = [self createStudentInContext:context];
+    student.image_BinaryPathKey = [self newImagePath];
     student.firstName = @"Walter";
     student.lastName = @"White";
     
     [classroom addStudentsObject:student];
-    
     
     TKAttendanceType *type = [TKAttendanceType insertInManagedObjectContext:context];
     type.title = @"Sick";
@@ -1533,6 +1267,27 @@ typedef enum : NSUInteger {
     attendance.type = type;
     attendance.lesson = lesson;
     attendance.student = student;
+    
+    TKClassroom *classroom2 = [self createClassroomInContext:context];
+    classroom2.image_BinaryPathKey = [self newImagePath];
+    classroom2.title = @"Physics";
+    
+    TKStudent *student2 = [self createStudentInContext:context];
+    student2.image_BinaryPathKey = [self newImagePath];
+    student2.firstName = @"Matt";
+    student2.lastName = @"Thompson";
+    
+    [classroom2 addStudentsObject:student2];
+    
+    TKLesson *lesson2 = [TKLesson insertInManagedObjectContext:context];
+    lesson2.lessonStartDate = [NSDate date];
+    lesson2.lessonStartTime = [NSDate date];
+    lesson2.lessonEndTime = [NSDate dateWithTimeIntervalSinceNow:3600];
+    lesson2.lessonId = [self getAUniqueID];
+    lesson2.createdDate = [NSDate date];
+    
+    [classroom2 addLessonsObject:lesson2];
+
     
     NSError *error;
     BOOL saved = [context save:&error];

@@ -9,7 +9,7 @@ const struct TKStudentAttributes TKStudentAttributes = {
 	.email = @"email",
 	.firstName = @"firstName",
 	.icon = @"icon",
-	.iconPath = @"iconPath",
+	.image_BinaryPathKey = @"image_BinaryPathKey",
 	.isShadow = @"isShadow",
 	.lastModifiedDate = @"lastModifiedDate",
 	.lastName = @"lastName",
@@ -111,7 +111,7 @@ const struct TKStudentFetchedProperties TKStudentFetchedProperties = {
 
 
 
-@dynamic iconPath;
+@dynamic image_BinaryPathKey;
 
 
 

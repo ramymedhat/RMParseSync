@@ -33,5 +33,6 @@
 
 - (TKClassroom *)createClassroomInContext:(NSManagedObjectContext *)context;
 - (TKStudent *)createStudentInContext:(NSManagedObjectContext *)context;
-
+- (TKClassroom *)createClassroomWithImageInContext:(NSManagedObjectContext *)context;
+- (NSString *)newImagePath;
 @end
