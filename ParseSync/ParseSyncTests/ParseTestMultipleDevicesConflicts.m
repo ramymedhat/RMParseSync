@@ -89,6 +89,44 @@ typedef enum : NSUInteger {
 {
     [super setUp];
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    
+    [self setCurrentDevice:TKDevice1];
+    
+    TKAttendanceType *present = [TKAttendanceType insertInManagedObjectContext:currentDB.rootContext];
+    present.title = @"Present";
+    present.color = @"001100";
+    present.attendancetypeId = [self getAUniqueID];
+    present.createdDate = [NSDate date];
+    
+    TKAttendanceType *absent = [TKAttendanceType insertInManagedObjectContext:currentDB.rootContext];
+    absent.title = @"Absent";
+    absent.color = @"110000";
+    absent.attendancetypeId = [self getAUniqueID];
+    absent.createdDate = [NSDate date];
+    
+    TKBehaviorType *positive = [TKBehaviorType insertInManagedObjectContext:currentDB.rootContext];
+    positive.title = @"Positive";
+    positive.isPositive = @YES;
+    positive.behaviortypeId = [self getAUniqueID];
+    
+    TKBehaviorType *negative = [TKBehaviorType insertInManagedObjectContext:currentDB.rootContext];
+    negative.title = @"Negative";
+    negative.isPositive = @NO;
+    negative.behaviortypeId = [self getAUniqueID];
+    
+    
+    NSError *error;
+    BOOL saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+
+    StartBlock();
+    [[self.d1_db sync] continueWithSuccessBlock:^id(BFTask *task) {
+        EndBlock();
+        return nil;
+    }];
+    WaitUntilBlockCompletes();
 }
 
 - (void)tearDown
@@ -1091,6 +1129,195 @@ typedef enum : NSUInteger {
     
 }
 
+- (void)testDeleteUpdateBehavior {
+    [self setCurrentDevice:TKDevice1];
+    // create Classroom, student then sync
+    TKClassroom *class = [self createClassroomWithImageInContext:currentDB.rootContext];
+    class.title = @"AYA";
+    
+    NSError *error;
+    BOOL saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+    
+    TKStudent *student = [self createStudentInContext:currentDB.rootContext];
+    student.firstName = @"AYA";
+    
+    [class addStudentsObject:student];
+    
+    saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+
+    TKBehaviorType *positive = [[self getObjectsInCurrentDeviceForEntity:[TKBehaviorType entityName] withPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKBehaviorTypeAttributes.isPositive, @YES]] lastObject];
+    
+    TKBehavior *behavior = [TKBehavior insertInManagedObjectContext:currentDB.rootContext];
+    behavior.behaviorId = [self getAUniqueID];
+    behavior.behaviorType = positive;
+    behavior.student = student;
+    behavior.behaviorDate = [NSDate date];
+    behavior.classroom = class;
+    
+    saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+    
+    StartBlock();
+    
+    [[self runSyncWithStartingDevice:TKDevice1] continueWithBlock:^id(BFTask *task) {
+        [self setCurrentDevice:TKDevice1];
+        {
+            // get the student
+            TKStudent *student = [[self getObjectsInCurrentDeviceForEntity:[TKStudent entityName]] lastObject];
+            TKBehavior *behavior = [student.behaviors anyObject];
+            
+            [currentDB.rootContext deleteObject:behavior];
+            NSError *error;
+            BOOL saved = [currentDB.rootContext save:&error];
+            if (error || !saved) {
+                XCTFail(@"Faild to save %@", error);
+            }
+
+        }
+        [self setCurrentDevice:TKDevice2];
+        {
+            // get the student
+            TKStudent *student = [[self getObjectsInCurrentDeviceForEntity:[TKStudent entityName]] lastObject];
+            TKBehavior *behavior = [student.behaviors anyObject];
+            
+            behavior.notes = @"I AM RIGHT";
+            
+            NSError *error;
+            BOOL saved = [currentDB.rootContext save:&error];
+            if (error || !saved) {
+                XCTFail(@"Faild to save %@", error);
+            }
+            
+        }
+        return [[self runSyncWithStartingDevice:TKDevice1] continueWithBlock:^id(BFTask *task) {
+            
+            [self setCurrentDevice:TKDevice1];
+            {
+                // get the student
+                TKStudent *student = [[self getObjectsInCurrentDeviceForEntity:[TKStudent entityName]] lastObject];
+                TKBehavior *behavior = [student.behaviors anyObject];
+                
+                XCTAssertNotNil(behavior, @"Faild to revive the behavior on Device 1");
+                
+            }
+            
+            [self setCurrentDevice:TKDevice1];
+            {
+                // get the student
+                TKStudent *student = [[self getObjectsInCurrentDeviceForEntity:[TKStudent entityName]] lastObject];
+                TKBehavior *behavior = [student.behaviors anyObject];
+                
+                XCTAssertNotNil(behavior, @"Faild to update the behavior on Device 2");
+                
+            }
+
+            
+            EndBlock();
+            return nil;
+        }];
+    }];
+    
+    WaitUntilBlockCompletes();
+    
+
+}
+
+- (void)testAddLessonWithAttendance {
+    [self setCurrentDevice:TKDevice1];
+    // create Classroom, student then sync
+    TKClassroom *class = [self createClassroomWithImageInContext:currentDB.rootContext];
+    class.title = @"AYA";
+
+    NSError *error;
+    BOOL saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+    
+    TKStudent *student = [self createStudentInContext:currentDB.rootContext];
+    student.firstName = @"AYA";
+    
+    [class addStudentsObject:student];
+    
+    saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+    
+    TKLesson *lesson = [TKLesson insertInManagedObjectContext:currentDB.rootContext];
+    lesson.lessonStartDate = [NSDate date];
+    lesson.lessonStartTime = [NSDate date];
+    lesson.lessonEndTime = [NSDate dateWithTimeIntervalSinceNow:3600];
+    lesson.lessonId = [self getAUniqueID];
+    lesson.createdDate = [NSDate date];
+    
+    [class addLessonsObject:lesson];
+    
+    saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+    
+    // get type
+    TKAttendanceType *type = [[self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName]] lastObject];
+    
+    // create attendance
+    TKAttendance *attendance = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
+    attendance.attendanceId = [self getAUniqueID];
+    
+    attendance.student = student;
+    attendance.lesson = lesson;
+    attendance.type = type;
+    attendance.classroom = class;
+    
+    saved = [currentDB.rootContext save:&error];
+    if (error || !saved) {
+        XCTFail(@"Faild to save %@", error);
+    }
+    
+    StartBlock();
+    
+    [[self runSyncWithStartingDevice:TKDevice1] continueWithSuccessBlock:^id(BFTask *task) {
+        
+        [self setCurrentDevice:TKDevice1];
+        {
+            // get classroom
+            NSArray *attendances = [self getObjectsInCurrentDeviceForEntity:[TKAttendance entityName]];
+            
+            for (TKAttendance *attendance in attendances) {
+                XCTAssertNotNil(attendance.lesson, @"Failed: all attendances should have a lesson");
+                TKLesson *lesson = attendance.lesson;
+                XCTAssertNotNil(lesson.lessonStartTime, @"Failed: lesson must have a start time");
+            }
+        }
+        
+        [self setCurrentDevice:TKDevice2];
+        {
+            // get classroom
+            NSArray *attendances = [self getObjectsInCurrentDeviceForEntity:[TKAttendance entityName]];
+            
+            for (TKAttendance *attendance in attendances) {
+                XCTAssertNotNil(attendance.lesson, @"Failed: all attendances should have a lesson");
+                TKLesson *lesson = attendance.lesson;
+                XCTAssertNotNil(lesson.lessonStartTime, @"Failed: lesson must have a start time");
+            }
+        }
+        EndBlock();
+        return nil;
+    }];
+
+    
+    WaitUntilBlockCompletes();
+}
+
 - (void)testAddAttendanceDifferentSutdentsDifferentClasses {
     [self setUpDevicesWithClassrooms];
     
@@ -1175,6 +1402,126 @@ typedef enum : NSUInteger {
 
 }
 
+- (void)testEditAttendanceSameClassroom {
+    [self setUpDevicesWithClassrooms];
+    
+    // take attendance and syn
+    [self setCurrentDevice:TKDevice1];
+    {
+        TKClassroom *classroom = [[self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName] withPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKClassroomAttributes.title, @"Mathematics"]] lastObject];
+        NSArray *types = [self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName]];
+        TKAttendanceType *type = [[types filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Late"]] lastObject];
+        
+        // get a student
+        TKStudent *student = [[classroom.students allObjects] firstObject];
+        // get a lesson
+        TKLesson *lesson = [[classroom.lessons allObjects] firstObject];
+        
+        TKAttendance *late = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
+        late.student = student;
+        late.lesson = lesson;
+        late.type = type;
+        late.classroom = classroom;
+        
+        TKStudent *student2 = [[classroom.students allObjects] lastObject];
+        // get a lesson
+        TKLesson *lesson2 = [[classroom.lessons allObjects] lastObject];
+        
+        late = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
+        late.student = student2;
+        late.lesson = lesson2;
+        late.type = type;
+        late.classroom = classroom;
+        
+        NSError *error;
+        BOOL saved = [currentDB.rootContext save:&error];
+        if (error || !saved) {
+            XCTFail(@"Faild to save %@", error);
+        }
+    }
+    
+    [self setCurrentDevice:TKDevice2];
+    {
+        TKClassroom *classroom = [[self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName] withPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKClassroomAttributes.title, @"Physics"]] lastObject];
+        NSArray *types = [self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName]];
+        TKAttendanceType *type = [[types filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Sick"]] lastObject];
+        
+        // get a student
+        TKStudent *student = [[classroom.students allObjects] firstObject];
+        // get a lesson
+        TKLesson *lesson = [[classroom.lessons allObjects] firstObject];
+        
+        TKAttendance *sick = [TKAttendance insertInManagedObjectContext:currentDB.rootContext];
+        sick.student = student;
+        sick.lesson = lesson;
+        sick.type = type;
+        sick.classroom = classroom;
+        
+        NSError *error;
+        BOOL saved = [currentDB.rootContext save:&error];
+        if (error || !saved) {
+            XCTFail(@"Faild to save %@", error);
+        }
+    }
+
+    StartBlock();
+    
+    [[self runSyncWithStartingDevice:TKDevice1] continueWithSuccessBlock:^id(BFTask *task) {
+        // Edit Attendance
+        
+        [self setCurrentDevice:TKDevice1];
+        {
+            TKClassroom *classroom = [[self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName] withPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKClassroomAttributes.title, @"Mathematics"]] lastObject];
+            TKAttendanceType *sick = [[self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName] withPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Sick"]] lastObject];
+            
+            // get a student
+            TKStudent *student = [[classroom.students filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKStudentAttributes.firstName, @"Walter"]] anyObject];
+            
+            TKAttendance *attendance = [student.attendances anyObject];
+            attendance.type = sick;
+            
+            NSError *error;
+            BOOL saved = [currentDB.rootContext save:&error];
+            if (error || !saved) {
+                XCTFail(@"Faild to save %@", error);
+            }
+        }
+        [self setCurrentDevice:TKDevice2];
+        {
+            TKClassroom *classroom = [[self getObjectsInCurrentDeviceForEntity:[TKClassroom entityName] withPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKClassroomAttributes.title, @"Mathematics"]] lastObject];
+            TKAttendanceType *late = [[self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName] withPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Sick"]] lastObject];
+            
+            // get a student
+            TKStudent *student = [[classroom.students filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"%K == %@", TKStudentAttributes.firstName, @"1-Walter"]] anyObject];
+            
+            TKAttendance *attendance = [student.attendances anyObject];
+            attendance.type = late;
+            
+            NSError *error;
+            BOOL saved = [currentDB.rootContext save:&error];
+            if (error || !saved) {
+                XCTFail(@"Faild to save %@", error);
+            }
+        }
+        
+        return [[self runSyncWithStartingDevice:TKDevice1] continueWithSuccessBlock:^id(BFTask *task) {
+            // test
+            [self setCurrentDevice:TKDevice1];
+            TKAttendanceType *sick = [[self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName] withPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Sick"]] lastObject];
+            XCTAssertEqual([sick.attendances count], 3, @"D1: failed to edit attendances");
+            
+            [self setCurrentDevice:TKDevice2];
+            sick = [[self getObjectsInCurrentDeviceForEntity:[TKAttendanceType entityName] withPredicate:[NSPredicate predicateWithFormat:@"title == %@", @"Sick"]] lastObject];
+            XCTAssertEqual([sick.attendances count], 3, @"D1: failed to edit attendances");
+            
+            EndBlock();
+            return nil;
+        }];
+    }];
+    
+    WaitUntilBlockCompletes();
+}
+
 #pragma mark - Utilities
 
 - (BFTask *)runSyncWithStartingDevice:(TKDevice) startingDevice {
@@ -1210,7 +1557,6 @@ typedef enum : NSUInteger {
             }];
         }
     }];
-
     WaitUntilBlockCompletes();
 
 }
@@ -1242,6 +1588,13 @@ typedef enum : NSUInteger {
     
     [classroom addStudentsObject:student];
     
+    TKStudent *student1 = [self createStudentInContext:context];
+    student1.image_BinaryPathKey = [self newImagePath];
+    student1.firstName = @"1-Walter";
+    student1.lastName = @"1-White";
+    
+    [classroom addStudentsObject:student1];
+    
     TKAttendanceType *type = [TKAttendanceType insertInManagedObjectContext:context];
     type.title = @"Sick";
     type.color = @"000000";
@@ -1263,11 +1616,16 @@ typedef enum : NSUInteger {
     
     [classroom addLessonsObject:lesson];
     
-    TKAttendance *attendance = [TKAttendance insertInManagedObjectContext:context];
-    attendance.type = type;
-    attendance.lesson = lesson;
-    attendance.student = student;
+    TKLesson *lesson2 = [TKLesson insertInManagedObjectContext:context];
+    lesson2.lessonStartDate = [NSDate date];
+    lesson2.lessonStartTime = [NSDate date];
+    lesson2.lessonEndTime = [NSDate dateWithTimeIntervalSinceNow:3600];
+    lesson2.lessonId = [self getAUniqueID];
+    lesson2.createdDate = [NSDate date];
     
+    [classroom addLessonsObject:lesson2];
+    
+     
     TKClassroom *classroom2 = [self createClassroomInContext:context];
     classroom2.image_BinaryPathKey = [self newImagePath];
     classroom2.title = @"Physics";
@@ -1279,14 +1637,14 @@ typedef enum : NSUInteger {
     
     [classroom2 addStudentsObject:student2];
     
-    TKLesson *lesson2 = [TKLesson insertInManagedObjectContext:context];
-    lesson2.lessonStartDate = [NSDate date];
-    lesson2.lessonStartTime = [NSDate date];
-    lesson2.lessonEndTime = [NSDate dateWithTimeIntervalSinceNow:3600];
-    lesson2.lessonId = [self getAUniqueID];
-    lesson2.createdDate = [NSDate date];
+    TKLesson *lesson3 = [TKLesson insertInManagedObjectContext:context];
+    lesson3.lessonStartDate = [NSDate date];
+    lesson3.lessonStartTime = [NSDate date];
+    lesson3.lessonEndTime = [NSDate dateWithTimeIntervalSinceNow:3600];
+    lesson3.lessonId = [self getAUniqueID];
+    lesson3.createdDate = [NSDate date];
     
-    [classroom2 addLessonsObject:lesson2];
+    [classroom2 addLessonsObject:lesson3];
 
     
     NSError *error;
@@ -1308,9 +1666,18 @@ typedef enum : NSUInteger {
     return [self getObjectsForEntity:entityName inContext:currentDB.rootContext];
 }
 
+- (NSArray *)getObjectsInCurrentDeviceForEntity:(NSString *)entityName withPredicate:(NSPredicate *)predicate {
+    return [self getObjectsForEntity:entityName predicate:predicate inContext:currentDB.rootContext];
+}
+
 - (NSArray *)getObjectsForEntity:(NSString *)entityName inContext:(NSManagedObjectContext *)context {
+    return [self getObjectsForEntity:entityName predicate:nil inContext:context];
+}
+
+- (NSArray *)getObjectsForEntity:(NSString *)entityName predicate:(NSPredicate *)predicate inContext:(NSManagedObjectContext *)context {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
     [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:TKClassroomAttributes.lastModifiedDate ascending:NO]]];
+    fetchRequest.predicate = predicate;
     NSError *error;
     NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
     return fetchedObjects;
