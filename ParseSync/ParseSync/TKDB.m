@@ -685,7 +685,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
     
     return [[self pullServerChanges] continueWithSuccessBlock:^id(BFTask *pullTask) {
         CFTimeInterval __block endTime = CACurrentMediaTime();
-        NSNumber __block *step1Time = @(endTime - startTime);
+        NSNumber __block *step1Time = @((int)(endTime - startTime));
 
         startTime = CACurrentMediaTime();
         
@@ -716,7 +716,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         SYNCLogVerbose(@"Changes after resolving conflicts:\nLocal Updates<%lu object(s)>:%@\nServer Updates<%lu object(s)>:%@\n\n\n\n", localUpdatesNoConflicts.count, localUpdatesNoConflicts, serverUpdatesNoConflicts.count, serverUpdatesNoConflicts);
         
         endTime = CACurrentMediaTime();
-        NSNumber __block *step2Time = @(endTime - startTime);
+        NSNumber __block *step2Time = @((int)(endTime - startTime));
         
         // conflict management should return all server updates
         // @param serverUpdatesNoConflicts should have all server changes with conflicts resolved.
@@ -743,7 +743,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         startTime = CACurrentMediaTime();
         return [[weakself pushNewLocalObjects:newObjects.allObjects] continueWithSuccessBlock:^id(BFTask *task) {
             endTime = CACurrentMediaTime();
-            NSNumber __block *uploadingLocalInserts = @(endTime - startTime);
+            NSNumber __block *uploadingLocalInserts = @((int)(endTime - startTime));
             
             SYNCLogVerbose(@"Pushing new objects completed in %@ seconds\n", uploadingLocalInserts);
             
@@ -762,7 +762,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
             startTime = CACurrentMediaTime();
             return [[weakself pushNewLocalObjectsWithRelations:allObjects] continueWithSuccessBlock:^id(BFTask *task) {
                 endTime = CACurrentMediaTime();
-                NSNumber __block *uploadingLocalChanges = @(endTime - startTime);
+                NSNumber __block *uploadingLocalChanges = @((int)(endTime - startTime));
                 
                 SYNCLogVerbose(@"Pushing to server completed in %@ seconds\n\n", uploadingLocalChanges);
                 
@@ -794,6 +794,9 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
                 SYNCLogVerbose(@"Sync Finished in %@ seconds", SYNC_TIME);
                 
                 [TKSyncLogger endLogging];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:TKDBSyncDidSucceedNotification object:nil userInfo:nil];
+                
                 return [BFTask taskWithResult:@{@"Downloading server changes": step1Time, @"Resolving Conflicts" : step2Time, @"Uploading local Inserts": uploadingLocalInserts, @"Uploading local updates": uploadingLocalChanges}];
             }];
         }];
@@ -864,14 +867,13 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
     }];
 }
 
-- (BFTask *)checkServerForExistingObjects {
+- (BFTask *)checkServerForExistingObjectsForEntity:(NSString *)entityName {
     return [[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
         
         TKParseServerSyncManager *manager = [[TKParseServerSyncManager alloc] init];
-            
-        return [manager countOfObjectsForEntity:@"Gradetype"];
+        
+        return [manager countOfObjectsForEntity:entityName];
     }];
-
 }
 
 @end

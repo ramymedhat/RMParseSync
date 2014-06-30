@@ -77,6 +77,6 @@ while(condition) { \
 
 - (BFTask *)sync;
 
-- (BFTask *)checkServerForExistingObjects;
+- (BFTask *)checkServerForExistingObjectsForEntity:(NSString *)entityName;
 
 @end

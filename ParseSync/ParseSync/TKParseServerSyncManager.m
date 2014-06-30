@@ -69,7 +69,6 @@
         TKServerObject *serverObject = [self serverObjectBasicInfoForParseObject:parseObject];
         
         NSMutableDictionary *dictAttributes = [NSMutableDictionary dictionary];
-        NSMutableDictionary *dictBinaryAttributes = [NSMutableDictionary dictionary];
         NSMutableDictionary *dictBinaryKeysAttributes = [NSMutableDictionary dictionary];
         NSMutableDictionary *relatedObjects = [NSMutableDictionary dictionary];
         
@@ -158,6 +157,10 @@
                             }
                             // save the new file
                             NSData *data = task.result;
+                            NSString *directory = [path stringByDeletingLastPathComponent];
+                            if ([[NSFileManager defaultManager] fileExistsAtPath:directory] == NO) {
+                                [[NSFileManager defaultManager] createDirectoryAtPath:path.stringByDeletingLastPathComponent withIntermediateDirectories:YES attributes:nil error:nil];
+                            }
                             [data writeToFile:path atomically:YES];
                         }
                         
@@ -169,8 +172,6 @@
 
                     return nil;
                 }];
-                
-                dictBinaryAttributes[key] = value;
             }
             else {
                 [dictAttributes setValue:value forKey:key];
@@ -246,6 +247,61 @@
     return serverObject;
 }
 
+- (BFTask *)downloadUpdatedObjectsAsyncForEntity:(NSString *)entityName {
+    return [[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
+        
+        PFQuery *query = [PFQuery queryWithClassName:entityName];
+        if ([[TKDB defaultDB].lastSyncDate isEqualToDate:[NSDate dateWithTimeIntervalSince1970:0]]) {
+            [query whereKey:@"isDeleted" equalTo:@NO];
+        }
+        [query whereKey:@"updatedAt" greaterThan:[TKDB defaultDB].lastSyncDate];
+        
+        
+        return [[query tk_findObjectsAsync] continueWithSuccessBlock:^id(BFTask *task) {
+            
+            NSMutableArray *arrayServerObjects = [NSMutableArray array];
+            NSArray *parseObjects = task.result;
+            NSMutableArray *tasks = @[].mutableCopy;
+            
+            // Convert objects to server objects.
+            for (PFObject *parseObject in parseObjects) {
+                // ignore anonymous data
+                if (parseObject.ACL == nil) {
+                    continue;
+                }
+                
+                BFTaskCompletionSource *subTask = [BFTaskCompletionSource taskCompletionSource];
+                
+                [[self serverObjectForParseObjectAsync:parseObject] continueWithBlock:^id(BFTask *_task) {
+                    if (_task.error) {
+                        [subTask setError:_task.error];
+                    }
+                    else {
+                        TKServerObject *serverObject = _task.result;
+                        [arrayServerObjects addObject:serverObject];
+                        [[TKDBCacheManager sharedManager] mapServerObjectWithID:serverObject.serverObjectID toUniqueObjectWithID:serverObject.uniqueObjectID];
+                        [subTask setResult:serverObject];
+                    }
+                    
+                    return nil;
+                }];
+                
+                [tasks addObject:subTask.task];
+            }
+            
+            return [[BFTask taskForCompletionOfAllTasks:tasks] continueWithBlock:^id(BFTask *task) {
+                // this will be executed after *all* the group tasks have completed
+                if (task.error) {
+                    return [BFTask taskWithError:task.error];
+                }
+                else {
+                    return [BFTask taskWithResult:arrayServerObjects];
+                }
+            }];
+        }];
+    }];
+}
+
 - (BFTask *)uploadInsertedObjectsAsync:(NSArray *)serverObjects {
     
     if ([serverObjects count] == 0) {
@@ -269,19 +325,23 @@
                 
                 // Create Parse object.
                 PFObject *parseObject = [self newParseObjectBasicInfoForServerObject:serverObject];
-                
+
                 if ([serverObject.binaryKeysFields count]) {
                     // get binary fields
                     NSMutableDictionary *objectFiles = [NSMutableDictionary dictionaryWithCapacity:serverObject.binaryKeysFields.count];
                     for (NSString *key in serverObject.binaryKeysFields) {
                         // get the file
                         NSString *relativePath = serverObject.binaryKeysFields[key];
-                        NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:relativePath];
-                        PFFile *file = [PFFile fileWithName:[relativePath lastPathComponent] contentsAtPath:path];
-                        objectFiles[key] = file;
-//                        [serverObject.binaryValues setObject:file forKey:key];
-                        [arrayParseFiles addObject:file];
-                        dictParseFiles[serverObject.uniqueObjectID] = file;
+                        if ([relativePath isKindOfClass:[NSNull class]]) {
+                            // ignore
+                        }
+                        else if (relativePath && relativePath.length) {
+                            NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:relativePath];
+                            PFFile *file = [PFFile fileWithName:[relativePath lastPathComponent] contentsAtPath:path];
+                            objectFiles[key] = file;
+                            [arrayParseFiles addObject:file];
+                            dictParseFiles[serverObject.uniqueObjectID] = file;
+                        }
                     }
                     session[serverObject.uniqueObjectID] = objectFiles;
                 }
@@ -289,7 +349,7 @@
                 [arrayParseObjects addObject:parseObject];
                 dictParseObjects[serverObject.uniqueObjectID] = parseObject;
                 
-                /*
+
                 if ([serverObject.entityName isEqualToString:@"AccessCode"]) {
                     // create a new PFRole for student and parent
                     NSString *parentRoleName = serverObject.attributeValues[@"parentRoleName"];
@@ -327,9 +387,9 @@
                         }
                     }
                 }
-                */
+
             }
-            /*
+
             for (TKServerObject *serverObject in serverObjects) {
                 PFObject *parseObj = dictParseObjects[serverObject.uniqueObjectID];
                 
@@ -361,8 +421,17 @@
                         [self setACLForParseObject:parseObj withStudent:student];
                     }
                 }
+                else if ([serverObject.entityName isEqualToString:@"Lesson"]) {
+                    // search across the grades, get student, add
+                    NSArray *attendances = serverObject.relatedObjects[@"attendances"];
+                    for (TKServerObject *attendance in attendances) {
+                        NSManagedObject *attendanceModel = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:attendance.localObjectIDURL]];
+                        NSManagedObject *student = [attendanceModel valueForKey:@"student"];
+                        [self setACLForParseObject:parseObj withStudent:student];
+                    }
+                }
             }
-            */
+
             return [[PFObject tk_saveAllAsync:arrayParseObjects] continueWithBlock:^id(BFTask *task) {
                 if (task.error) {
                     return [BFTask taskWithError:task.error];
@@ -422,57 +491,6 @@
     }
 }
 
-- (BFTask *)downloadUpdatedObjectsAsyncForEntity:(NSString *)entityName {
-    return [[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
-        
-        PFQuery *query = [PFQuery queryWithClassName:entityName];
-        [query whereKey:@"updatedAt" greaterThan:[TKDB defaultDB].lastSyncDate];
-        
-        return [[query tk_findObjectsAsync] continueWithSuccessBlock:^id(BFTask *task) {
-            
-            NSMutableArray *arrayServerObjects = [NSMutableArray array];
-            NSArray *parseObjects = task.result;
-            NSMutableArray *tasks = @[].mutableCopy;
-            
-            // Convert objects to server objects.
-            for (PFObject *parseObject in parseObjects) {
-                // ignore anonymous data
-                if (parseObject.ACL == nil) {
-                    continue;
-                }
-                
-                BFTaskCompletionSource *subTask = [BFTaskCompletionSource taskCompletionSource];
-                
-                [[self serverObjectForParseObjectAsync:parseObject] continueWithBlock:^id(BFTask *_task) {
-                    if (_task.error) {
-                        [subTask setError:_task.error];
-                    }
-                    else {
-                        TKServerObject *serverObject = _task.result;
-                        [arrayServerObjects addObject:serverObject];
-                        [[TKDBCacheManager sharedManager] mapServerObjectWithID:serverObject.serverObjectID toUniqueObjectWithID:serverObject.uniqueObjectID];
-                        [subTask setResult:serverObject];
-                    }
-                    
-                    return nil;
-                }];
-                
-                [tasks addObject:subTask.task];
-            }
-            
-            return [[BFTask taskForCompletionOfAllTasks:tasks] continueWithBlock:^id(BFTask *task) {
-                // this will be executed after *all* the group tasks have completed
-                if (task.error) {
-                    return [BFTask taskWithError:task.error];
-                }
-                else {
-                    return [BFTask taskWithResult:arrayServerObjects];
-                }
-            }];
-        }];
-    }];
-}
-
 - (BFTask *)uploadUpdatedObjectsAsync:(NSArray *)serverObjects {
     
     if ([serverObjects count] == 0) {
@@ -495,37 +513,59 @@
                 NSDictionary *serverObjectFiles = self.sessionFiles[serverObject.uniqueObjectID];
                 if ([serverObject.binaryKeysFields count]) {
                     // get binary fields
+                    
                     for (NSString *key in serverObject.binaryKeysFields) {
-                        // get the file
-                        PFFile *file = serverObjectFiles[key];
-                        NSString *binaryField = [key stringByReplacingCharactersInRange:[key rangeOfString:kTKDBBinaryFieldKeySuffix options:NSBackwardsSearch] withString:@""];
-                        if (!file) {
-                            // check for current file
-                            file = parseObject[binaryField];
-                            NSString *filename = [serverObject.binaryKeysFields[key] lastPathComponent];
-                            if ([file.name hasSuffix:filename]) {
-                                // same file no need to upload
+                        
+                        NSString *relativePath = serverObject.binaryKeysFields[key];
+                        if ([relativePath isKindOfClass:[NSNull class]]) {
+                            // delete
+                            // no file, clear parseObject
+                            NSString *binaryField = [key stringByReplacingCharactersInRange:[key rangeOfString:kTKDBBinaryFieldKeySuffix options:NSBackwardsSearch] withString:@""];
+                            [parseObject removeObjectForKey:binaryField];
+                        }
+                        else if (relativePath && [relativePath length] > 0) {
+                            // there is a file
+                            // get the file
+                            PFFile *file = serverObjectFiles[key];
+                            NSString *binaryField = [key stringByReplacingCharactersInRange:[key rangeOfString:kTKDBBinaryFieldKeySuffix options:NSBackwardsSearch] withString:@""];
+                            if (!file) {
+                                // check for current file
+                                file = parseObject[binaryField];
+                                NSString *filename = [relativePath lastPathComponent];
+                                if ([file.name hasSuffix:filename]) {
+                                    // same file no need to upload
+                                }
+                                else {
+                                    // need to upload the new file.
+                                    NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:relativePath];
+                                    if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO) {
+                                        // file is not downloaded yet.
+                                    }
+                                    else {
+                                        file = [PFFile fileWithName:filename.lastPathComponent contentsAtPath:path];
+                                        [[file tk_saveAsync] continueWithBlock:^id(BFTask *task) {
+                                            parseObject[binaryField] = file;
+                                            [parseObject tk_saveAsync];
+                                            return nil;
+                                        }];
+                                    }
+                                }
                             }
                             else {
-                                // need to upload the new file.
-                                NSString *relativePath = serverObject.binaryKeysFields[key];
-                                NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:relativePath];
-                                file = [PFFile fileWithName:filename.lastPathComponent contentsAtPath:path];
-                                [[file tk_saveAsync] continueWithBlock:^id(BFTask *task) {
-                                    parseObject[binaryField] = file;
-                                    [parseObject tk_saveAsync];
-                                    return nil;
-                                }];
+                                // new file assign to barse
+                                parseObject[binaryField] = file;
                             }
+                            
                         }
                         else {
-                            // new file assign to barse
-                            parseObject[binaryField] = file;
+                            // no file, clear parseObject
+                            NSString *binaryField = [key stringByReplacingCharactersInRange:[key rangeOfString:kTKDBBinaryFieldKeySuffix options:NSBackwardsSearch] withString:@""];
+                            [parseObject removeObjectForKey:binaryField];
                         }
                     }
                 }
                 
-                /*
+
                 // check for attendancetype/ behaviorType/GradeType/GradableItem
                 if ([serverObject.entityName isEqualToString:@"Attendancetype"]) {
                     // check if it has attendances
@@ -554,7 +594,16 @@
                         [self setACLForParseObject:parseObj withStudent:student];
                     }
                 }
-                */
+                else if ([serverObject.entityName isEqualToString:@"Lesson"]) {
+                    // search across the grades, get student, add
+                    NSArray *attendances = serverObject.relatedObjects[@"attendances"];
+                    for (TKServerObject *attendance in attendances) {
+                        NSManagedObject *attendanceModel = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:attendance.localObjectIDURL]];
+                        NSManagedObject *student = [attendanceModel valueForKey:@"student"];
+                        [self setACLForParseObject:parseObj withStudent:student];
+                    }
+                }
+
                 
                 // enumerate and get the related object(s)
                 
@@ -633,6 +682,7 @@
         }];
     }];
 }
+
 
 - (BFTask *)countOfObjectsForEntity:(NSString *)entityName {
     return [[BFTask taskWithResult:nil] continueWithBlock:^id(BFTask *task) {
