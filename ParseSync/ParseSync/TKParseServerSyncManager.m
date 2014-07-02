@@ -46,7 +46,14 @@
     [dictAttributes removeObjectsForKeys:@[kTKDBCreatedDateField, kTKDBServerIDField]];
     [dictAttributes setObject:@(serverObject.isDeleted) forKey:kTKDBIsDeletedField];
     [dictAttributes setObject:serverObject.uniqueObjectID forKey:kTKDBUniqueIDField];
-    [object setValuesForKeysWithDictionary:dictAttributes];
+    for (NSString *key in dictAttributes) {
+        if ([dictAttributes[key] isEqual:[NSNull null]]) {
+            // ignore
+        }
+        else {
+            object[key] = dictAttributes[key];
+        }
+    }
     return object;
 }
 
@@ -58,7 +65,14 @@
     [dictAttributes setObject:@(serverObject.isDeleted) forKey:kTKDBIsDeletedField];
     [dictAttributes setObject:serverObject.uniqueObjectID forKey:kTKDBUniqueIDField];
     [dictAttributes setObject:serverObject.lastModificationDate forKey:kTKDBUpdatedDateField];// for deleted objects
-    [object setValuesForKeysWithDictionary:dictAttributes];
+    for (NSString *key in dictAttributes) {
+        if ([dictAttributes[key] isEqual:[NSNull null]]) {
+            // can't remove it right now, ignore and remove later after refresh.
+        }
+        else {
+            object[key] = dictAttributes[key];
+        }
+    }
     return object;
 }
 
@@ -74,10 +88,22 @@
         
         NSMutableArray *tasks = @[].mutableCopy;
         
-        for (NSString *key in [parseObject allKeys]) {
-            if ([key isEqualToString:kTKDBIsDeletedField]) {
-                continue;
-            }
+        // get entity's properties
+        NSEntityDescription *entity = [NSEntityDescription entityForName:serverObject.entityName inManagedObjectContext:[TKDB defaultDB].syncContext];
+        
+        NSArray *properties = [entity.propertiesByName allKeys];
+        NSMutableSet *allProperties = [NSMutableSet setWithArray:properties];
+        [allProperties addObjectsFromArray:parseObject.allKeys];
+
+        // these properties are set to the serverObject. so remove them from the allProprties
+        [allProperties removeObject:kTKDBServerIDField];
+        [allProperties removeObject:kTKDBCreatedDateField];
+        [allProperties removeObject:kTKDBIsDeletedField];
+        [allProperties removeObject:kTKDBUpdatedDateField];
+        [allProperties removeObject:kTKDBServerIDField];
+        [allProperties removeObject:@"ACL"];
+        
+        for (NSString *key in allProperties) {
             
             BFTaskCompletionSource *subTask = [BFTaskCompletionSource taskCompletionSource];
             id value = [parseObject valueForKey:key];
@@ -174,6 +200,9 @@
                 }];
             }
             else {
+                if (value == nil) {
+                    value = [NSNull null];
+                }
                 [dictAttributes setValue:value forKey:key];
                 if ([key hasSuffix:kTKDBBinaryFieldKeySuffix]) {
                     dictBinaryKeysAttributes[key] = value;
@@ -510,6 +539,12 @@
             
             [[parseObj tk_fetchIfNeededAsync] continueWithSuccessBlock:^id(BFTask *task) {
                 PFObject *parseObject = task.result;
+                // update parse with null values
+                for (NSString *key in serverObject.attributeValues) {
+                    if ([serverObject.attributeValues[key] isEqual:[NSNull null]]) {
+                        [parseObject removeObjectForKey:key];
+                    }
+                }
                 NSDictionary *serverObjectFiles = self.sessionFiles[serverObject.uniqueObjectID];
                 if ([serverObject.binaryKeysFields count]) {
                     // get binary fields

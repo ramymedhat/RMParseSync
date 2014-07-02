@@ -28,10 +28,12 @@
     [managedObject setValue:object.lastModificationDate forKey:kTKDBUpdatedDateField];
     
     for (NSString *key in [object.attributeValues allKeys]) {
-        if ([key isEqualToString:@"ACL"]) {
-            continue;
+        if ([object.attributeValues[key] isEqual:[NSNull null]]) {
+            [managedObject setValue:nil forKey:key];
         }
-        [managedObject setValue:object.attributeValues[key] forKey:key];
+        else {
+            [managedObject setValue:object.attributeValues[key] forKey:key];
+        }
     }
     
     return managedObject;
@@ -200,10 +202,13 @@
             }
             else {
                 for (NSString *key in serverObject.attributeValues) {
-                    if ([key isEqualToString:@"ACL"]) {
-                        continue;
+                    id value = serverObject.attributeValues[key];
+                    if ([value isEqual:[NSNull null]]) {
+                        [object setValue:nil forKey:key];
                     }
-                    [object setValue:serverObject.attributeValues[key] forKey:key];
+                    else {
+                        [object setValue:value forKey:key];
+                    }
                 }
                 
                 [TKServerObjectHelper wireRelationshipsForManagedObject:object withServerObject:serverObject];

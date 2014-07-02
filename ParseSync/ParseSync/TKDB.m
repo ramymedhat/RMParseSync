@@ -713,7 +713,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         
         [weakself resolveConflicts:conflicts withLocalUpdates:&localUpdatesNoConflicts andServerUpdates:&serverUpdatesNoConflicts];
         
-        SYNCLogVerbose(@"Changes after resolving conflicts:\nLocal Updates<%lu object(s)>:%@\nServer Updates<%lu object(s)>:%@\n\n\n\n", localUpdatesNoConflicts.count, localUpdatesNoConflicts, serverUpdatesNoConflicts.count, serverUpdatesNoConflicts);
+        SYNCLogVerbose(@"Changes after resolving conflicts:\nLocal Updates<%lu object(s)>:%@\nServer Updates<%lu object(s)>:%@\n\n\n\n", (unsigned long)localUpdatesNoConflicts.count, localUpdatesNoConflicts, (unsigned long)serverUpdatesNoConflicts.count, serverUpdatesNoConflicts);
         
         endTime = CACurrentMediaTime();
         NSNumber __block *step2Time = @((int)(endTime - startTime));
@@ -728,9 +728,9 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         NSSet *insertedObjects = weakself.syncContext.insertedObjects;
         NSSet *updatedObjects = weakself.syncContext.updatedObjects;
         NSSet *deletedObejcts = weakself.syncContext.deletedObjects;
-        SYNCLogVerbose(@"Database's Inserted objects<%lu object(s)>:%@\n\n", insertedObjects.count, insertedObjects);
-        SYNCLogVerbose(@"Database's Updated objects<%lu object(s)>:%@\n\n", updatedObjects.count, updatedObjects);
-        SYNCLogVerbose(@"Database's Deleted objects<%lu object(s)>:%@\n\n", deletedObejcts.count, deletedObejcts);
+        SYNCLogVerbose(@"Database's Inserted objects<%lu object(s)>:%@\n\n", (unsigned long)insertedObjects.count, insertedObjects);
+        SYNCLogVerbose(@"Database's Updated objects<%lu object(s)>:%@\n\n", (unsigned long)updatedObjects.count, updatedObjects);
+        SYNCLogVerbose(@"Database's Deleted objects<%lu object(s)>:%@\n\n", (unsigned long)deletedObejcts.count, deletedObejcts);
         
         NSMutableSet *objectsSet = [NSMutableSet setWithSet:localUpdatesNoConflicts];
         // detect new objects
@@ -739,7 +739,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         [objectsSet minusSet:newObjects];
         
         SYNCLogVerbose(@"Pushing local Changes...");
-        SYNCLogVerbose(@"Local new objects<%lu object(s)>: %@\n\n", newObjects.count, newObjects);
+        SYNCLogVerbose(@"Local new objects<%lu object(s)>: %@\n\n", (unsigned long)newObjects.count, newObjects);
         startTime = CACurrentMediaTime();
         return [[weakself pushNewLocalObjects:newObjects.allObjects] continueWithSuccessBlock:^id(BFTask *task) {
             endTime = CACurrentMediaTime();
@@ -756,7 +756,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
             NSArray *allObjects = [objectsSet.allObjects arrayByAddingObjectsFromArray:newObjectsWithServerIDs];
             
             SYNCLogVerbose(@"Pushing All local changes with relations...");
-            SYNCLogVerbose(@"Changes <%lu object(s)>: %@\n\n", allObjects.count, [NSSet setWithArray:allObjects]);
+            SYNCLogVerbose(@"Changes <%lu object(s)>: %@\n\n", (unsigned long)allObjects.count, [NSSet setWithArray:allObjects]);
             
             // then push local relations
             startTime = CACurrentMediaTime();

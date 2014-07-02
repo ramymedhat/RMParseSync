@@ -70,7 +70,7 @@
         NSObject* value = [self valueForKey:attributeName];
         
         if (value == nil) {
-            value = @"";
+            value = [NSNull null];
 //            if ([value isKindOfClass:[NSDate class]]) {
 //                NSTimeInterval date = [(NSDate*)value timeIntervalSinceReferenceDate];
 //                NSString *dateAttr = [NSString stringWithFormat:@"%@%@", DATE_ATTR_PREFIX, attr];
@@ -92,9 +92,9 @@
     NSMutableDictionary *dictBinaryKeys = [NSMutableDictionary dictionaryWithCapacity:binaryKeys.count];
     
     for (NSString* attributeName in binaryKeys) {
-        NSString *path = [self valueForKey:attributeName];
+        id path = [self valueForKey:attributeName];
         if (path == nil) {
-            path = @"";
+            path = [NSNull null];
         }
         dictBinaryKeys[attributeName] = path;
     }
