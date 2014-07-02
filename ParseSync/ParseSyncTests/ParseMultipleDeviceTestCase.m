@@ -7,6 +7,7 @@
 //
 
 #import "ParseMultipleDeviceTestCase.h"
+#import "TKParseManagerDelegate.h"
 
 @interface UIColor (Random)
 
@@ -67,9 +68,11 @@
     [PFUser logInWithUsername:@"moraly" password:@"a"];
     [PFACL setDefaultACL:[PFACL ACL] withAccessForCurrentUser:YES];
     
+    self.delegate = [[TKParseManagerDelegate alloc] init];
     
     
     self.d1_db = [[TKDB alloc] init];
+    self.d1_db.syncManagerDelegate = self.delegate;
     self.d1_db.rootContext = [self setUpCoreDataStackWithName:@"Device1.sqlite"];
     self.d1_cacheManager = [[TKDBCacheManager alloc] init];
     self.d2_cacheManager.dictCacheFilename = [NSString stringWithFormat:@"%lu-%@", self.d1_cacheManager.hash, self.d1_cacheManager.dictCacheFilename];
@@ -78,6 +81,7 @@
     
     
     self.d2_db = [[TKDB alloc] init];
+    self.d2_db.syncManagerDelegate = self.delegate;
     self.d2_db.rootContext = [self setUpCoreDataStackWithName:@"Device2.sqlite"];
     self.d2_cacheManager = [[TKDBCacheManager alloc] init];
     self.d2_cacheManager.dictCacheFilename = [NSString stringWithFormat:@"%lu-%@", self.d2_cacheManager.hash, self.d2_cacheManager.dictCacheFilename];

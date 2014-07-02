@@ -18,7 +18,7 @@
 #import "TKAttendance.h"
 #import "TKAttendanceType.h"
 #import "TKLesson.h"
-
+#import "TKParseManagerDelegate.h"
 
 @interface ParseMultipleDeviceTestCase : XCTestCase
 
@@ -26,6 +26,7 @@
 @property (nonatomic, strong) TKDB *d2_db;
 @property (nonatomic, strong) TKDBCacheManager *d1_cacheManager;
 @property (nonatomic, strong) TKDBCacheManager *d2_cacheManager;
+@property (nonatomic, strong) TKParseManagerDelegate *delegate;
 
 - (NSString*) getAUniqueID;
 - (NSManagedObject*) searchLocalDBForObjectWithUniqueID:(NSString*)uniqueID entity:(NSString*)entity;

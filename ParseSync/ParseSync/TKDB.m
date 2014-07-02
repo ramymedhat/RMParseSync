@@ -674,6 +674,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
     CFTimeInterval SYNC_START_TIME = CACurrentMediaTime();
     
     self.manager = [[TKParseServerSyncManager alloc] init];
+    self.manager.delegate = self.syncManagerDelegate;
 
     [[TKDBCacheManager sharedManager] startCheckpoint];
     

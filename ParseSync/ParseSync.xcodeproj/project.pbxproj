@@ -79,6 +79,7 @@
 		688CEC1A195B6F9600E79B6E /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 688CEC05195B6F9600E79B6E /* README.txt */; };
 		688FF085191A812C00A37025 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 688FF084191A812C00A37025 /* Bolts.framework */; };
 		688FF086191A812C00A37025 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 688FF084191A812C00A37025 /* Bolts.framework */; };
+		68C639E919616C3F00D2D944 /* TKParseManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C639E719616C3F00D2D944 /* TKParseManagerDelegate.m */; };
 		68E7A1F11952EB3B00993422 /* user_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 68E7A1F01952EB3B00993422 /* user_placeholder.png */; };
 		7F085FD4190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */; };
 		7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */; };
@@ -260,6 +261,8 @@
 		688CEC04195B6F9600E79B6E /* DDMultiFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDMultiFormatter.m; sourceTree = "<group>"; };
 		688CEC05195B6F9600E79B6E /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		688FF084191A812C00A37025 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		68C639E619616C3F00D2D944 /* TKParseManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKParseManagerDelegate.h; sourceTree = "<group>"; };
+		68C639E719616C3F00D2D944 /* TKParseManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKParseManagerDelegate.m; sourceTree = "<group>"; };
 		68E7A1F01952EB3B00993422 /* user_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = user_placeholder.png; sourceTree = "<group>"; };
 		7F085FD3190FDE0F00E651D6 /* ParseTestCompoundUpdateThenUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenUpload.m; sourceTree = "<group>"; };
 		7F085FD5190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseTestCompoundUpdateThenDownload.m; sourceTree = "<group>"; };
@@ -541,6 +544,8 @@
 				688CB9A61923AC1A0024FEE6 /* RMParseSync.h */,
 				688CEBE9195B6D1D00E79B6E /* TKSyncLogger.h */,
 				688CEBEA195B6D1D00E79B6E /* TKSyncLogger.m */,
+				68C639E619616C3F00D2D944 /* TKParseManagerDelegate.h */,
+				68C639E719616C3F00D2D944 /* TKParseManagerDelegate.m */,
 			);
 			path = ParseSync;
 			sourceTree = "<group>";
@@ -787,6 +792,7 @@
 				7FE649E7190E339100AF74B8 /* ParseTestDownload.m in Sources */,
 				7F085FD6190FDE2000E651D6 /* ParseTestCompoundUpdateThenDownload.m in Sources */,
 				6840C9D119488CD400B99A67 /* TKGradeCategory.m in Sources */,
+				68C639E919616C3F00D2D944 /* TKParseManagerDelegate.m in Sources */,
 				6840C9DB19488CD400B99A67 /* _TKBehaviorType.m in Sources */,
 				7F546512190E182700952AB2 /* TKServerObjectHelper.m in Sources */,
 				6840C9CD19488CD400B99A67 /* TKClassroom.m in Sources */,

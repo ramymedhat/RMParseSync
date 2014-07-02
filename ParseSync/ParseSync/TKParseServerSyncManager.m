@@ -377,87 +377,14 @@
                 
                 [arrayParseObjects addObject:parseObject];
                 dictParseObjects[serverObject.uniqueObjectID] = parseObject;
-                
-
-                if ([serverObject.entityName isEqualToString:@"AccessCode"]) {
-                    // create a new PFRole for student and parent
-                    NSString *parentRoleName = serverObject.attributeValues[@"parentRoleName"];
-                    PFRole *parentRole = [PFRole roleWithName:parentRoleName];
-                    [parseObject setValue:parentRole forKey:@"parentRole"];
-                    
-                    NSString *studentRoleName = serverObject.attributeValues[@"studentRoleName"];
-                    PFRole *studentRole = [PFRole roleWithName:studentRoleName];
-                    [parseObject setValue:studentRole forKey:@"studentRole"];
-                }
-                else if ([serverObject.entityName isEqualToString:@"Student"]) {
-                    
-                    [self setACLForParseObject:parseObject withStudentServerObject:serverObject];
-                }
-                else {
-                    // check for student related data
-                    id studentVal = [serverObject.relatedObjects valueForKey:@"student"];
-                    if (!studentVal) {
-                        studentVal = [serverObject.relatedObjects valueForKey:@"students"];
-                    }
-                    if (studentVal) {
-                        // has a student relation
-                        // get that student from db
-                        // check the AccessCodes table
-                        if ([studentVal isKindOfClass:[TKServerObject class]]) {
-                            // to-one relation
-                            [self setACLForParseObject:parseObject withStudentServerObject:studentVal];
-                        }
-                        else if ([studentVal isKindOfClass:[NSArray class]]) {
-                            // to-many relation
-                            NSArray *students = (NSArray *)studentVal;
-                            for (TKServerObject *studentServerObject in students) {
-                                [self setACLForParseObject:parseObject withStudentServerObject:studentServerObject];
-                            }
-                        }
-                    }
-                }
-
             }
 
-            for (TKServerObject *serverObject in serverObjects) {
-                PFObject *parseObj = dictParseObjects[serverObject.uniqueObjectID];
-                
-                // check for attendancetype/ behaviorType/GradeType/GradableItem
-                if ([serverObject.entityName isEqualToString:@"Attendancetype"]) {
-                    // check if it has attendances
-                    NSArray *attendances = serverObject.relatedObjects[@"attendances"];
-                    for (TKServerObject *attend in attendances) {
-                        NSManagedObject *attendance = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:attend.localObjectIDURL]];
-                        NSManagedObject *student = [attendance valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-                else if ([serverObject.entityName isEqualToString:@"Behaviortype"]) {
-                    // check if it has attendances
-                    NSArray *behaviors = serverObject.relatedObjects[@"behaviors"];
-                    for (TKServerObject *behavior in behaviors) {
-                        NSManagedObject *behaviorObj = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:behavior.localObjectIDURL]];
-                        NSManagedObject *student = [behaviorObj valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-                else if ([serverObject.entityName isEqualToString:@"Gradableitem"]) {
-                    // search across the grades, get student, add
-                    NSArray *grades = serverObject.relatedObjects[@"grades"];
-                    for (TKServerObject *grade in grades) {
-                        NSManagedObject *gradeObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:grade.localObjectIDURL]];
-                        NSManagedObject *student = [gradeObject valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-                else if ([serverObject.entityName isEqualToString:@"Lesson"]) {
-                    // search across the grades, get student, add
-                    NSArray *attendances = serverObject.relatedObjects[@"attendances"];
-                    for (TKServerObject *attendance in attendances) {
-                        NSManagedObject *attendanceModel = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:attendance.localObjectIDURL]];
-                        NSManagedObject *student = [attendanceModel valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
+            if ([self.delegate respondsToSelector:@selector(parseSyncManager:willUploadParseObject:withServerObject:)]) {
+                for (TKServerObject *serverObject in serverObjects) {
+                    
+                    PFObject *parseObj = dictParseObjects[serverObject.uniqueObjectID];
+                    
+                    [self.delegate parseSyncManager:self willUploadParseObject:parseObj withServerObject:serverObject];
                 }
             }
 
@@ -496,27 +423,6 @@
                 }
             }];
         }];
-    }
-}
-
-- (void)setACLForParseObject:(PFObject *)parseObject withStudentServerObject:(TKServerObject *)serverObject {
-    
-    NSManagedObject *studentManagedObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:serverObject.localObjectIDURL]];
-    [self setACLForParseObject:parseObject withStudent:studentManagedObject];
-}
-
-- (void)setACLForParseObject:(PFObject *)parseObject withStudent:(NSManagedObject *)studentManagedObject {
-    
-    NSManagedObject *accessCode = [studentManagedObject valueForKey:@"accessCode"];
-    
-    NSString *parentRoleName = [accessCode valueForKey:@"parentRoleName"];
-    if (parentRoleName) {
-        [parseObject.ACL setReadAccess:YES forRoleWithName:parentRoleName];
-    }
-    
-    NSString *studentRoleName = [accessCode valueForKey:@"studentRoleName"];
-    if (studentRoleName) {
-        [parseObject.ACL setReadAccess:YES forRoleWithName:studentRoleName];
     }
 }
 
@@ -600,46 +506,11 @@
                     }
                 }
                 
-
-                // check for attendancetype/ behaviorType/GradeType/GradableItem
-                if ([serverObject.entityName isEqualToString:@"Attendancetype"]) {
-                    // check if it has attendances
-                    NSArray *attendances = serverObject.relatedObjects[@"attendances"];
-                    for (TKServerObject *attend in attendances) {
-                        NSManagedObject *attendance = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:attend.localObjectIDURL]];
-                        NSManagedObject *student = [attendance valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-                else if ([serverObject.entityName isEqualToString:@"Behaviortype"]) {
-                    // check if it has attendances
-                    NSArray *behaviors = serverObject.relatedObjects[@"behaviors"];
-                    for (TKServerObject *behavior in behaviors) {
-                        NSManagedObject *behaviorObj = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:behavior.localObjectIDURL]];
-                        NSManagedObject *student = [behaviorObj valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-                else if ([serverObject.entityName isEqualToString:@"Gradableitem"]) {
-                    // search across the grades, get student, add
-                    NSArray *grades = serverObject.relatedObjects[@"grades"];
-                    for (TKServerObject *grade in grades) {
-                        NSManagedObject *gradeObject = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:grade.localObjectIDURL]];
-                        NSManagedObject *student = [gradeObject valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-                else if ([serverObject.entityName isEqualToString:@"Lesson"]) {
-                    // search across the grades, get student, add
-                    NSArray *attendances = serverObject.relatedObjects[@"attendances"];
-                    for (TKServerObject *attendance in attendances) {
-                        NSManagedObject *attendanceModel = [[TKDB defaultDB].syncContext objectWithURI:[NSURL URLWithString:attendance.localObjectIDURL]];
-                        NSManagedObject *student = [attendanceModel valueForKey:@"student"];
-                        [self setACLForParseObject:parseObj withStudent:student];
-                    }
-                }
-
                 
+                if ([self.delegate respondsToSelector:@selector(parseSyncManager:willUploadParseObject:withServerObject:)]) {
+                    [self.delegate parseSyncManager:self willUploadParseObject:parseObj withServerObject:serverObject];
+                }
+
                 // enumerate and get the related object(s)
                 
                 NSMutableArray __block *relationTasks = @[].mutableCopy;
