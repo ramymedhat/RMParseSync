@@ -557,7 +557,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
                                     TKDBCacheEntry *entry = [self entryWithObject:localRelatedObject];
                                     TKServerObject *shadowServerObject = entry.originalObject;
                                     TKServerObject *localServerObject = [localRelatedObject toServerObject];
-                                    localServerObject.lastModificationDate = otherObject.lastModificationDate;
+                                    localServerObject.lastModificationDate = [otherObject.lastModificationDate dateByAddingTimeInterval:-10];
                                     [conflictPairs addObject:[[TKServerObjectConflictPair alloc] initWithServerObject:relatedObject localObject:localServerObject shadowObject:shadowServerObject]];
                                 }
                             }
@@ -582,7 +582,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
                                 TKDBCacheEntry *entry = [self entryWithObject:localRelatedObject];
                                 TKServerObject *shadowServerObject = entry.originalObject;
                                 TKServerObject *localServerObject = [localRelatedObject toServerObject];
-                                localServerObject.lastModificationDate = otherObject.lastModificationDate;
+                                localServerObject.lastModificationDate = [otherObject.lastModificationDate dateByAddingTimeInterval:-10];
                                 [conflictPairs addObject:[[TKServerObjectConflictPair alloc] initWithServerObject:relatedObject localObject:localServerObject shadowObject:shadowServerObject]];
                             }
                         }
@@ -724,7 +724,9 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         
         SYNCLogVerbose(@"Adding server changes to Database...");
         // save serverChanges
-        [TKServerObjectHelper updateServerObjectsInLocalDatabase:[serverUpdatesNoConflicts allObjects]];
+        NSArray *serverUpdatesArray = [serverUpdatesNoConflicts allObjects];
+        NSArray *sortedServerUpdates = [serverUpdatesArray sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"attributeValues.lastModifiedDate" ascending:YES]]];
+        [TKServerObjectHelper updateServerObjectsInLocalDatabase:sortedServerUpdates];
         
         NSSet *insertedObjects = weakself.syncContext.insertedObjects;
         NSSet *updatedObjects = weakself.syncContext.updatedObjects;
