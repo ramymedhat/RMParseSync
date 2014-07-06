@@ -33,6 +33,8 @@
     PFObject *object = [PFObject objectWithClassName:@"AttendanceType"];
     [object setValue:@"Present" forKeyPath:@"title"];
     [object setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [object setValue:[NSDate date] forKeyPath:kTKDBUpdatedDateField];
+    [object setValue:@NO forKeyPath:kTKDBIsDeletedField];
     [object save];
     
     StartBlock();
@@ -71,12 +73,16 @@
     PFObject *object1 = [PFObject objectWithClassName:@"Classroom"];
     [object1 setValue:@"Mathematics" forKeyPath:@"title"];
     [object1 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [object1 setValue:[NSDate date] forKeyPath:kTKDBUpdatedDateField];
+    [object1 setValue:@NO forKeyPath:kTKDBIsDeletedField];
     [object1 save];
     
     PFObject *object2 = [PFObject objectWithClassName:@"Student"];
     [object2 setValue:@"Walter" forKeyPath:@"firstName"];
     [object2 setValue:@"White" forKeyPath:@"lastName"];
     [object2 setValue:[super getAUniqueID] forKeyPath:kTKDBUniqueIDField];
+    [object2 setValue:[NSDate date] forKeyPath:kTKDBUpdatedDateField];
+    [object2 setValue:@NO forKeyPath:kTKDBIsDeletedField];
     [object2 save];
     
     PFRelation *relation1 = [object1 relationForKey:@"students"];
