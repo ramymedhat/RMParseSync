@@ -107,7 +107,11 @@
             
             BFTaskCompletionSource *subTask = [BFTaskCompletionSource taskCompletionSource];
             id value = [parseObject valueForKey:key];
-            if ([value isKindOfClass:[PFObject class]]) {
+            // ignore Roles.
+            if ([value isKindOfClass:[PFRole class]]) {
+                continue;
+            }
+            else if ([value isKindOfClass:[PFObject class]]) {
 
                 PFObject *relatedObject = value;
                 
