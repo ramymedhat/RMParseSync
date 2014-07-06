@@ -99,7 +99,7 @@
         [allProperties removeObject:kTKDBServerIDField];
         [allProperties removeObject:kTKDBCreatedDateField];
         [allProperties removeObject:kTKDBIsDeletedField];
-        [allProperties removeObject:kTKDBUpdatedDateField];
+//        [allProperties removeObject:kTKDBUpdatedDateField];
         [allProperties removeObject:kTKDBServerIDField];
         [allProperties removeObject:@"ACL"];
         
