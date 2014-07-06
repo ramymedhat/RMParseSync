@@ -230,6 +230,15 @@
     TKServerObject *outputObject = [[TKServerObject alloc] initWithUniqueID:newerObject.uniqueObjectID];
     outputObject.entityName = newerObject.entityName;
     outputObject.creationDate = newerObject.creationDate;
+    // this to ensure there will be only one object on the cloud
+    if (newerObject.serverObjectID == nil) {
+        if (conflictPair.serverObject.serverObjectID) {
+            newerObject.serverObjectID = conflictPair.serverObject.serverObjectID;
+        }
+        else if (conflictPair.localObject.serverObjectID) {
+            newerObject.serverObjectID = conflictPair.localObject.serverObjectID;
+        }
+    }
     outputObject.serverObjectID = newerObject.serverObjectID;
     outputObject.localObjectIDURL = conflictPair.localObject.localObjectIDURL;
     outputObject.lastModificationDate = [NSDate date];
