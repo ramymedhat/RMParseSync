@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'RMParseSync'
-  s.version      = '0.1.0'
+  s.version      = '0.3.1'
   s.summary      = 'Parse Core Data Sync'
   s.author = {
     'Ramy Medhat' => 'ramymedhat@gmail.com'
