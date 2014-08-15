@@ -1,2 +1,14 @@
 
+<<<<<<< HEAD
 *.hmap
+=======
+*.hash-criteria
+
+*.hmap
+
+*.LinkFileList
+
+Build/Intermediates/ParseSync.build/Debug-iphoneos/ParseSync.build/dgph
+
+Build/Intermediates/ParseSync.build/Debug-iphoneos/ParseSyncTests.build/Script-7FE649EA190EE10000AF74B8.sh
+>>>>>>> FETCH_HEAD
