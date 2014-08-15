@@ -10,6 +10,6 @@ Pod::Spec.new do |s|
     :tag => '0.1.0'
   }
   s.source_files = 'ParseSync/ParseSync/*.{h,m}'
-  spec.frameworks = 'Parse'
+  spec.frameworks = 'Parse', 'CoreData'
   s.requires_arc = true
 end
