@@ -11,6 +11,6 @@ Pod::Spec.new do |s|
   }
   s.source_files = 'ParseSync/ParseSync/*.{h,m}'
   spec.frameworks = 'Parse', 'CoreData'
-  spec.prefix_header_contents = '#import <CoreData/CoreData.h>', '#import <Foundation/Foundation.h>', '#import <Parse/Parse.h>', '#import "NSManagedObjectContext+Sync.h"', '#import "NSManagedObject+Sync.h"', '#import "TKDB.h"'
+  spec.prefix_header_contents = '#import <CoreData/CoreData.h>', '#import <Foundation/Foundation.h>', '#import <Parse/Parse.h>'
   s.requires_arc = true
 end
