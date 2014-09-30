@@ -490,6 +490,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
 
     CFTimeInterval __block startTime = CACurrentMediaTime();
 
+    SYNCLogVerbose(@"============================================\n============================================\n\n");
     SYNCLogVerbose(@"Pulling Server Changes...\n");
     
     return [[self pullServerChanges] continueWithSuccessBlock:^id(BFTask *pullTask) {
@@ -512,12 +513,14 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         NSMutableSet *localUpdatesNoConflicts = [NSMutableSet set];
         NSMutableSet *serverUpdatesNoConflicts = [NSMutableSet set];
         
+        SYNCLogVerbose(@"============================================\n============================================\n\n");
         SYNCLogVerbose(@"Checking for Conflicts...");
         
         NSArray *conflicts = [weakself detectConflictsWithServerObjects:arrServerObjects localObjects:[localUpdatedObjects arrayByAddingObjectsFromArray:localInsertedObjects] localUpdatesNoConflicts:&localUpdatesNoConflicts serverUpdatesNoConflicts:&serverUpdatesNoConflicts];
         
         SYNCLogVerbose(@"Detected Conflicts <%lu object(s)>: %@\n\n", (unsigned long)conflicts.count, [NSSet setWithArray:conflicts]);
         
+        SYNCLogVerbose(@"============================================\n============================================\n\n");
         SYNCLogVerbose(@"Resolving Conflicts...");
         
         [weakself resolveConflicts:conflicts withLocalUpdates:&localUpdatesNoConflicts andServerUpdates:&serverUpdatesNoConflicts];
@@ -530,6 +533,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         // conflict management should return all server updates
         // @param serverUpdatesNoConflicts should have all server changes with conflicts resolved.
         
+        SYNCLogVerbose(@"============================================\n============================================\n\n");
         SYNCLogVerbose(@"Adding server changes to Database...");
         // save serverChanges
         NSArray *serverUpdatesArray = [serverUpdatesNoConflicts allObjects];
@@ -549,6 +553,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
         
         [objectsSet minusSet:newObjects];
         
+        SYNCLogVerbose(@"============================================\n============================================\n\n");
         SYNCLogVerbose(@"Pushing local Changes...");
         SYNCLogVerbose(@"Local new objects<%lu object(s)>: %@\n\n", (unsigned long)newObjects.count, newObjects);
         startTime = CACurrentMediaTime();
@@ -560,12 +565,14 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
             
             NSArray *newObjectsWithServerIDs = task.result;
             
+            SYNCLogVerbose(@"============================================\n============================================\n\n");
             SYNCLogVerbose(@"Adding server IDs to Database :%@\n\n", [NSSet setWithArray:newObjectsWithServerIDs]);
             [TKServerObjectHelper updateServerIDInLocalDatabase:newObjectsWithServerIDs];
             
             // combine newObjectsWithServerIDs with localUpdates
             NSArray *allObjects = [objectsSet.allObjects arrayByAddingObjectsFromArray:newObjectsWithServerIDs];
             
+            SYNCLogVerbose(@"============================================\n============================================\n\n");
             SYNCLogVerbose(@"Pushing All local changes with relations...");
             SYNCLogVerbose(@"Changes <%lu object(s)>: %@\n\n", (unsigned long)allObjects.count, [NSSet setWithArray:allObjects]);
             
@@ -577,6 +584,7 @@ NSString * const TKDBSyncFailedNotification = @"TKDBSyncFailedNotification";
                 
                 SYNCLogVerbose(@"Pushing to server completed in %@ seconds\n\n", uploadingLocalChanges);
                 
+                SYNCLogVerbose(@"============================================\n============================================\n\n");
                 SYNCLogVerbose(@"Saving database changes...");
                 // save to Db
                 NSError __block *savingError;
